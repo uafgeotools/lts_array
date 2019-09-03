@@ -19,29 +19,31 @@ This algorithm is designed for 2D velocity - back-azimuth array processing,
     a relatively small group of data n <= 100.
 
 Inputs:
-1) X - [array] - The design matrix (co-array coordinates).
-2) y - [array] - The vector of response variables (inter-element travel times).
-3) alpha: The subset percentage to take - must be in the
+1) X - [array] The design matrix (co-array coordinates).
+2) y - [array] The vector of response variables (inter-element travel times).
+3) alpha - [float] The subset percentage to take - must be in the
     range of [0.5, 1.0]. A good default alpha is 0.75.
 
 Outputs:
-1) Res - A dictionary of output parameters:
-    a) bazimuth - [scalar] back-azimuth in degrees from North.
-    b) velocity - [scalar] velocity.
-    c) coefficients - [1 x 2 array] the x and y components of
+1) Res - [dictionary] A dictionary of output parameters:
+    a) bazimuth - [float] Back-azimuth in degrees from North.
+    b) velocity - [float] Velocity.
+    c) coefficients - [array] The x and y components of
         the slowness vector [sx, sy].
-    d) flagged - [N x 1 array] -
-    e) fitted - [N x 1 array] the value of the best-fit plane at
+    d) flagged - [array] An array of the binary weights
+        used the final weighted least squares fit.
+    e) fitted - [array] The value of the best-fit plane at
         the co-array coordinates.
-    f) residuals - [N x 1 array] the residuals between the "fitted"
+    f) residuals - [array] The residuals between the "fitted"
         values and the "y" values.
-    g) scale - [scalar] -
-    h) rsquared - [scalar] the R**2 value of the regression fit.
-    j) X - [N x 2 array] the input co-array coordinate array.
-    k) y - [N x 1 array] the input inter-element travel times.
+    g) scale - [float] The standard deviation of the best fitting
+        subset multiplied by small sample correction factors.
+    h) rsquared - [float] The R**2 value of the regression fit.
+    j) X - [array] The input co-array coordinate array.
+    k) y - [array] The input inter-element travel times.
 
 Last modified: 9/2/2019
-version: 1.03
+version: 1.00
 '''
 
 
@@ -52,6 +54,8 @@ def fastlts(X, y, alpha): # noqa
     from scipy.linalg import lstsq
 
     import flts_helper_array as fltsh
+
+    fastlts.__version__ = '1.00'
 
     # default values
     csteps1 = 4
@@ -111,9 +115,9 @@ def fastlts(X, y, alpha): # noqa
 
     # Starting the algorithm; Pre-allocating best objective
     # functions and best coefficients
-    part, adjh, obsingroup, nsamp = 0, h, n, ntrial
+    part, adjh, nsamp = 0, h, ntrial
     csteps = csteps1
-    tottimes, fine, final = 0, 0, 0
+    tottimes, final = 0, 0
 
     z = np.zeros((p, 1))
     bobj = np.zeros(10, )
@@ -181,7 +185,6 @@ def fastlts(X, y, alpha): # noqa
                         bcoeff, bobj = fltsh.insertion(
                             bcoeff, bobj, z, obj, 1)
                 if final and (obj < bestobj):
-                    bestset = deepcopy(obs_in_set)
                     bestobj = deepcopy(obj)
                     coeffs = deepcopy(z)
 

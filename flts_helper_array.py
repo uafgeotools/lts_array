@@ -15,31 +15,31 @@ def quanf(alpha, n, p):
     r''' Generate the h-value, the number of points to fit.
 
     Args
-        1. alpha - [scalar] - The decimal percentage of points
+        1. alpha - [float] The decimal percentage of points
             to keep. Default is 0.75.
-        2. n - [scalar] - The total number of points.
-        3. p - [scalar] - The number of parameters.
+        2. n - [int] The total number of points.
+        3. p - [int] The number of parameters.
 
     Returns:
-        1. h - [scalar] - The number of points to fit.
+        1. h - [int] The number of points to fit.
 
     '''
     from numpy import floor
-    quan = floor(2*floor((n + p + 1)/2) - n
-                 + 2*(n - floor((n + p + 1)/2))*alpha)
+    h = floor(2*floor((n + p + 1)/2) - n
+              + 2*(n - floor((n + p + 1)/2))*alpha)
 
-    return int(quan)
+    return int(h)
 
 
 def uniran(seed):
     r''' Generate a random number and a new seed.
 
     Args:
-        1. seed - [scalar] - a seed value.
+        1. seed - [int] A seed value.
 
     Returns:
-        1. random [scalar] - a pseudorandom number.
-        2. seed - [scalar] - a (new) seed value.
+        1. random [float] A pseudorandom number.
+        2. seed - [float] A (new) seed value.
 
     '''
     from numpy import floor
@@ -51,7 +51,7 @@ def uniran(seed):
     return random, seed
 
 
-def randomset(tot, nel, seed):
+def randomset(tot, npar, seed):
     r''' Generate an array of indices and a new seed.
 
     This function is called if not all (p+1) subsets out of
@@ -59,23 +59,23 @@ def randomset(tot, nel, seed):
         nel cases out of tot.
 
     Args:
-        1. tot -
-        2. nel -
-        3. seed -
+        1. tot - [int] The total number of data points.
+        2. npar - [int] The number of parameters to estimate.
+        3. seed - [float] A random seed.
 
     Returns:
-        1. randset -
-        2. seed -
+        1. randset - [array] A random set of indices for choosing subsets.
+        2. seed - [float] A new random seed.
 
     '''
     import numpy as np
     import flts_helper_array as fltsh
 
     randlist = []
-    for j in range(0, nel):
+    for jj in range(0, npar):
         random, seed = fltsh.uniran(seed)
         num = np.floor(random * tot) + 1
-        if j > 0:
+        if jj > 0:
             while num in randlist:
                 random, seed = fltsh.uniran(seed)
                 num = np.floor(random * tot) + 1
@@ -141,9 +141,22 @@ def qchisq(p, a):
 def insertion(bestmean, bobj, z, obj, row):
     r''' Keep track of the value of the objective function
         and the associated parameter vector z.
+
     * For now these are two arrays, but Pythonically,
         this seems like a good dictionary use.
     *This code could likely be re-written to be more simple.
+
+    Args:
+        1. bestmean -
+        2. bobj -
+        3. z -
+        4. obj -
+        5. row -
+
+    Returns:
+        1. bestmean -
+        2. bobj -
+
     Last Modified: 8/29/2019
     '''
     import numpy as np
@@ -188,20 +201,20 @@ def rawcorfactorlts(p, intercept, n, alpha):
     Calculates the correction factor (from Pison et al. 2002)
         to make the LTS solution unbiased for small n.
 
-    Inputs:
-        1) p - [scalar] - The rank of X, the number of parameters to fit.
-        2) intercept - [scalar] - logical. Are you fitting an intercept?
-            Currently set to false for array processing.
-        3) n - [scalar] - The number of data points used in processing.
-        4) alpha - [scalar] - The percentage of data points to keep in
+    Args:
+        1. p - [int] The rank of X, the number of parameters to fit.
+        2. intercept - [int] Logical. Are you fitting an intercept?
+            Set to false for array processing.
+        3. n - [int] The number of data points used in processing.
+        4. alpha - [float] The percentage of data points to keep in
             the LTS, i.e. h = floor(alpha*n).
 
     Returns:
-        1) finitefactor - [scalar] - a correction factor to make
+        1. finitefactor - [float] A correction factor to make
             the LTS solution approximately unbiased
             for small (i.e. finite n).
 
-    Last Modified: 8/29/2019
+    Last Modified: 9/2/2019
     '''
     import numpy as np
 
@@ -297,14 +310,14 @@ def rawconsfactorlts(h, n):
 
     @ author: Jordan W. Bishop
 
-    Inputs:
-    1) h/quan - [scalar] - The number of points to fit
-    2) n - [scalar] - The total n
+    Args:
+    1. h - [int] The number of points to fit.
+    2. n - [int] The total number of data points.
 
-    Outputs:
-    1) dhn - [scalar] - The correction factor d_h,n
+    Returns:
+    1. dhn - [float] The correction factor d_h,n.
 
-    Last Modified: 8/29/2019
+    Last Modified: 9/2/2019
     '''
     import numpy as np
     from scipy.special import erfinv
@@ -340,7 +353,19 @@ def dnorm(x, s=1, m=0):
 
 def rewcorfactorlts(p, intercept, n, alpha):
     r''' Correction factor for final LTS least-squares fit.
-    Last Modified: 8/29/2019
+
+    Args:
+        1. p - [int] The rank of X, the number of parameters to fit.
+        2. intercept - [int] Logical. Are you fitting an intercept?
+            Set to false for array processing.
+        3. n - [int] The number of data points used in processing.
+        4. alpha - [float] The percentage of data points to keep in
+            the LTS, i.e. h = floor(alpha*n).
+
+    Returns:
+        1. finitefactor - [float] A finite sample correction factor.
+
+    Last Modified: 9/2/2019
     '''
 
     import numpy as np
@@ -394,7 +419,19 @@ def rewcorfactorlts(p, intercept, n, alpha):
 
 
 def rewconsfactorlts(weights, n, p):
-    r''' Another correction factor for the final LTS fit. '''
+    r''' Another correction factor for the final LTS fit.
+
+    Args:
+        1. weights - [array] The standardized residuals.
+        2. n - [int] The total number of data points.
+        3. p - [int] The number of parameters to estimate.
+
+    Returns:
+        1. cdelta_rew - [float] A small sample correction
+            factor.
+
+    Last Modified: 9/2/2019
+    '''
     from flts_helper_array import pgamma
     from flts_helper_array import qchisq
     from flts_helper_array import qnorm
@@ -421,14 +458,14 @@ def arrayfromweights(weightarray, idx):
 
     @author: Jordan W. Bishop
 
-    Inputs:
-        1) weightarray - [array] - An mx0 array of the
+    Args:
+        1. weightarray - [array] An mx0 array of the
             final LTS weights for each station pair.
-        2) idx - [array] - An mx2 array of the station pairs.
+        2. idx - [array] An mx2 array of the station pairs.
             Generated in the 'getcctimevec' function.
 
     Returns:
-        1) fstations - [array] - A 1xm array of station pairs.
+        1. fstations - [array] A 1xm array of station pairs.
 
     Date Last Modified: 8/29/2019
     """
@@ -452,15 +489,19 @@ def getcctimevec(data, rij, hz):
 
     @author: Jordan W. Bishop and Curt A. L. Szuberla
 
-    Inputs:
-        1) data - [array] - An mxn data matrix with columns corresponding
+    Args:
+        1. data - [array] An mxn data matrix with columns corresponding
             to different time series.
-        2) rij - [array] - The array location array.
-        3) hz - [array] - The sampling frequency of the data used to
+        2. rij - [array] The infrasound array coordinates.
+        3. hz - [array] The sampling frequency of the data used to
             change samples to time (sec).
 
-    Outputs:
-        1) A time delay vector for the co-array of the data matrix.
+    Returns:
+        1. tau - [array] A time delay vector for the co-array of
+            the data matrix.
+        2. xij - [array] The co-array of the input array.
+        3. cmax - [float] The maximum of the cross-correlations.
+        4. idx - [array] The co-array pairs.
 
     Date Last Modified: 8/29/2019
     """
@@ -502,11 +543,11 @@ def getrij(latlist, lonlist):
     @ authors: Jordan W. Bishop and David Fee
 
     Args:
-      1. latlist - [list] - a list of latitude points
-      2. lonlist - [list] - a list of longitude points
+      1. latlist - [list] A list of latitude points.
+      2. lonlist - [list] A list of longitude points.
 
     Returns:
-      1. rij - [array] - a numpy array with the first row corresponding to
+      1. rij - [array] A numpy array with the first row corresponding to
         cartesian "X" - coordinates and the second row
         corresponding to cartesian "Y" - coordinates.
 
