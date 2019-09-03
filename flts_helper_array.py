@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 r''' Contains the auxilliary functions called by fastlts.py
 
-Many of these codes are python translations of the MATLAB
+Many of these codes are Python3 translations of the MATLAB
     Continuous Sound and Vibration Toolbox
 
 @ author: Jordan W. Bishop
@@ -11,10 +11,10 @@ Last Modified: 8/27/2019
 '''
 
 
-def quanf(alpha, n, p):
+def hcalc(alpha, n, p):
     r''' Generate the h-value, the number of points to fit.
 
-    Args
+    Args:
         1. alpha - [float] The decimal percentage of points
             to keep. Default is 0.75.
         2. n - [int] The total number of points.
@@ -311,11 +311,11 @@ def rawconsfactorlts(h, n):
     @ author: Jordan W. Bishop
 
     Args:
-    1. h - [int] The number of points to fit.
-    2. n - [int] The total number of data points.
+        1. h - [int] The number of points to fit.
+        2. n - [int] The total number of data points.
 
     Returns:
-    1. dhn - [float] The correction factor d_h,n.
+        1. dhn - [float] The correction factor d_h,n.
 
     Last Modified: 9/2/2019
     '''
@@ -482,7 +482,7 @@ def arrayfromweights(weightarray, idx):
     return fstations
 
 
-def getcctimevec(data, rij, hz):
+def get_cc_time(data, rij, hz):
     """ Generate a time delay vector from cross correlations.
 
     Cross correlates data
@@ -543,13 +543,13 @@ def getrij(latlist, lonlist):
     @ authors: Jordan W. Bishop and David Fee
 
     Args:
-      1. latlist - [list] A list of latitude points.
-      2. lonlist - [list] A list of longitude points.
+        1. latlist - [list] A list of latitude points.
+        2. lonlist - [list] A list of longitude points.
 
     Returns:
-      1. rij - [array] A numpy array with the first row corresponding to
-        cartesian "X" - coordinates and the second row
-        corresponding to cartesian "Y" - coordinates.
+        1. rij - [array] A numpy array with the first row corresponding to
+            cartesian "X" - coordinates and the second row
+            corresponding to cartesian "Y" - coordinates.
 
     Date Last Modified: 8/29/19
     '''

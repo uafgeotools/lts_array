@@ -1,62 +1,84 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-r""" Process with robust estimators.
-
-@author: Jordan W Bishop
-
-Date Last Modified: 8/29/19
-
-Args:
-  1. data - [array] - Array of time series for cross correlations
-  2. fs - [scalar] - sampling rate
-  3. rij - [array] - array coordinates
-  4. alpha - [scalar] - fraction of data for LTS subsetting [0.5, 1.0]
-
-Returns:
-  1. fltsbaz - [scalar] - the back-azimuth in degrees from North as
-      determined by the least trimmed squares fit.
-  2. fltsvel - [scalar] - the velocity determined by the least trimmed
-      squares fit.
-  3. flagged - [array] - the binary (0 or 1) weights assigned
-    to station pairs in the final weighted least squares fit.
-    Stations with a final weight of "0" are flagged as outlying
-    by the algorithm.
-  4. ccmax - [array] - The cross correlation maxima used to
-      determine inter-element travel times.
-  5. idx - [array] - station pairs.
-  6. lts_estimate [dictionary] - a dictionary with the following keys
-      a) bazimuth - [scalar] - fltsbaz
-      b) velocity - [scalar] - fltsvel
-      c) coefficients - [array] - the x and y components of
-        the slowness vector [sx, sy].
-      d) flagged - [array] - the binary (0 or 1) weights assigned
-        to station pairs in the final weighted least squares fit.
-        Stations with a final weight of "0" are flagged as outlying
-        by the algorithm.
-      e) fitted - [array] - the value of the best-fit plane at
-        the co-array coordinates.
-      f) residuals - [N x 1 array] - the residuals between the
-        "fitted" values and the "y" values.
-      g) scale - [scalar] - the scale value used to determine the LTS weights.
-      h) rsquared - [scalar] - the R**2 value of the regression fit.
-      j) X - [array] - the input co-array coordinate array.
-      k) y - [array] - the input inter-element travel times.
-
-"""
 
 
 def ltsva(data, rij, fs, alpha):
+    r""" Process array data with least trimmed squares (LTS)
+
+    @author: Jordan W Bishop
+
+    Args:
+        1. data - [array] - Array of time series for cross correlations
+        2. fs - [float] - sampling rate
+        3. rij - [array] - array coordinates
+        4. alpha - [float] - fraction of data for LTS subsetting [0.5, 1.0]
+
+    Exceptions:
+        1. Exception - A check is performed to see if all time delays
+            are equal. If so, an exception is raised and the algorithm
+            on exit returns the same data structures, but with NaN values.
+
+    Returns:
+            1. fltsbaz - [float] The back-azimuth in degrees from North as
+              determined by the least trimmed squares fit.
+            2. fltsvel - [float] The velocity determined by
+                the least trimmed squares fit.
+            3. flagged - [array] The binary (0 or 1) weights assigned
+            to station pairs in the final weighted least squares fit.
+            Stations with a final weight of "0" are flagged as outlying
+            by the algorithm.
+            4. ccmax - [array] The cross correlation maxima used to
+              determine inter-element travel times.
+            5. idx - [array] Station pairs.
+            6. lts_estimate [dictionary] A dictionary with the following keys:
+                a. bazimuth - [float] fltsbaz; the back-azimuth in
+                    degrees from North as determined by the
+                    least trimmed squares fit.
+                b. velocity - [float] fltsvel; the velocity determined
+                    by the least trimmed squares fit.
+                c. coefficients - [array] The x and y components of
+                    the slowness vector [sx, sy].
+                d. flagged - [array] The binary (0 or 1) weights assigned
+                    to station pairs in the final weighted least squares fit.
+                    Stations with a final weight of "0" are flagged as outlying
+                    by the algorithm.
+                e. fitted - [array] The value of the best-fit plane at
+                    the co-array coordinates.
+                f. residuals - [array] - The residuals between the
+                    "fitted" values and the "y" values.
+                g. scale - [float] The scale value used to
+                    determine the LTS weights.
+                h. rsquared - [float] The R**2 value of the regression fit.
+                j. X - [array] The input co-array coordinate array.
+                k. y - [array] The input inter-element travel times.
+
+    Last Modified: 9/3/19
+    """
 
     import numpy as np
     from fast_lts_array import fastlts
-    from flts_helper_array import getcctimevec
+    from flts_helper_array import get_cc_time
+    # from flts_helper_array import nan_dict
 
     # Cross-correlate to determine inter-element time delays
-    tdelay, xij, ccmax, idx = getcctimevec(data, rij, fs)
+    tdelay, xij, ccmax, idx = get_cc_time(data, rij, fs)
     tdelay = np.reshape(tdelay, (len(tdelay), 1))
     xij = xij.T
 
-    # Apply the FAST-LTS algorithm
+    # Check to see if time delays are all equal. The fastlts
+    #  function will crash if all tdelays are equal.
+    # dataspike = (tdelay.count(tdelay[0]) == len(tdelay))
+    # if dataspike:
+    #     raise Exception("Tdelays are equal. LTS algorithm not run. \
+    #                             Returning NaNs for LTS output terms.")
+    #     fltsbaz, fltsvel = np.nan, np.nan
+    #     flagged, lts_estimate = fltsh.
+    #     flagged = np.empty_like(tdelay)
+    #     flagged.fill(np.nan)
+        # lts_estimate
+        # return
+
+    # Apply the FAST-LTS algorithm and return results
     lts_estimate = fastlts(xij, tdelay, alpha)
 
     fltsbaz = lts_estimate['bazimuth']

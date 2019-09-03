@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-r''' A FAST-LTS code modified for array processing.
+def fastlts(X, y, alpha): # noqa
+    r''' A FAST-LTS code modified for array processing.
 
-@author: Jordan W Bishop
+    @author: Jordan W Bishop
 
-This code is based off the FAST-LTS algorithm:
-Rousseeuw, Peter J. and Katrien Van Driessen (2006). "Data Mining and
-    Knowledge Discovery". In: Springer Science + Business Media, Inc.
-    Chap. 12: Computing LTS Regression for Large Data Sets, pp. 29-45
+    This code is based off the FAST-LTS algorithm:
+    Rousseeuw, Peter J. and Katrien Van Driessen (2006). "Data Mining and
+        Knowledge Discovery". In: Springer Science + Business Media, Inc.
+        Chap. 12: Computing LTS Regression for Large Data Sets, pp. 29-45
 
-ASSUMPTIONS:
-This algorithm is designed for 2D velocity - back-azimuth array processing,
+    ASSUMPTIONS:
+    This algorithm is designed for 2D velocity - back-azimuth array processing,
     so some sophistication is left out from what would be a more
     generalized version. As such, we are assuming a plane wave model,
     so (from the physics) the intercept is assumed to be zero. As a result,
@@ -18,44 +19,41 @@ This algorithm is designed for 2D velocity - back-azimuth array processing,
     left out of processing. We will always assume that we are dealing with
     a relatively small group of data n <= 100.
 
-Inputs:
-1) X - [array] The design matrix (co-array coordinates).
-2) y - [array] The vector of response variables (inter-element travel times).
-3) alpha - [float] The subset percentage to take - must be in the
-    range of [0.5, 1.0]. A good default alpha is 0.75.
+    Args:
+        1. X - [array] The design matrix (co-array coordinates).
+        2. y - [array] The vector of response variables
+            (inter-element travel times).
+        3. alpha - [float] The subset percentage to take - must be in
+            the range of [0.5, 1.0]. A good default alpha is 0.75.
 
-Outputs:
-1) Res - [dictionary] A dictionary of output parameters:
-    a) bazimuth - [float] Back-azimuth in degrees from North.
-    b) velocity - [float] Velocity.
-    c) coefficients - [array] The x and y components of
-        the slowness vector [sx, sy].
-    d) flagged - [array] An array of the binary weights
-        used the final weighted least squares fit.
-    e) fitted - [array] The value of the best-fit plane at
-        the co-array coordinates.
-    f) residuals - [array] The residuals between the "fitted"
-        values and the "y" values.
-    g) scale - [float] The standard deviation of the best fitting
-        subset multiplied by small sample correction factors.
-    h) rsquared - [float] The R**2 value of the regression fit.
-    j) X - [array] The input co-array coordinate array.
-    k) y - [array] The input inter-element travel times.
+    Returns:
+        1. Res - [dictionary] A dictionary of output parameters:
+            a. bazimuth - [float] Back-azimuth in degrees from North.
+            b. velocity - [float] Velocity.
+            c. coefficients - [array] The x and y components of
+                the slowness vector [sx, sy].
+            d. flagged - [array] An array of the binary weights
+                used the final weighted least squares fit.
+            e. fitted - [array] The value of the best-fit plane at
+                the co-array coordinates.
+            f. residuals - [array] The residuals between the "fitted"
+                values and the "y" values.
+            g. scale - [float] The standard deviation of the best fitting
+                subset multiplied by small sample correction factors.
+            h. rsquared - [float] The R**2 value of the regression fit.
+            j. X - [array] The input co-array coordinate array.
+            k. y - [array] The input inter-element travel times.
 
-Last modified: 9/2/2019
-version: 1.00
-'''
+    Last modified: 9/3/2019
+    '''
 
-
-def fastlts(X, y, alpha): # noqa
+    fastlts.__version__ = '1.00'
 
     from copy import deepcopy
     import numpy as np
     from scipy.linalg import lstsq
 
     import flts_helper_array as fltsh
-
-    fastlts.__version__ = '1.00'
 
     # default values
     csteps1 = 4
@@ -64,7 +62,6 @@ def fastlts(X, y, alpha): # noqa
     seed = 0
     intercept = 0
     ntrial = 500
-    # alpha = 0.75
 
     Xvar = deepcopy(X) # noqa
     yvar = deepcopy(y)
@@ -88,7 +85,7 @@ def fastlts(X, y, alpha): # noqa
         print('X is singular!!')
 
     # Assigning the subset size
-    h = fltsh.quanf(alpha, n, p)
+    h = fltsh.hcalc(alpha, n, p)
 
     if p < 5:
         eps = 1e-12

@@ -4,15 +4,13 @@ r""" Processing with robust estimators
 
 @author: Jordan W Bishop
 
-Date Last Modified: 8/27/19
-version 1.0
-
 Args, Exceptions:
-  NA
+    NA
 
 Returns:
-  Plots the results of robust estimates of velocity and back-azimuth.
+    Plots the results of robust estimates of velocity and back-azimuth.
 
+Last Modified: 8/27/19
 """
 
 # Loading modules
@@ -121,19 +119,8 @@ for jj in range(nits):
     except:
         t[jj] = np.nanmax(t, axis=0)
 
-    # LTS-Estimation alpha = 0.50
-    # try:
-    #     LTS_estimate = fastlts(X, tdelay, alpha=0.50)
-    # except ValueError:
-    #     # 0 vector cases (e.g. data spikes) currently
-    #     # crash the program. This on the list will be fixed.
-    #     pass
-
-    try:
-        LTSbaz[jj], LTSvel[jj], flagged, ccmax, idx, _ = ltsva(
+    LTSbaz[jj], LTSvel[jj], flagged, ccmax, idx, _ = ltsva(
                     data[ptr[0]:ptr[1], :], rij, fs, 0.50)
-    except ValueError:
-        pass
 
     mdccm[jj] = np.median(ccmax)
     stns = fltsh.arrayfromweights(flagged, idx)
