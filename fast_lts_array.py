@@ -19,8 +19,8 @@ This algorithm is designed for 2D velocity - back-azimuth array processing,
     a relatively small group of data n <= 100.
 
 Inputs:
-1) X: The design matrix (co-array coordinates).
-2) y: The vector of response variables (inter-element travel times).
+1) X - [array] - The design matrix (co-array coordinates).
+2) y - [array] - The vector of response variables (inter-element travel times).
 3) alpha: The subset percentage to take - must be in the
     range of [0.5, 1.0]. A good default alpha is 0.75.
 
@@ -40,12 +40,12 @@ Outputs:
     j) X - [N x 2 array] the input co-array coordinate array.
     k) y - [N x 1 array] the input inter-element travel times.
 
-Last modified: 8/26/2019
+Last modified: 9/2/2019
 version: 1.03
 '''
 
 
-def fastlts(X, y, alpha):
+def fastlts(X, y, alpha): # noqa
 
     from copy import deepcopy
     import numpy as np
@@ -54,18 +54,15 @@ def fastlts(X, y, alpha):
     import flts_helper_array as fltsh
 
     # default values
-    nmax = 50000
-    maxgroup = 5
-    nmini = 300
     csteps1 = 4
-    csteps3 = 100
+    csteps2 = 100
 
     seed = 0
     intercept = 0
     ntrial = 500
     # alpha = 0.75
 
-    Xvar = deepcopy(X)
+    Xvar = deepcopy(X) # noqa
     yvar = deepcopy(y)
 
     # Initial error checking for inputs
@@ -78,9 +75,6 @@ def fastlts(X, y, alpha):
         raise IndexError('y is not a column vector!')
     if n <= 2*p:
         raise ValueError('Bad assumption, n ! > 2p')
-
-    if n > nmax:
-        print('More than "+nmax+" data points...this may take a while...')
 
     bestobj = np.inf
 
@@ -104,43 +98,20 @@ def fastlts(X, y, alpha):
     yorig = deepcopy(yvar)
     data = np.concatenate((Xvar, yvar), axis=1)
 
-    # Standardizing the Data
     datamad = 1.4826*np.median(np.abs(data), axis=0)
-    for i in range(0, p+1):
-        if np.abs(datamad[i]) <= eps:
-            datamad[i] = np.sum(np.abs(data[:, i]))
-            datamad[i] = 1.2533 * (datamad[i]/n)
-            if np.abs(datamad[i]) <= eps:
+    for ii in range(0, p+1):
+        if np.abs(datamad[ii]) <= eps:
+            datamad[ii] = np.sum(np.abs(data[:, ii]))
+            datamad[ii] = 1.2533 * (datamad[ii]/n)
+            if np.abs(datamad[ii]) <= eps:
                 print('ERROR: The MAD of some variable is zero!')
-    for i in range(0, p):
-        Xvar[:, i] = Xvar[:, i]/datamad[i]
+    for ii in range(0, p):
+        Xvar[:, ii] = Xvar[:, ii]/datamad[ii]
     yvar[:, 0] = yvar[:, 0]/datamad[p]
 
-    # Starting the algorithm
-    al = 0
-    group = []
-    if n >= 2*nmini:
-        maxobs = maxgroup*nmini
-        if n >= maxobs:
-            ngroup = maxgroup
-            group[0:maxgroup] = nmini
-        else:
-            ngroup = np.floor(n/nmini)
-            minquan = np.floor(n/ngroup)
-            group[0] = minquan
-            for s in range(1, ngroup):
-                group[s] = minquan + float((n % ngroup) >= (s-1))
-        part = 1
-        adjh = int(np.floor(group[0]*alpha))
-        nsamp = np.floor(ntrial/ngroup)
-        minigr = np.sum(group)
-        obsingroup = fltsh.fillgroup(n, group, ngroup, seed)
-        totgroup = ngroup
-
-    else:
-        part, group, ngroup, adjh, minigr, obsingroup = 0, n, 1, h, n, n
-        nsamp = ntrial
-
+    # Starting the algorithm; Pre-allocating best objective
+    # functions and best coefficients
+    part, adjh, obsingroup, nsamp = 0, h, n, ntrial
     csteps = csteps1
     tottimes, fine, final = 0, 0, 0
 
@@ -149,84 +120,70 @@ def fastlts(X, y, alpha):
     bobj.fill(np.inf)
     bcoeff = np.zeros((p, 10))
     bcoeff.fill(np.nan)
-    seed = 0
     coeffs = np.tile(np.nan, (p, 1))
-    np.shape(bcoeff)
 
+    # Starting the search through subsets
     while final != 2:
         if final:
             nsamp = 10
             adjh = h
-            ngroup = 1
             if (n*p <= 1e5):
-                csteps = csteps3
+                csteps = csteps2
             elif (n*p <= 1e6):
                 csteps = 10 - (np.ceil(n*p/1e5) - 2)
             else:
                 csteps = 1
             if n > 5000:
                 nsamp = 1
-
-        for k in range(0, ngroup):
-            for i in range(0, nsamp):
-                tottimes += 1
-                prevobj = 0
-
-                if final:
-                    if np.isfinite(bobj[i]):
-                        z = deepcopy(bcoeff[:, i])
-                        z = np.reshape(z, (len(z), 1))
-                    else:
-                        print('BREAK! Line 168')
-                        break
+        for ii in range(0, nsamp):
+            tottimes += 1
+            prevobj = 0
+            if final:
+                if np.isfinite(bobj[ii]):
+                    z = deepcopy(bcoeff[:, ii])
+                    z = np.reshape(z, (len(z), 1))
                 else:
-                    z[0, 0] = np.inf
-                    while z[0, 0] == np.inf:
-                        index, seed = fltsh.randomset(n, p, seed)
-                        index -= 1
+                    # print('BREAK! Line 168')
+                    break
+            else:
+                z[0, 0] = np.inf
+                while z[0, 0] == np.inf:
+                    index, seed = fltsh.randomset(n, p, seed)
+                    index -= 1
+                    q, r = np.linalg.qr(Xvar[index, :])
+                    qtip = q.conj().T @ yvar[index]
+                    z = lstsq(r, qtip)[0]
 
-                        if p > 1:
-                            q, r = np.linalg.qr(Xvar[index, :])
-                            qtip = q.conj().T @ yvar[index]
-                            z = lstsq(r, qtip)[0]
-                        elif Xvar[index, 0] != 0:
-                            z[0, 0] = yvar[index] / Xvar[index, 0]
-                        else:
-                            z[0, 0] = Xvar[index, 0]
-
-                if np.isfinite(z[0]):
-
+            if np.isfinite(z[0]):
+                residu = yvar - Xvar@z
+                # Perform C-steps
+                for jj in range(0, csteps):
+                    tottimes += 1
+                    sortind = np.argsort(
+                        np.abs(residu), kind='mergesort', axis=0)
+                    sortind = np.reshape(sortind, (len(sortind), ))
+                    obs_in_set = np.sort(
+                        sortind[0:adjh], kind='mergesort', axis=0)
+                    q, r = np.linalg.qr(Xvar[obs_in_set, :])
+                    qtip = q.conj().T @ yvar[obs_in_set]
+                    z = lstsq(r, qtip)[0]
                     residu = yvar - Xvar@z
+                    sor = np.sort(np.abs(residu), kind='mergesort', axis=0)
+                    # New objective function
+                    obj = np.sum(sor[0:adjh:1]**2)
+                    if (jj >= 1) and (obj == prevobj):
+                        break
+                    prevobj = deepcopy(obj)
 
-                    for j in range(0, csteps):
-                        tottimes += 1
-                        sortind = np.argsort(
-                            np.abs(residu), kind='mergesort', axis=0)
-                        sortind = np.reshape(sortind, (len(sortind), ))
-                        if fine and (not final):
-                            sortind = obsingroup[totgroup+1][sortind]
-                        obs_in_set = np.sort(
-                            sortind[0:adjh], kind='mergesort', axis=0)
-                        q, r = np.linalg.qr(Xvar[obs_in_set, :])
-                        qtip = q.conj().T @ yvar[obs_in_set]
-                        z = lstsq(r, qtip)[0]
-
-                        residu = yvar - Xvar@z
-
-                        sor = np.sort(np.abs(residu), kind='mergesort', axis=0)
-                        obj = np.sum(sor[0:adjh:1]**2)
-                        if (j >= 1) and (obj == prevobj):
-                            break
-                        prevobj = deepcopy(obj)
-
-                    if (not final):
-                        if obj < np.max(bobj):
-                            bcoeff, bobj = fltsh.insertion(
-                                bcoeff, bobj, z, obj, 1)
-                    if final and (obj < bestobj):
-                        bestset = deepcopy(obs_in_set)
-                        bestobj = deepcopy(obj)
-                        coeffs = deepcopy(z)
+                if (not final):
+                    if obj < np.max(bobj):
+                        # Save the best objective function values
+                        bcoeff, bobj = fltsh.insertion(
+                            bcoeff, bobj, z, obj, 1)
+                if final and (obj < bestobj):
+                    bestset = deepcopy(obs_in_set)
+                    bestobj = deepcopy(obj)
+                    coeffs = deepcopy(z)
 
         if (not part) and (not final):
             final = 1
@@ -237,20 +194,20 @@ def fastlts(X, y, alpha):
     if p <= 1:
         coeffs[0] = coeffs[0] * datamad[p]/datamad[0]
     else:
-        for i in range(0, p):
-            coeffs[i] = coeffs[i] * datamad[p] / datamad[i]
+        for ii in range(0, p):
+            coeffs[ii] = coeffs[ii] * datamad[p] / datamad[ii]
         coeffs[p-1] = coeffs[p-1] * datamad[p-1] / datamad[p-1]
     bestobj = bestobj*(datamad[p]**2)
     xvar = deepcopy(xorig)
     yvar = deepcopy(yorig)
 
     # Saving the raw data - the intermediate results
-    Raw = {}
+    Raw = {} # noqa
     Raw['coefficients'] = coeffs
     Raw['objective'] = bestobj
 
     # Preparing for the final results
-    Res = {}
+    Res = {} # noqa
 
     coeffs2 = np.reshape(coeffs, (len(coeffs), 1))
     fitted = xvar @ coeffs2
