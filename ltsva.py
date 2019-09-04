@@ -58,7 +58,7 @@ def ltsva(data, rij, fs, alpha):
     import numpy as np
     from fast_lts_array import fastlts
     from flts_helper_array import get_cc_time
-    # from flts_helper_array import nan_dict
+    from flts_helper_array import fail_spike_test
 
     # Cross-correlate to determine inter-element time delays
     tdelay, xij, ccmax, idx = get_cc_time(data, rij, fs)
@@ -67,16 +67,13 @@ def ltsva(data, rij, fs, alpha):
 
     # Check to see if time delays are all equal. The fastlts
     #  function will crash if all tdelays are equal.
-    # dataspike = (tdelay.count(tdelay[0]) == len(tdelay))
-    # if dataspike:
-    #     raise Exception("Tdelays are equal. LTS algorithm not run. \
-    #                             Returning NaNs for LTS output terms.")
-    #     fltsbaz, fltsvel = np.nan, np.nan
-    #     flagged, lts_estimate = fltsh.
-    #     flagged = np.empty_like(tdelay)
-    #     flagged.fill(np.nan)
-        # lts_estimate
-        # return
+    # Return data structures filled with nans if true.
+    dataspike = (tdelay.count(tdelay[0]) == len(tdelay))
+    if dataspike:
+        raise Exception("Tdelays are equal. LTS algorithm not run. \
+                                Returning NaNs for LTS output terms.")
+        fltsbaz, fltsvel, flagged, lts_estimate = fail_spike_test(tdelay, xij)
+        return fltsbaz, fltsvel, flagged, ccmax, idx, lts_estimate
 
     # Apply the FAST-LTS algorithm and return results
     lts_estimate = fastlts(xij, tdelay, alpha)

@@ -590,3 +590,46 @@ def getrij(latlist, lonlist):
     rij = np.array([xnew.tolist(), ynew.tolist()])
 
     return rij
+
+
+def fail_spike_test(tdelay, xij):
+    r''' Returns data structures filled with nans when all tdelays are equal.
+
+    Receiving a time delay vector where every element is equal will cause
+    the current LTS algorithm to crash. In order to minimize the impact on
+    existing processing pipelines, this function assists in returning
+    the sample data structures as a successful LTS run, but with
+    nan values replacing LTS derived parameters.
+
+    @ author: Jordan W. Bishop
+
+    Args:
+        1. tdelay - [array] The inter-element travel times.
+        2. xij - [array] The co-array coordinates.
+
+    Returns:
+        1. flagged [array] A vector of nan values.
+        2. lts_estimate [dict] A collection of run paramters with
+            LTS derived parameters replaced with nans.
+
+    Last Modified: 9/4/2019
+    '''
+    import numpy as np
+
+    # Creating the "flagged" vector
+    nan_vec = np.empty_like(tdelay)
+    nan_vec.fill(np.nan)
+
+    # Creating the lts_estimate, vector
+    lts_estimate = {'bazimuth': np.nan, 'velocity': np.nan,
+                    'coefficients': np.array([np.nan, np.nan]),
+                    'flagged': nan_vec, 'fitted': nan_vec,
+                    'residuals': nan_vec, 'scale': np.nan,
+                    'rsquared': np.nan,
+                    'X': xij, 'y': tdelay}
+
+    fltsbaz = lts_estimate['bazimuth']
+    fltsvel = lts_estimate['bazimuth']
+    flagged = lts_estimate['flagged']
+
+    return fltsbaz, fltsvel, flagged, lts_estimate
