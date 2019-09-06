@@ -26,7 +26,6 @@ def ltsva(data, rij, fs, alpha):
             3. flagged - [array] The binary (0 or 1) weights assigned
             to station pairs in the final weighted least squares fit.
             Stations with a final weight of "0" are flagged as outlying
-            by the algorithm.
             4. ccmax - [array] The cross correlation maxima used to
               determine inter-element travel times.
             5. idx - [array] Station pairs.
@@ -68,7 +67,7 @@ def ltsva(data, rij, fs, alpha):
     # Check to see if time delays are all equal. The fastlts
     #  function will crash if all tdelays are equal.
     # Return data structures filled with nans if true.
-    dataspike = (tdelay.count(tdelay[0]) == len(tdelay))
+    dataspike = np.all(tdelay == 0)
     if dataspike:
         raise Exception("Tdelays are equal. LTS algorithm not run. \
                                 Returning NaNs for LTS output terms.")
