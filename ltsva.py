@@ -1,16 +1,20 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
+import numpy as np
+from fast_lts_array import fastlts
+from flts_helper_array import get_cc_time
+from flts_helper_array import fail_spike_test
+    
 
 def ltsva(data, rij, fs, alpha):
-    r""" Process array data with least trimmed squares (LTS)
+    r""" Process infrasound and seismic array data with least trimmed squares (LTS)
 
     @author: Jordan W Bishop
 
     Args:
-        1. data - [array] - Array of time series for cross correlations
+        1. data - [array] - (m,n) Array of time series with for cross correlations 
+        with 'm' samples and 'n' waveforms as columns
         2. fs - [float] - sampling rate
-        3. rij - [array] - array coordinates
+        3. rij - [array] - (2,n) 'n' array element coordinates in km  
+        in 2-dimenensions [easting, northing]
         4. alpha - [float] - fraction of data for LTS subsetting [0.5, 1.0]
 
     Exceptions:
@@ -19,7 +23,7 @@ def ltsva(data, rij, fs, alpha):
             on exit returns the same data structures, but with NaN values.
 
     Returns:
-            1. fltsbaz - [float] The back-azimuth in degrees from North as
+            1. fltsbaz - [float] The back-azimuth in degrees from north as
               determined by the least trimmed squares fit.
             2. fltsvel - [float] The velocity determined by
                 the least trimmed squares fit.
@@ -31,7 +35,7 @@ def ltsva(data, rij, fs, alpha):
             5. idx - [array] Station pairs.
             6. lts_estimate [dictionary] A dictionary with the following keys:
                 a. bazimuth - [float] fltsbaz; the back-azimuth in
-                    degrees from North as determined by the
+                    degrees from north as determined by the
                     least trimmed squares fit.
                 b. velocity - [float] fltsvel; the velocity determined
                     by the least trimmed squares fit.
@@ -51,15 +55,11 @@ def ltsva(data, rij, fs, alpha):
                 j. X - [array] The input co-array coordinate array.
                 k. y - [array] The input inter-element travel times.
 
-    Last Modified: 9/3/19
     """
 
-    import numpy as np
-    from fast_lts_array import fastlts
-    from flts_helper_array import get_cc_time
-    from flts_helper_array import fail_spike_test
 
-    # Cross-correlate to determine inter-element time delays
+
+    # Cross-correlate station pairs to determine inter-element time delays
     tdelay, xij, ccmax, idx = get_cc_time(data, rij, fs)
     tdelay = np.reshape(tdelay, (len(tdelay), 1))
     xij = xij.T
