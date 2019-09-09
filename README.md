@@ -10,7 +10,7 @@ We recommend using conda and suggest creating a new conda environment to use thi
 ```
 conda create -n pyarray python=3 obspy
 ```
-Information on conda environments (and more) is available at [](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html)
+Information on conda environments (and more) is available [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
 
 ## Dependencies ##
 
@@ -30,4 +30,4 @@ If you use this code for array processing, we ask that you cite the following pa
 
 
 ## License and Authors##
-MIT (c) Jordan W Bishop, David Fee
+MIT (c) Jordan W Bishop, David Fee, Curt Szuberla
