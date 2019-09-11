@@ -31,7 +31,7 @@ FMAX = 5
 # Processing parameters
 WINLEN = 30
 WINOVER = 0.50
-
+ALPHA = 0.5  #LTS alpha parameter
 
 #%%
 st=Stream()
@@ -79,7 +79,7 @@ if plotarray:
     plt.xlabel('km')
     plt.title(stf[0].stats.station)
     for i in range(len(stf)):
-        plt.text(rij[0, i], rij[1, i], stf[0].stats.location)
+        plt.text(rij[0, i], rij[1, i], stf[i].stats.location)
 
 
 # Parameters from the stream file
@@ -127,7 +127,7 @@ for jj in range(nits):
         t[jj] = np.nanmax(t, axis=0)
 
     LTSbaz[jj], LTSvel[jj], flagged, ccmax, idx, _ = ltsva(
-                    data[ptr[0]:ptr[1], :], rij, fs, 0.50)
+                    data[ptr[0]:ptr[1], :], rij, fs, ALPHA)
 
     mdccm[jj] = np.median(ccmax)
     stns = fltsh.arrayfromweights(flagged, idx)
