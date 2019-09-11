@@ -45,7 +45,7 @@ def lts_array_plot(st,stdict,t,mdccm,LTSvel,LTSbaz):
     #             verticalalignment='center', transform=axs1[0].transAxes)
     axs1[0].text(0.15, 0.93, st[0].stats.station, horizontalalignment='center',
                  verticalalignment='center', transform=axs1[0].transAxes)
-    cbaxes = fig1.add_axes([0.92, axs1[2].get_position().y0, 0.02,
+    cbaxes = fig1.add_axes([0.9, axs1[2].get_position().y0, 0.02,
         axs1[1].get_position().y1-axs1[2].get_position().y0])
 
     # The trace velocity subplot
@@ -88,6 +88,8 @@ def lts_array_plot(st,stdict,t,mdccm,LTSvel,LTSbaz):
     axs1[3].set_xlabel('UTC Time')
     axs1[3].set_xlim(t1, t2)
     axs1[3].set_ylim(0.5, n+0.5)
+    axs1[3].xaxis_date()
+    axs1[3].tick_params(axis='x', labelbottom='on')
 
     # Loop through the stdict for each flag
     for jj in range(len(tstamps)):
@@ -97,9 +99,6 @@ def lts_array_plot(st,stdict,t,mdccm,LTSvel,LTSbaz):
         pts = np.tile(tstampsfloat[jj], len(keys))
         sc = axs1[3].scatter(pts, keys, c=vals, edgecolors='k',
                              lw=0.1, cmap=cm2, vmin=1-0.5, vmax=n-1+0.5)
-    axs1[3].xaxis_date()
-    axs1[3].tick_params(axis='x', labelbottom='on')
-    axs1[3].fmt_xdata = dates.DateFormatter('%HH:%MM:%SS')
 
     p3 = axs1[3].get_position().get_points().flatten()
     cbaxes2 = fig1.add_axes([p3[0], 0.05, p3[2]-p3[0], 0.02])

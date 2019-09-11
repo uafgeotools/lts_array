@@ -10,27 +10,22 @@ import flts_helper_array as fltsh
 from plotting import lts_array_plot
 from flts_helper_array import getrij
 
-# A Bogoslof Explosion recorded at the AVO Adak Infrasound Array
 
 #%% Read in and filter data
-
-
-
-
 
 # Array Parameters
 NET='AV'
 STA = 'ADKI'
-CHAN = 'BDF'
-LOC = '01,02,03,04,05,06'
+CHAN = '*DF'
+LOC = '*'
 
-#note IRIS doesn't currently have data for June 2017!
+#note IRIS doesn't currently have data for June 2017 but will soon
 #STARTTIME = UTCDateTime('2017-06-10T13:10')
-STARTTIME = UTCDateTime('2018-09-18T20:20')
-ENDTIME = STARTTIME + 20*60
+STARTTIME = UTCDateTime('2019-8-13T19:50')
+ENDTIME = STARTTIME + 10*60
 
 # Filter limits
-FMIN = 1
+FMIN = .5
 FMAX = 5
 
 # Processing parameters
