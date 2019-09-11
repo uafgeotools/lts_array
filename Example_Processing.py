@@ -8,7 +8,7 @@ from obspy.clients.fdsn import Client
 from ltsva import ltsva
 import flts_helper_array as fltsh
 from plotting import lts_array_plot
-
+from flts_helper_array import getrij
 
 # A Bogoslof Explosion recorded at the AVO Adak Infrasound Array
 
@@ -48,20 +48,30 @@ st.remove_sensitivity()
 # st = read('Bogoslof_Data.mseed')
 # calib = 4.7733e-05
 
-# Array Coordinates Projected into XY
-rij = np.array([[0.0892929, 0.10716529, 0.03494914,
-                 -0.043063, -0.0662987, -0.1220462],
-                [-0.0608855, 0.0874639, -0.020600412169657,
-                 0.00124259, 0.09052575, -0.09774634]])
-rij[0, :] = rij[0, :] - rij[0, 0]
-rij[1, :] = rij[1, :] - rij[1, 0]
-
 # Filtering the data [Hz]
 fmin = 0.5
 fmax = 2.0
 stf = st.copy()
 stf.filter("bandpass", freqmin=fmin, freqmax=fmax, corners=6, zerophase=True)
 stf.taper
+
+
+#%% get inventory and lat/lon info
+inv = client.get_stations(network=NET,station=STA,channel=CHAN,location=LOC,
+    starttime=STARTTIME,endtime=ENDTIME, level='channel')
+
+latlist=[]
+lonlist=[]
+staname=[]
+for network in inv:
+    for station in network:
+        for channel in station:
+            latlist.append(channel.latitude)
+            lonlist.append(channel.longitude)
+            staname.append(channel.code)
+
+rij=getrij(latlist,lonlist) #get element rijs
+
 
 # Parameters from the stream file
 nchans = len(stf)
@@ -74,7 +84,7 @@ fs = 1/dt
 # Plot array coords as a check
 plotarray = 1
 if plotarray:
-    fig10 = plt.figure(10)
+    fig10 = plt.figure(11)
     plt.clf()
     plt.plot(rij[0, :], rij[1, :], 'ro')
     plt.axis('equal')
@@ -91,7 +101,7 @@ calval = [4.01571568627451e-06, 4.086743142144638e-06,
           4.180744897959184e-06, 4.025542997542998e-06]
 data = np.empty((npts, nchans))
 for ii, tr in enumerate(stf):
-    data[:, ii] = tr.data*calib
+    data[:, ii] = tr.data
 
 #%% Run LTS array processing
 
