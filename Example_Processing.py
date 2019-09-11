@@ -1,8 +1,10 @@
+#%% module imports
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import dates
 import sys
-from obspy import read
+from obspy import read, Stream, UTCDateTime
+from obspy.clients.fdsn import Client
 from ltsva import ltsva
 import flts_helper_array as fltsh
 from plotting import lts_array_plot
@@ -11,14 +13,40 @@ from plotting import lts_array_plot
 # A Bogoslof Explosion recorded at the AVO Adak Infrasound Array
 
 #%% Read in and filter data
-st = read('Bogoslof_Data.mseed')
+
+
+
+
 
 # Array Parameters
-arr = 'Adak Infrasound Array'
-sta = 'ADKI',
-chan = 'BDF'
-loc = ['01', '02', '03', '04', '05', '06']
-calib = 4.7733e-05
+NET='AV'
+STA = 'ADKI'
+CHAN = 'BDF'
+LOC = '01,02,03,04,05,06'
+
+#note IRIS doesn't currently have data for June 2017!
+STARTTIME = UTCDateTime('2019-06-10T13:10')
+ENDTIME = STARTTIME + 20*60
+
+st=Stream()
+
+print('Reading in data from IRIS')
+client = Client("IRIS")
+st = client.get_waveforms(NET,STA,LOC,CHAN,STARTTIME,ENDTIME,attach_response=True)
+st.merge(fill_value='latest')
+st.trim(STARTTIME,ENDTIME,pad='true',fill_value=0)
+st.sort()
+
+print(st)
+    
+fs=st[0].stats.sampling_rate
+
+print('Removing sensitivity...')
+st.remove_sensitivity()
+
+
+# st = read('Bogoslof_Data.mseed')
+# calib = 4.7733e-05
 
 # Array Coordinates Projected into XY
 rij = np.array([[0.0892929, 0.10716529, 0.03494914,
