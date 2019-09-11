@@ -25,9 +25,20 @@ CHAN = 'BDF'
 LOC = '01,02,03,04,05,06'
 
 #note IRIS doesn't currently have data for June 2017!
-STARTTIME = UTCDateTime('2019-06-10T13:10')
+#STARTTIME = UTCDateTime('2017-06-10T13:10')
+STARTTIME = UTCDateTime('2018-09-18T20:20')
 ENDTIME = STARTTIME + 20*60
 
+# Filter limits
+FMIN = 1
+FMAX = 5
+
+# Processing parameters
+WINLEN = 30
+WINOVER = 0.50
+
+
+#%%
 st=Stream()
 
 print('Reading in data from IRIS')
@@ -36,23 +47,13 @@ st = client.get_waveforms(NET,STA,LOC,CHAN,STARTTIME,ENDTIME,attach_response=Tru
 st.merge(fill_value='latest')
 st.trim(STARTTIME,ENDTIME,pad='true',fill_value=0)
 st.sort()
-
 print(st)
-    
-fs=st[0].stats.sampling_rate
 
 print('Removing sensitivity...')
 st.remove_sensitivity()
 
-
-# st = read('Bogoslof_Data.mseed')
-# calib = 4.7733e-05
-
-# Filtering the data [Hz]
-fmin = 0.5
-fmax = 2.0
 stf = st.copy()
-stf.filter("bandpass", freqmin=fmin, freqmax=fmax, corners=6, zerophase=True)
+stf.filter("bandpass", freqmin=FMIN, freqmax=FMAX, corners=2, zerophase=True)
 stf.taper
 
 
@@ -72,15 +73,6 @@ for network in inv:
 
 rij=getrij(latlist,lonlist) #get element rijs
 
-
-# Parameters from the stream file
-nchans = len(stf)
-# Construct the time vector
-tvec = dates.date2num(stf[0].stats.starttime.datetime) + np.arange(0, stf[0].stats.npts / stf[0].stats.sampling_rate, stf[0].stats.delta)/float(86400) # noqa
-npts = stf[0].stats.npts
-dt = stf[0].stats.delta
-fs = 1/dt
-
 # Plot array coords as a check
 plotarray = 1
 if plotarray:
@@ -90,28 +82,26 @@ if plotarray:
     plt.axis('equal')
     plt.ylabel('km')
     plt.xlabel('km')
-    plt.title(arr)
-    for i in range(nchans):
-        # Stn lables
-        plt.text(rij[0, i], rij[1, i], loc[i])
+    plt.title(stf[0].stats.station)
+    for i in range(len(stf)):
+        plt.text(rij[0, i], rij[1, i], stf[0].stats.location)
 
 
-# Apply calibration value and format in a data matrix
-calval = [4.01571568627451e-06, 4.086743142144638e-06,
-          4.180744897959184e-06, 4.025542997542998e-06]
+# Parameters from the stream file
+tvec=dates.date2num(st[0].stats.starttime.datetime)+st[0].times()/86400
+nchans = len(stf)
+npts = stf[0].stats.npts
+fs=stf[0].stats.sampling_rate
+
 data = np.empty((npts, nchans))
 for ii, tr in enumerate(stf):
     data[:, ii] = tr.data
 
 #%% Run LTS array processing
 
-# Window length (sec)
-winlen = 30
-# Overlap between windows
-winover = 0.50
-# Converting to samples
-winlensamp = int(winlen*fs)
-sampinc = int((1-winover)*winlensamp)
+winlensamp = int(WINLEN*fs)
+sampinc = int((1-WINOVER)*winlensamp)
+
 its = np.arange(0, npts, sampinc)
 nits = len(its)-1
 
