@@ -1,34 +1,17 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-r""" Processing with robust estimators
-
-@author: Jordan W Bishop
-
-Args, Exceptions:
-    NA
-
-Returns:
-    Plots the results of robust estimates of velocity and back-azimuth.
-
-Last Modified: 8/27/19
-"""
-
-# Loading modules
-from collections import Counter
-import copy as cp
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import dates
 import sys
-import os  # noqa
-
 from obspy import read
 from ltsva import ltsva
 import flts_helper_array as fltsh
+from plotting import lts_array_plot
+
 
 # A Bogoslof Explosion recorded at the AVO Adak Infrasound Array
+
+#%% Read in and filter data
 st = read('Bogoslof_Data.mseed')
-st.plot()
 
 # Array Parameters
 arr = 'Adak Infrasound Array'
@@ -51,7 +34,6 @@ fmax = 2.0
 stf = st.copy()
 stf.filter("bandpass", freqmin=fmin, freqmax=fmax, corners=6, zerophase=True)
 stf.taper
-stf.plot()
 
 # Parameters from the stream file
 nchans = len(stf)
@@ -82,6 +64,8 @@ calval = [4.01571568627451e-06, 4.086743142144638e-06,
 data = np.empty((npts, nchans))
 for ii, tr in enumerate(stf):
     data[:, ii] = tr.data*calib
+
+#%% Run LTS array processing
 
 # Window length (sec)
 winlen = 30
@@ -139,81 +123,8 @@ for jj in range(nits):
 print('Done\n')
 
 
-# Now to plot. The Bogoslof back-azimuth is denoted
-# with a dotted line.
-# Plotting the Least Trimmed Squares Solution
-cm = 'RdYlBu_r'   # colormap
-cax = 0.2, 1          # colorbar/y-axis for mdccm
-# The waveform subplot
-fig1, axarr1 = plt.subplots(4, 1, sharex='col')
-fig1.set_size_inches(9, 12)
-axs1 = axarr1.ravel()
-axs1[0].plot(tvec, data[:, 0], 'k')
-axs1[0].axis('tight')
-axs1[0].set_ylabel('Pressure [Pa]')
-s = 'f = '+str(np.around(fmin, 4))+' - '+str(np.around(fmax, 4))+' Hz'
-axs1[0].text(0.90, 0.93, s, horizontalalignment='center',
-             verticalalignment='center', transform=axs1[0].transAxes)
-axs1[0].text(0.15, 0.93, arr, horizontalalignment='center',
-             verticalalignment='center', transform=axs1[0].transAxes)
-cbot = 0.1
-ctop = axs1[1].get_position().y1
-cbaxes = fig1.add_axes([0.92, cbot, 0.02, ctop-cbot])
-# The trace velocity subplot
-sc = axs1[1].scatter(t, LTSvel, c=mdccm, edgecolors='gray', lw=0.1, cmap=cm)
-axs1[1].set_ylim(0.15, 0.60)
-axs1[1].set_xlim(t[0], t[-1])
-axs1[1].plot([t[0], t[-1]], [0.25, 0.25], '-', color='grey')
-axs1[1].plot([t[0], t[-1]], [0.44, 0.44], '-', color='grey')
-sc.set_clim(cax)
-axs1[1].set_ylabel('Trace Velocity\n [km/s]')
-axs1[1].grid(b=1, which='major', color='gray', linestyle=':', alpha=0.5)
-# The back-azimuth subplot
-sc = axs1[2].scatter(t, LTSbaz, c=mdccm, edgecolors='gray', lw=0.1, cmap=cm)
-axs1[2].set_ylim(0, 360)
-axs1[2].set_xlim(t[0], t[-1])
-axs1[2].plot([t[0], t[-1]], [65, 65], '--', color='grey')
-sc.set_clim(cax)
-axs1[2].set_ylabel('Back-azimuth\n [deg]')
-axs1[2].grid(b=1, which='major', color='gray', linestyle=':', alpha=0.5)
-hc = plt.colorbar(sc, cax=cbaxes, ax=[axs1[1], axs1[2]])
-hc.set_label('MdCCM')
-# The sausage plot of weights
-timevec = t
-t1 = timevec[0]
-t2 = timevec[-1]
-ndict = cp.deepcopy(stdict)
-n = ndict['size']
-ndict.pop('size', None)
-tstamps = list(ndict.keys())
-tstampsfloat = [float(ii) for ii in tstamps]
-# set the second colormap
-cm2 = plt.get_cmap('binary', (n-1))
-initplot = np.empty(len(timevec))
-initplot.fill(1)
-axs1[3].scatter(np.array([t1, t2]), np.array([0.01, 0.01]), c='w')
-axs1[3].axis('tight')
-axs1[3].set_ylabel('Station [H#]')
-axs1[3].set_xlabel('UTC Time')
-axs1[3].set_xlim(t1, t2)
-axs1[3].set_ylim(0.5, n+0.5)
-# Loop through the stdict
-for jj in range(len(tstamps)):
-    z = Counter(list(ndict[tstamps[jj]]))
-    keys, vals = z.keys(), z.values()
-    keys, vals = np.array(list(keys)), np.array(list(vals))
-    pts = np.tile(tstampsfloat[jj], len(keys))
-    sc = axs1[3].scatter(pts, keys, c=vals, edgecolors='k',
-                         lw=0.1, cmap=cm2, vmin=1-0.5, vmax=n-1+0.5)
-axs1[3].xaxis_date()
-axs1[3].tick_params(axis='x', labelbottom='on')
-axs1[3].fmt_xdata = dates.DateFormatter('%HH:%MM:%SS')
-axs1[3].xaxis.set_major_formatter(dates.DateFormatter("%H:%M:%S"))
-p0 = axs1[0].get_position().get_points().flatten()
-p1 = axs1[1].get_position().get_points().flatten()
-p2 = axs1[2].get_position().get_points().flatten()
-p3 = axs1[3].get_position().get_points().flatten()
-cbaxes2 = fig1.add_axes([p3[0], 0.05, p3[2]-p3[0], 0.02])
-hc = plt.colorbar(sc, orientation="horizontal", cax=cbaxes2, ax=axs1[3])
-hc.set_label('Number of Flagged Station Pairs')
-plt.subplots_adjust(right=0.87, hspace=0.12)
+#%% plotting
+
+fig1,axs1=lts_array_plot(stf,stdict,t,mdccm,LTSvel,LTSbaz)
+
+
