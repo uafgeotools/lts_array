@@ -11,36 +11,38 @@ from plotting import lts_array_plot
 from flts_helper_array import getrij
 
 
-#%% Read in and filter data
+# Read in and filter data
 
 # Array Parameters
-NET='AV'
+NET = 'AV'
 STA = 'ADKI'
 CHAN = '*DF'
 LOC = '*'
 
-#note IRIS doesn't currently have data for June 2017 but will soon
-#STARTTIME = UTCDateTime('2017-06-10T13:10')
+# Note IRIS doesn't currently have data for June 2017 but will soon
+# STARTTIME = UTCDateTime('2017-06-10T13:10')
 STARTTIME = UTCDateTime('2019-8-13T19:50')
 ENDTIME = STARTTIME + 10*60
 
 # Filter limits
-FMIN = .5
+FMIN = 0.5
 FMAX = 5
 
 # Processing parameters
 WINLEN = 30
 WINOVER = 0.50
-ALPHA = 0.5  #LTS alpha parameter
+# LTS alpha parameter
+ALPHA = 0.5
 
 #%%
-st=Stream()
+st = Stream()
 
 print('Reading in data from IRIS')
 client = Client("IRIS")
-st = client.get_waveforms(NET,STA,LOC,CHAN,STARTTIME,ENDTIME,attach_response=True)
+st = client.get_waveforms(NET, STA, LOC, CHAN,
+                          STARTTIME, ENDTIME, attach_response=True)
 st.merge(fill_value='latest')
-st.trim(STARTTIME,ENDTIME,pad='true',fill_value=0)
+st.trim(STARTTIME, ENDTIME, pad='true', fill_value=0)
 st.sort()
 print(st)
 
@@ -52,13 +54,14 @@ stf.filter("bandpass", freqmin=FMIN, freqmax=FMAX, corners=2, zerophase=True)
 stf.taper
 
 
-#%% get inventory and lat/lon info
-inv = client.get_stations(network=NET,station=STA,channel=CHAN,location=LOC,
-    starttime=STARTTIME,endtime=ENDTIME, level='channel')
+#%% Get inventory and lat/lon info
+inv = client.get_stations(network=NET, station=STA, channel=CHAN,
+                          location=LOC, starttime=STARTTIME,
+                          endtime=ENDTIME, level='channel')
 
-latlist=[]
-lonlist=[]
-staname=[]
+latlist = []
+lonlist = []
+staname = []
 for network in inv:
     for station in network:
         for channel in station:
@@ -66,7 +69,8 @@ for network in inv:
             lonlist.append(channel.longitude)
             staname.append(channel.code)
 
-rij=getrij(latlist,lonlist) #get element rijs
+# Get element rijs
+rij = getrij(latlist, lonlist)
 
 # Plot array coords as a check
 plotarray = 1
@@ -78,15 +82,15 @@ if plotarray:
     plt.ylabel('km')
     plt.xlabel('km')
     plt.title(stf[0].stats.station)
-    for i in range(len(stf)):
-        plt.text(rij[0, i], rij[1, i], stf[i].stats.location)
+    for ii in range(len(stf)):
+        plt.text(rij[0, ii], rij[1, ii], stf[ii].stats.location)
 
 
 # Parameters from the stream file
-tvec=dates.date2num(st[0].stats.starttime.datetime)+st[0].times()/86400
+tvec = dates.date2num(st[0].stats.starttime.datetime)+st[0].times()/86400
 nchans = len(stf)
 npts = stf[0].stats.npts
-fs=stf[0].stats.sampling_rate
+fs = stf[0].stats.sampling_rate
 
 data = np.empty((npts, nchans))
 for ii, tr in enumerate(stf):
@@ -147,7 +151,4 @@ print('Done\n')
 
 
 #%% plotting
-
-fig1,axs1=lts_array_plot(stf,stdict,t,mdccm,LTSvel,LTSbaz)
-
-
+fig1, axs1 = lts_array_plot(stf, stdict, t, mdccm, LTSvel, LTSbaz)

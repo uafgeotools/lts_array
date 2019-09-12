@@ -2,7 +2,7 @@ import numpy as np
 from fast_lts_array import fastlts
 from flts_helper_array import get_cc_time
 from flts_helper_array import fail_spike_test
-    
+
 
 def ltsva(data, rij, fs, alpha):
     r""" Process infrasound and seismic array data with least trimmed squares (LTS)
@@ -10,10 +10,11 @@ def ltsva(data, rij, fs, alpha):
     @author: Jordan W Bishop
 
     Args:
-        1. data - [array] - (m,n) Array of time series with for cross correlations 
-        with 'm' samples and 'n' waveforms as columns
+        1. data - [array] - (m, n) Array of time series with for
+            cross correlations with 'm' samples and
+            'n' waveforms as columns
         2. fs - [float] - sampling rate
-        3. rij - [array] - (2,n) 'n' array element coordinates in km  
+        3. rij - [array] - (2, n) 'n' array element coordinates in km
         in 2-dimenensions [easting, northing]
         4. alpha - [float] - fraction of data for LTS subsetting [0.5, 1.0]
 
@@ -57,12 +58,8 @@ def ltsva(data, rij, fs, alpha):
 
     """
 
-
-
     # Cross-correlate station pairs to determine inter-element time delays
     tdelay, xij, ccmax, idx = get_cc_time(data, rij, fs)
-    tdelay = np.reshape(tdelay, (len(tdelay), 1))
-    xij = xij.T
 
     # Check to see if time delays are all equal. The fastlts
     #  function will crash if all tdelays are equal.

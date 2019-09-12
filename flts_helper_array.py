@@ -510,12 +510,13 @@ def get_cc_time(data, rij, hz):
     import numpy as np
 
     m, n = np.shape(data)
-    cij = np.empty((m*2-1, n))    # pre-allocated cross-correlation matrix
+    # Pre-allocated cross-correlation matrix
+    cij = np.empty((m*2-1, n))
     idx = [(i, j) for i in range(n-1) for j in range(i+1, n)]
     # Generate the co-array
     xij = rij[:, [i[0] for i in idx]] - rij[:, [j[1] for j in idx]]
-    # Getting time delays
-    N = xij.shape[1]  # number of unique inter-sensor pairs # noqa
+    # Getting time delays; Number of unique inter-sensor pairs
+    N = xij.shape[1]    # noqa
     #  pre-allocated cross-correlation matrix
     cij = np.empty((m*2-1, N))
     for k in range(N):
@@ -524,11 +525,15 @@ def get_cc_time(data, rij, hz):
                                   data[:, idx[k][1]], mode='full') / np.sqrt(
                                 sum(data[:, idx[k][0]]*data[:, idx[k][0]])
                                 * sum(data[:, idx[k][1]]*data[:, idx[k][1]])))
-    # extract cross correlation maxima and associated delays
+    # Extract cross correlation maxima and associated delays
     cmax = cij.max(axis=0)
     delay = np.argmax(cij, axis=0)+1  # MATLAB-esque +1 offset here for tau
-    # form the time delay vector
+    # Form the time delay vector
     tau = (m - delay)/hz
+
+    # Reshape output matrices for next processing steps
+    xij = xij.T
+    tau = np.reshape(tau, (len(tau), 1))
 
     return tau, xij, cmax, idx
 
