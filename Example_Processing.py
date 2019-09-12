@@ -76,7 +76,7 @@ rij = fltsh.getrij(latlist, lonlist)
 # Plot array coords as a check
 plotarray = 1
 if plotarray:
-    fig10 = plt.figure(11)
+    fig0 = plt.figure(10)
     plt.clf()
     plt.plot(rij[0, :], rij[1, :], 'ro')
     plt.axis('equal')
@@ -87,70 +87,8 @@ if plotarray:
         plt.text(rij[0, ii], rij[1, ii], stf[ii].stats.location)
 
 
-# Parameters from the stream file
-tvec = dates.date2num(st[0].stats.starttime.datetime)+st[0].times()/86400
-nchans = len(stf)
-npts = stf[0].stats.npts
-fs = stf[0].stats.sampling_rate
-
-data = np.empty((npts, nchans))
-for ii, tr in enumerate(stf):
-    data[:, ii] = tr.data
-
 #%% Run LTS array processing
-
-winlensamp = int(WINLEN*fs)
-sampinc = int((1-WINOVER)*winlensamp)
-
-its = np.arange(0, npts, sampinc)
-nits = len(its)-1
-
-# Pre-allocating Data Arrays
-vel = np.zeros(nits)
-vel.fill(np.nan)
-az = np.zeros(nits)
-az.fill(np.nan)
-mdccm = np.zeros(nits)
-mdccm.fill(np.nan)
-t = np.zeros(nits)
-t.fill(np.nan)
-LTSvel = np.zeros(nits)
-LTSvel.fill(np.nan)
-LTSbaz = np.zeros(nits)
-LTSbaz.fill(np.nan)
-
-# Station Dictionary for Dropped LTS Stations
-stdict = {}
-
-print('Running ltsva for %d windows' % nits)
-for jj in range(nits):
-
-    # Get time from middle of window, except for the end
-    ptr = int(its[jj]), int(its[jj] + winlensamp)
-    try:
-        t[jj] = tvec[ptr[0]+int(winlensamp/2)]
-    except:
-        t[jj] = np.nanmax(t, axis=0)
-
-    LTSbaz[jj], LTSvel[jj], flagged, ccmax, idx, _ = ltsva(
-                    data[ptr[0]:ptr[1], :], rij, fs, ALPHA)
-
-    mdccm[jj] = np.median(ccmax)
-    stns = fltsh.arrayfromweights(flagged, idx)
-
-    # Stash some metadata for plotting
-    if len(stns) > 0:
-        tval = str(t[jj])
-        stdict[tval] = stns
-    if jj == (nits-1):
-        stdict['size'] = nchans
-
-    tmp = int(jj/nits*100)
-    sys.stdout.write("\r%d%% \n" % tmp)
-    sys.stdout.flush()
-
-print('Done\n')
-
+stdict, t, mdccm, LTSvel, LTSbaz = ltsva(stf,rij, WINLEN, WINOVER, ALPHA)
 
 #%% plotting
 fig1, axs1 = lts_array_plot(stf, stdict, t, mdccm, LTSvel, LTSbaz)
