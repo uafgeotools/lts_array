@@ -1,14 +1,15 @@
 #%% module imports
-import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import dates
+import numpy as np
 import sys
+
 from obspy import read, Stream, UTCDateTime
 from obspy.clients.fdsn import Client
-from ltsva import ltsva
+
 import flts_helper_array as fltsh
+from ltsva import ltsva
 from plotting import lts_array_plot
-from flts_helper_array import getrij
 
 
 # Read in and filter data
@@ -31,7 +32,7 @@ FMAX = 5
 # Processing parameters
 WINLEN = 30
 WINOVER = 0.50
-# LTS alpha parameter
+# LTS alpha parameter - subset size
 ALPHA = 0.5
 
 #%%
@@ -70,7 +71,7 @@ for network in inv:
             staname.append(channel.code)
 
 # Get element rijs
-rij = getrij(latlist, lonlist)
+rij = fltsh.getrij(latlist, lonlist)
 
 # Plot array coords as a check
 plotarray = 1
@@ -117,10 +118,11 @@ LTSvel = np.zeros(nits)
 LTSvel.fill(np.nan)
 LTSbaz = np.zeros(nits)
 LTSbaz.fill(np.nan)
+
 # Station Dictionary for Dropped LTS Stations
 stdict = {}
 
-print('Running wlsqva for %d windows' % nits)
+print('Running ltsva for %d windows' % nits)
 for jj in range(nits):
 
     # Get time from middle of window, except for the end

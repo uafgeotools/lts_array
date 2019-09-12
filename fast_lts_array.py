@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-def fastlts(X, y, alpha): # noqa
+
+import numpy as np
+from scipy.linalg import lstsq
+
+from copy import deepcopy
+
+import flts_helper_array as fltsh
+
+def fast_lts_array(X, y, alpha): # noqa
     r''' A FAST-LTS code modified for array processing.
 
-    @author: Jordan W Bishop
+    @author: Jordan W. Bishop
 
     This code is based off the FAST-LTS algorithm:
     Rousseeuw, Peter J. and Katrien Van Driessen (2006). "Data Mining and
@@ -47,13 +55,7 @@ def fastlts(X, y, alpha): # noqa
     Last modified: 9/3/2019
     '''
 
-    fastlts.__version__ = '1.00'
-
-    from copy import deepcopy
-    import numpy as np
-    from scipy.linalg import lstsq
-
-    import flts_helper_array as fltsh
+    fast_lts_array.__version__ = '1.00'
 
     # default values
     csteps1 = 4
@@ -152,8 +154,8 @@ def fastlts(X, y, alpha): # noqa
                     index, seed = fltsh.randomset(n, p, seed)
                     index -= 1
                     q, r = np.linalg.qr(Xvar[index, :])
-                    qtip = q.conj().T @ yvar[index]
-                    z = lstsq(r, qtip)[0]
+                    qt = q.conj().T @ yvar[index]
+                    z = lstsq(r, qt)[0]
 
             if np.isfinite(z[0]):
                 residu = yvar - Xvar@z
@@ -166,8 +168,8 @@ def fastlts(X, y, alpha): # noqa
                     obs_in_set = np.sort(
                         sortind[0:adjh], kind='mergesort', axis=0)
                     q, r = np.linalg.qr(Xvar[obs_in_set, :])
-                    qtip = q.conj().T @ yvar[obs_in_set]
-                    z = lstsq(r, qtip)[0]
+                    qt = q.conj().T @ yvar[obs_in_set]
+                    z = lstsq(r, qt)[0]
                     residu = yvar - Xvar@z
                     sor = np.sort(np.abs(residu), kind='mergesort', axis=0)
                     # New objective function
@@ -180,7 +182,7 @@ def fastlts(X, y, alpha): # noqa
                     if obj < np.max(bobj):
                         # Save the best objective function values
                         bcoeff, bobj = fltsh.insertion(
-                            bcoeff, bobj, z, obj, 1)
+                            bcoeff, bobj, z, obj)
                 if final and (obj < bestobj):
                     bestobj = deepcopy(obj)
                     coeffs = deepcopy(z)
@@ -238,8 +240,8 @@ def fastlts(X, y, alpha): # noqa
         # Now perform the least squares fit with
         # only data points with weight = 1.
         q, r = np.linalg.qr(xvar[weights, :])
-        qtip = q.conj().T @ yvar[weights]
-        zfinal = lstsq(r, qtip)[0]
+        qt = q.conj().T @ yvar[weights]
+        zfinal = lstsq(r, qt)[0]
         Res['coefficients'] = deepcopy(zfinal)
         fitted = xvar @ zfinal
         residuals = yvar - fitted

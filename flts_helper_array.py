@@ -10,6 +10,13 @@ Many of these codes are Python3 translations of the MATLAB
 Last Modified: 8/27/2019
 '''
 
+import numpy as np
+from scipy.special import erfinv, gammainc
+from scipy.stats import gamma
+
+from copy import deepcopy
+from obspy.geodetics.base import calc_vincenty_inverse
+
 
 def hcalc(alpha, n, p):
     r''' Generate the h-value, the number of points to fit.
@@ -24,9 +31,9 @@ def hcalc(alpha, n, p):
         1. h - [int] The number of points to fit.
 
     '''
-    from numpy import floor
-    h = floor(2*floor((n + p + 1)/2) - n
-              + 2*(n - floor((n + p + 1)/2))*alpha)
+
+    h = np.floor(2*np.floor((n + p + 1)/2)
+                 - n + 2*(n - np.floor((n + p + 1)/2)) * alpha)
 
     return int(h)
 
@@ -42,11 +49,10 @@ def uniran(seed):
         2. seed - [float] A (new) seed value.
 
     '''
-    from numpy import floor
 
-    seed = floor(seed * 5761) + 999
-    quot = floor(seed / 65536)
-    seed = floor(seed) - floor(quot * 65536)
+    seed = np.floor(seed * 5761) + 999
+    quot = np.floor(seed / 65536)
+    seed = np.floor(seed) - np.floor(quot * 65536)
     random = float(seed / 65536)
     return random, seed
 
@@ -68,7 +74,7 @@ def randomset(tot, npar, seed):
         2. seed - [float] A new random seed.
 
     '''
-    import numpy as np
+
     import flts_helper_array as fltsh
 
     randlist = []
@@ -88,19 +94,8 @@ def randomset(tot, npar, seed):
 
 def qgamma(p, a):
     r''' The gamma inverse distribution function. '''
-    import numpy as np
 
-    def pgamma(x, a):
-        ''' Regularized lower incomplete gamma function. '''
-        from scipy.special import gammainc
-        g1 = gammainc(a, x)
-        return g1
-
-    def dgamma(x, a):
-        ''' Probability of a gamma continuous random variable. '''
-        from scipy.stats import gamma
-        g2 = gamma.pdf(x, a)
-        return g2
+    from flts_helper_array import pgamma, dgamma
 
     x = np.max((a - 1, 0.1))
     dx = 1
@@ -119,14 +114,12 @@ def qgamma(p, a):
 
 def pgamma(x, a):
     ''' Regularized lower incomplete gamma function. '''
-    from scipy.special import gammainc
     g1 = gammainc(a, x)
     return g1
 
 
 def dgamma(x, a):
     ''' Probability of a gamma continuous random variable. '''
-    from scipy.stats import gamma
     g2 = gamma.pdf(x, a)
     return g2
 
@@ -138,36 +131,33 @@ def qchisq(p, a):
     return x
 
 
-def insertion(bestmean, bobj, z, obj, row):
+def insertion(bestmean, bobj, z, obj):
     r''' Keep track of the value of the objective function
         and the associated parameter vector z.
 
-    * For now these are two arrays, but Pythonically,
-        this seems like a good dictionary use.
-    *This code could likely be re-written to be more simple.
+    *This code could likely be re-written for more simplicty.
 
     Args:
-        1. bestmean -
-        2. bobj -
-        3. z -
-        4. obj -
-        5. row -
+        1. bestmean - [array] Array of best least squares fit values.
+        2. bobj - [array] Array of lowest 10 objective function values.
+        3. z - [array] Trial coefficient vector.
+        4. obj - [float] Trial objective function value;
+            the sum of squared residuals.
 
     Returns:
-        1. bestmean -
-        2. bobj -
+        1. bestmean - [array] New array of best least squares fit values.
+        2. bobj - [array] New array of lowest objective function values.
 
     Last Modified: 8/29/2019
     '''
-    import numpy as np
-    import copy as cp
+
     insert = 1
     equ = [x for x in range(len(bobj)) if bobj[x] == obj]
 
     z = np.reshape(z, (len(z), ))
 
-    for j in equ:
-        if (bestmean[:, j] == z).all():
+    for jj in equ:
+        if (bestmean[:, jj] == z).all():
             insert = 0
 
     if insert:
@@ -177,16 +167,16 @@ def insertion(bestmean, bobj, z, obj, row):
             bobj[ins] = obj
         else:
             ins2 = np.array(list(range(ins, 9)))
-            best2 = cp.deepcopy(bestmean[:, ins2])
+            best2 = deepcopy(bestmean[:, ins2])
             bestmean[:, ins] = z
-            best1 = cp.deepcopy(bestmean[:, range(0, ins+1)])
+            best1 = deepcopy(bestmean[:, range(0, ins+1)])
             if ins == 0:
                 m = np.shape(bestmean)[0]
                 best1 = np.reshape(best1, (m, 1))
             bestmean = np.concatenate((best1, best2), axis=1)
-            bobj2 = cp.deepcopy(bobj[ins2])
+            bobj2 = deepcopy(bobj[ins2])
             bobj[ins] = obj
-            bobj1 = cp.deepcopy(bobj[range(0, ins+1)])
+            bobj1 = deepcopy(bobj[range(0, ins+1)])
             if ins == 0:
                 bobj = np.append(bobj1, bobj2)
             else:
@@ -216,7 +206,6 @@ def rawcorfactorlts(p, intercept, n, alpha):
 
     Last Modified: 9/2/2019
     '''
-    import numpy as np
 
     if intercept == 1:
         p = p - 1
@@ -319,8 +308,7 @@ def rawconsfactorlts(h, n):
 
     Last Modified: 9/2/2019
     '''
-    import numpy as np
-    from scipy.special import erfinv
+
     # Calculate the initial factor c_h,n
     x = (h+n)/(2*n)
     phinv = np.sqrt(2)*erfinv(2*x-1)
@@ -336,18 +324,14 @@ def rawconsfactorlts(h, n):
 
 def qnorm(p, s=1, m=0):
     r''' The normal inverse distribution function. '''
-    from numpy import sqrt
     from scipy.special import erfinv
-    x = erfinv(2*p - 1)*sqrt(2)*s + m
-
+    x = erfinv(2*p - 1)*np.sqrt(2)*s + m
     return x
 
 
 def dnorm(x, s=1, m=0):
     r''' The normal density function. '''
-    import numpy as np
     c = (1/(np.sqrt(2*np.pi)*s))*np.exp(-0.5*((x-m)/s)**2)
-
     return c
 
 
@@ -367,8 +351,6 @@ def rewcorfactorlts(p, intercept, n, alpha):
 
     Last Modified: 9/2/2019
     '''
-
-    import numpy as np
 
     # alpha = 0.500
     coeffalpha500 = np.array([
@@ -435,7 +417,6 @@ def rewconsfactorlts(weights, n, p):
     from flts_helper_array import pgamma
     from flts_helper_array import qchisq
     from flts_helper_array import qnorm
-    import numpy as np
 
     if np.sum(weights) == n:
         cdelta_rew = 1
@@ -469,7 +450,7 @@ def arrayfromweights(weightarray, idx):
 
     Date Last Modified: 8/29/2019
     """
-    import numpy as np
+
     a = np.where(weightarray == 0)[0]
     stn1, stn2 = zip(*idx)
     stn1 = np.array(stn1)
@@ -505,9 +486,6 @@ def get_cc_time(data, rij, hz):
 
     Date Last Modified: 8/29/2019
     """
-
-    # Loading modules
-    import numpy as np
 
     m, n = np.shape(data)
     # Pre-allocated cross-correlation matrix
@@ -559,10 +537,7 @@ def getrij(latlist, lonlist):
     Date Last Modified: 8/29/19
     '''
 
-    import numpy as np
-    from obspy.geodetics.base import calc_vincenty_inverse
-
-    getrij.__version__ = '1.01'
+    getrij.__version__ = '1.00'
 
     # Basic error checking
     latsize = len(latlist)
@@ -619,7 +594,6 @@ def fail_spike_test(tdelay, xij):
 
     Last Modified: 9/4/2019
     '''
-    import numpy as np
 
     # Creating the "flagged" vector
     nan_vec = np.empty_like(tdelay)

@@ -1,5 +1,6 @@
 import numpy as np
-from fast_lts_array import fastlts
+
+from fast_lts_array import fast_lts_array
 from flts_helper_array import get_cc_time
 from flts_helper_array import fail_spike_test
 
@@ -7,7 +8,7 @@ from flts_helper_array import fail_spike_test
 def ltsva(data, rij, fs, alpha):
     r""" Process infrasound and seismic array data with least trimmed squares (LTS)
 
-    @author: Jordan W Bishop
+    @author: Jordan W. Bishop
 
     Args:
         1. data - [array] - (m, n) Array of time series with for
@@ -72,7 +73,7 @@ def ltsva(data, rij, fs, alpha):
         return fltsbaz, fltsvel, flagged, ccmax, idx, lts_estimate
 
     # Apply the FAST-LTS algorithm and return results
-    lts_estimate = fastlts(xij, tdelay, alpha)
+    lts_estimate = fast_lts_array(xij, tdelay, alpha)
 
     fltsbaz = lts_estimate['bazimuth']
     fltsvel = lts_estimate['velocity']
