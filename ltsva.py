@@ -1,6 +1,7 @@
-import sys
-import numpy as np
 from matplotlib import dates
+import numpy as np
+import sys
+
 from fast_lts_array import fast_lts_array
 from flts_helper_array import get_cc_time, fail_spike_test, arrayfromweights
 
@@ -75,18 +76,10 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA):
     nits = len(its)-1
 
     # Pre-allocating Data Arrays
-    vel = np.zeros(nits)
-    vel.fill(np.nan)
-    az = np.zeros(nits)
-    az.fill(np.nan)
-    mdccm = np.zeros(nits)
-    mdccm.fill(np.nan)
-    t = np.zeros(nits)
-    t.fill(np.nan)
-    LTSvel = np.zeros(nits)
-    LTSvel.fill(np.nan)
-    LTSbaz = np.zeros(nits)
-    LTSbaz.fill(np.nan)
+    mdccm = np.full(nits, np.nan)
+    t = np.full(nits, np.nan)
+    LTSvel = np.full(nits, np.nan)
+    LTSbaz = np.full(nits, np.nan)
 
     # Station Dictionary for Dropped LTS Elements
     stdict = {}
@@ -121,7 +114,7 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA):
 
         LTSbaz[jj] = lts_estimate['bazimuth']
         LTSvel[jj] = lts_estimate['velocity']
-        #flagged = lts_estimate['flagged']
+        # flagged = lts_estimate['flagged']
 
         mdccm[jj] = np.median(ccmax)
         stns = arrayfromweights(lts_estimate['flagged'], idx)
