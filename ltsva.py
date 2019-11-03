@@ -106,10 +106,14 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA):
         if dataspike:
             raise Exception("Tdelays are equal. LTS algorithm not run. \
                                     Returning NaNs for LTS output terms.")
-            fltsbaz, fltsvel, flagged, lts_estimate = fail_spike_test(tdelay, xij)
+            fltsbaz, fltsvel, flagged, lts_estimate = fail_spike_test(
+                tdelay, xij)
             return fltsbaz, fltsvel, flagged, ccmax, idx, lts_estimate
 
         # Apply the FAST-LTS algorithm and return results
+        if ALPHA == 1.0:
+            print('ALPHA is 1.00. Performing an ordinary \
+                  least squares fit, NOT least trimmed squares.')
         lts_estimate = fast_lts_array(xij, tdelay, ALPHA)
 
         LTSbaz[jj] = lts_estimate['bazimuth']

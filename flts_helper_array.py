@@ -598,7 +598,69 @@ def fail_spike_test(tdelay, xij):
                     'X': xij, 'y': tdelay}
 
     fltsbaz = lts_estimate['bazimuth']
-    fltsvel = lts_estimate['bazimuth']
+    fltsvel = lts_estimate['velocity']
     flagged = lts_estimate['flagged']
 
     return fltsbaz, fltsvel, flagged, lts_estimate
+
+
+def least_squares_fit(Xvar, yvar, datamad, xorig, yorig):
+    ''' Perform an (ordinary) least squares fit of the data.
+
+    The simple case alpha == 1.0.
+
+    Inputs:
+        1) Xvar: The standardized design matrix.
+        2) yvar: The standardized data array.
+        3) datamad: The data median absolute deviation
+            (MAD) from standardization.
+        4) xorig: The original design matrix.
+            Used for post-process packaging.
+        5) yorig: The original data array.
+            Used for post-process packaging.
+
+    Returns:
+        1) lst_sq_estimate: The least squares fit to the data
+            formatted like the LTS estimate.
+
+    '''
+
+    import numpy as np
+    from scipy.linalg import lstsq
+
+    # Performing the least squares fit
+    n, p = np.shape(xorig)
+    q, r = np.linalg.qr(Xvar)
+    qt = q.conj().T @ yvar
+    coeffs = lstsq(r, qt)[0]
+    # coeffs = np.reshape(coeffs, (len(coeffs), 1))
+
+    fitted = xorig @ coeffs
+    residuals = yorig - fitted
+
+    # Post-processing
+    if p <= 1:
+        coeffs[0] = coeffs[0] * datamad[p]/datamad[0]
+    else:
+        for ii in range(0, p):
+            coeffs[ii] = coeffs[ii] * datamad[p] / datamad[ii]
+        coeffs[p-1] = coeffs[p-1] * datamad[p-1] / datamad[p-1]
+
+    # Calculate back-azimuth and velocity
+    vel = 1/np.linalg.norm(coeffs, 2)
+    # This converts baz from mathematical CCW from E to geographical CW from N
+    # arctan(sx/sy)
+    baz = (np.arctan2(coeffs[0], coeffs[1])*180/np.pi-360) % 360
+
+    # Packaging - Creating the lst_sq_estimate packaged output
+    # Creating the "flagged" vector
+    nan_vec = np.empty_like(yorig)
+    nan_vec.fill(np.nan)
+    lst_sq_estimate = {'bazimuth': np.asscalar(baz), 'velocity': vel,
+                       'coefficients': coeffs,
+                       'flagged': nan_vec, 'fitted': fitted,
+                       'residuals': residuals, 'scale': np.nan,
+                       'rsquared': np.nan,
+                       'X': xorig, 'y': yorig}
+
+    return lst_sq_estimate

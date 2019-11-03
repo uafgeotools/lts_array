@@ -8,7 +8,7 @@ from copy import deepcopy
 
 import flts_helper_array as fltsh
 
-def fast_lts_array(X, y, alpha): # noqa
+def fast_lts_array(X, y, ALPHA): # noqa
     r''' A FAST-LTS code modified for array processing.
 
     @author: Jordan W. Bishop
@@ -52,12 +52,11 @@ def fast_lts_array(X, y, alpha): # noqa
             j. X - [array] The input co-array coordinate array.
             k. y - [array] The input inter-element travel times.
 
-    Last modified: 9/3/2019
     '''
 
-    fast_lts_array.__version__ = '1.00'
+    fast_lts_array.__version__ = '1.1'
 
-    # default values
+    # Default values
     csteps1 = 4
     csteps2 = 100
 
@@ -87,7 +86,7 @@ def fast_lts_array(X, y, alpha): # noqa
         print('X is singular!!')
 
     # Assigning the subset size
-    h = fltsh.hcalc(alpha, n, p)
+    h = fltsh.hcalc(ALPHA, n, p)
 
     if p < 5:
         eps = 1e-12
@@ -124,6 +123,13 @@ def fast_lts_array(X, y, alpha): # noqa
     bcoeff = np.zeros((p, 10))
     bcoeff.fill(np.nan)
     coeffs = np.tile(np.nan, (p, 1))
+
+    # Checking to see if ALPHA == 1.00; Perform a least squares fit
+    if ALPHA == 1.00:
+        # Performing the least squares fit
+        lst_sq_estimate = fltsh.least_squares_fit(Xvar,
+                                                  yvar, datamad, xorig, yorig)
+        return lst_sq_estimate
 
     # Starting the search through subsets
     while final != 2:
@@ -217,7 +223,7 @@ def fast_lts_array(X, y, alpha): # noqa
     residuals = yvar - fitted
     Raw['residuals'] = residuals
     sor = np.sort(residuals**2, kind='mergesort', axis=0)
-    factor = fltsh.rawcorfactorlts(p, intercept, n, alpha)
+    factor = fltsh.rawcorfactorlts(p, intercept, n, ALPHA)
     factor = factor * fltsh.rawconsfactorlts(h, n)
     sh0 = np.sqrt((1/h)*np.sum(sor[0:h]))
     s0 = sh0 * factor
@@ -248,7 +254,7 @@ def fast_lts_array(X, y, alpha): # noqa
         residuals = np.reshape(residuals, (len(residuals), ))
         Res['scale'] = np.sqrt(np.sum(
             np.multiply(weights2, residuals)**2)/(np.sum(weights2) - 1))
-        factor = fltsh.rewcorfactorlts(p, intercept, n, alpha)
+        factor = fltsh.rewcorfactorlts(p, intercept, n, ALPHA)
         factor *= fltsh.rewconsfactorlts(weights, n, p)
         Res['scale'] *= factor
         weights = np.abs(residuals/Res['scale']) <= 2.5
