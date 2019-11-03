@@ -2,12 +2,11 @@
 # -*- coding: utf-8 -*-
 r''' Contains the auxilliary functions called by fastlts.py
 
-Many of these codes are Python3 translations of the MATLAB
-    Continuous Sound and Vibration Toolbox
+Many of these codes are Python3 translations of those found in
+the MATLAB Continuous Sound and Vibration Toolbox.
 
 @ author: Jordan W. Bishop
 
-Last Modified: 8/27/2019
 '''
 
 import numpy as np
@@ -148,7 +147,6 @@ def insertion(bestmean, bobj, z, obj):
         1. bestmean - [array] New array of best least squares fit values.
         2. bobj - [array] New array of lowest objective function values.
 
-    Last Modified: 8/29/2019
     '''
 
     insert = 1
@@ -204,7 +202,6 @@ def rawcorfactorlts(p, intercept, n, alpha):
             the LTS solution approximately unbiased
             for small (i.e. finite n).
 
-    Last Modified: 9/2/2019
     '''
 
     if intercept == 1:
@@ -266,7 +263,7 @@ def rawcorfactorlts(p, intercept, n, alpha):
             X_500 = np.array([      # noqa
                 [1, np.log(1/(coeffalpha500[2, 0]*p**2))],
                 [1, np.log(1/(coeffalpha500[2, 1]*p**2))]])
-            c500 = np.linalg.lstsq(X_500, y_500)[0]
+            c500 = np.linalg.lstsq(X_500, y_500, rcond=-1)[0]
 
             # Solving for new alpha=0.875 coefficients for the input p
             y1_875 = np.log(1-y1_875)
@@ -275,7 +272,7 @@ def rawcorfactorlts(p, intercept, n, alpha):
             X_875 = np.array([      # noqa
                 [1, np.log(1/(coeffalpha875[2, 0]*p**2))],
                 [1, np.log(1/(coeffalpha875[2, 1]*p**2))]])
-            c875 = np.linalg.lstsq(X_875, y_875)[0]
+            c875 = np.linalg.lstsq(X_875, y_875, rcond=-1)[0]
 
             # Now getting new correction functions for the specified n
             fp500 = 1 - np.exp(c500[0])/np.power(n, c500[1])
@@ -306,7 +303,6 @@ def rawconsfactorlts(h, n):
     Returns:
         1. dhn - [float] The correction factor d_h,n.
 
-    Last Modified: 9/2/2019
     '''
 
     # Calculate the initial factor c_h,n
@@ -349,7 +345,6 @@ def rewcorfactorlts(p, intercept, n, alpha):
     Returns:
         1. finitefactor - [float] A finite sample correction factor.
 
-    Last Modified: 9/2/2019
     '''
 
     # alpha = 0.500
@@ -374,7 +369,7 @@ def rewcorfactorlts(p, intercept, n, alpha):
     X_500 = np.array([      # noqa
         [1, np.log(1/(coeffalpha500[2, 0]*p**2))],
         [1, np.log(1/(coeffalpha500[2, 1]*p**2))]])
-    c500 = np.linalg.lstsq(X_500, y_500)[0]
+    c500 = np.linalg.lstsq(X_500, y_500, rcond=-1)[0]
 
     # Solving for new alpha=0.875 coefficients for the input p
     y1_875 = np.log(1-y1_875)
@@ -383,7 +378,7 @@ def rewcorfactorlts(p, intercept, n, alpha):
     X_875 = np.array([                          # noqa
         [1, np.log(1/(coeffalpha875[2, 0]*p**2))],
         [1, np.log(1/(coeffalpha875[2, 1]*p**2))]])
-    c875 = np.linalg.lstsq(X_875, y_875)[0]
+    c875 = np.linalg.lstsq(X_875, y_875, rcond=-1)[0]
 
     # Now getting new correction functions for the specified n
     fp500 = 1 - np.exp(c500[0])/np.power(n, c500[1])
@@ -412,7 +407,6 @@ def rewconsfactorlts(weights, n, p):
         1. cdelta_rew - [float] A small sample correction
             factor.
 
-    Last Modified: 9/2/2019
     '''
     from flts_helper_array import pgamma
     from flts_helper_array import qchisq
@@ -435,20 +429,19 @@ def rewconsfactorlts(weights, n, p):
 
 
 def arrayfromweights(weightarray, idx):
-    """ Helper function to make the LTS sausage plots.
+    """ Return array element pairs from LTS weights
 
     @author: Jordan W. Bishop
 
     Args:
-        1. weightarray - [array] An mx0 array of the
-            final LTS weights for each station pair.
-        2. idx - [array] An mx2 array of the station pairs.
+        1. weightarray - [array] An m x 0 array of the
+            final LTS weights for each element pair.
+        2. idx - [array] An m x 2 array of the element pairs.
             Generated in the 'getcctimevec' function.
 
     Returns:
-        1. fstations - [array] A 1xm array of station pairs.
+        1. fstations - [array] A 1 x m array of element pairs.
 
-    Date Last Modified: 8/29/2019
     """
 
     a = np.where(weightarray == 0)[0]
@@ -484,7 +477,6 @@ def get_cc_time(data, rij, hz):
         3. cmax - [float] The maximum of the cross-correlations.
         4. idx - [array] The co-array pairs.
 
-    Date Last Modified: 8/29/2019
     """
 
     m, n = np.shape(data)
@@ -534,7 +526,6 @@ def getrij(latlist, lonlist):
             cartesian "X" - coordinates and the second row
             corresponding to cartesian "Y" - coordinates.
 
-    Date Last Modified: 8/29/19
     '''
 
     getrij.__version__ = '1.00'
@@ -592,7 +583,6 @@ def fail_spike_test(tdelay, xij):
         2. lts_estimate [dict] A collection of run paramters with
             LTS derived parameters replaced with nans.
 
-    Last Modified: 9/4/2019
     '''
 
     # Creating the "flagged" vector
