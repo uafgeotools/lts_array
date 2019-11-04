@@ -94,9 +94,6 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA):
         except:
             t[jj] = np.nanmax(t, axis=0)
 
-        #LTSbaz[jj], LTSvel[jj], flagged, ccmax, idx, _ = ltsva(
-        #                data[ptr[0]:ptr[1], :], rij, fs, ALPHA)
-
         tdelay, xij, ccmax, idx = get_cc_time(data[ptr[0]:ptr[1], :], rij, fs)
 
         # Check to see if time delays are all equal. The fastlts
@@ -112,13 +109,12 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA):
 
         # Apply the FAST-LTS algorithm and return results
         if ALPHA == 1.0:
-            print('ALPHA is 1.00. Performing an ordinary \
-                  least squares fit, NOT least trimmed squares.')
+            print('ALPHA is 1.00. Performing an ordinary',
+                  ' least squares fit, NOT least trimmed squares.')
         lts_estimate = fast_lts_array(xij, tdelay, ALPHA)
 
         LTSbaz[jj] = lts_estimate['bazimuth']
         LTSvel[jj] = lts_estimate['velocity']
-        # flagged = lts_estimate['flagged']
 
         mdccm[jj] = np.median(ccmax)
         stns = arrayfromweights(lts_estimate['flagged'], idx)

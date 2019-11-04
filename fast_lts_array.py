@@ -124,9 +124,9 @@ def fast_lts_array(X, y, ALPHA): # noqa
     bcoeff.fill(np.nan)
     coeffs = np.tile(np.nan, (p, 1))
 
-    # Checking to see if ALPHA == 1.00; Perform a least squares fit
+    # Checking to see if ALPHA == 1.00.
+    # If so, perform an ordinary least squares fit and exit.
     if ALPHA == 1.00:
-        # Performing the least squares fit
         lst_sq_estimate = fltsh.least_squares_fit(Xvar,
                                                   yvar, datamad, xorig, yorig)
         return lst_sq_estimate
