@@ -81,6 +81,10 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA):
     LTSvel = np.full(nits, np.nan)
     LTSbaz = np.full(nits, np.nan)
 
+    if ALPHA == 1.0:
+        print('ALPHA is 1.00. Performing an ordinary',
+              ' least squares fit, NOT least trimmed squares.')
+
     # Station Dictionary for Dropped LTS Elements
     stdict = {}
 
@@ -108,9 +112,6 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA):
             return fltsbaz, fltsvel, flagged, ccmax, idx, lts_estimate
 
         # Apply the FAST-LTS algorithm and return results
-        if ALPHA == 1.0:
-            print('ALPHA is 1.00. Performing an ordinary',
-                  ' least squares fit, NOT least trimmed squares.')
         lts_estimate = fast_lts_array(xij, tdelay, ALPHA)
 
         LTSbaz[jj] = lts_estimate['bazimuth']
