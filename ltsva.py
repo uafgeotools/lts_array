@@ -80,11 +80,12 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA):
     t = np.full(nits, np.nan)
     LTSvel = np.full(nits, np.nan)
     LTSbaz = np.full(nits, np.nan)
+    sigma_tau = np.full(nits, np.nan)
 
     if ALPHA == 1.0:
         print('ALPHA is 1.00. Performing an ordinary',
               ' least squares fit, NOT least trimmed squares.')
-
+        print('Calculating sigma_tau.')
     # Station Dictionary for Dropped LTS Elements
     stdict = {}
 
@@ -116,6 +117,7 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA):
 
         LTSbaz[jj] = lts_estimate['bazimuth']
         LTSvel[jj] = lts_estimate['velocity']
+        sigma_tau[jj] = lts_estimate['sigma_tau']
 
         mdccm[jj] = np.median(ccmax)
         stns = arrayfromweights(lts_estimate['flagged'], idx)
@@ -132,4 +134,4 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA):
         sys.stdout.flush()
     print('Done\n')
 
-    return stdict, t, mdccm, LTSvel, LTSbaz
+    return stdict, t, mdccm, LTSvel, LTSbaz, sigma_tau

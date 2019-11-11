@@ -272,6 +272,7 @@ def fast_lts_array(X, y, ALPHA): # noqa
         rsquared = 0
     Res['rsquared'] = deepcopy(rsquared)
     Res['residuals'] = deepcopy(residuals)
+    Res['sigma_tau'] = np.nan
     if np.abs(s0) < 1e-7:
         print('An exact fit was found!')
     Res['fitted'] = deepcopy(fitted)

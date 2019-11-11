@@ -594,6 +594,7 @@ def fail_spike_test(tdelay, xij):
                     'coefficients': np.array([np.nan, np.nan]),
                     'flagged': nan_vec, 'fitted': nan_vec,
                     'residuals': nan_vec, 'scale': np.nan,
+                    'sigma_tau': np.nan,
                     'rsquared': np.nan,
                     'X': xij, 'y': tdelay}
 
@@ -629,7 +630,7 @@ def least_squares_fit(Xvar, yvar, datamad, xorig, yorig):
     from scipy.linalg import lstsq
 
     # Performing the least squares fit
-    n, p = np.shape(xorig)
+    n, p = np.shape(Xvar)
     q, r = np.linalg.qr(Xvar)
     qt = q.conj().T @ yvar
     coeffs = lstsq(r, qt)[0]
@@ -652,6 +653,12 @@ def least_squares_fit(Xvar, yvar, datamad, xorig, yorig):
     # arctan(sx/sy)
     baz = (np.arctan2(coeffs[0], coeffs[1])*180/np.pi-360) % 360
 
+    # Calculating sigma_tau value (Szuberla et al. 2006)
+    tdelay = np.reshape(yorig, (len(yorig), ))
+    sigma_tau = np.sqrt(np.abs(tdelay @ (np.eye(n) -
+                                       xorig @ np.linalg.inv(xorig.T @ xorig)
+                                       @ xorig.T) @ tdelay / (n - p)))
+
     # Packaging - Creating the lst_sq_estimate packaged output
     # Creating the "flagged" vector
     nan_vec = np.empty_like(yorig)
@@ -661,6 +668,7 @@ def least_squares_fit(Xvar, yvar, datamad, xorig, yorig):
                        'flagged': nan_vec, 'fitted': fitted,
                        'residuals': residuals, 'scale': np.nan,
                        'rsquared': np.nan,
+                       'sigma_tau': sigma_tau,
                        'X': xorig, 'y': yorig}
 
     return lst_sq_estimate
