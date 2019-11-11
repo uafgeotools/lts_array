@@ -1,33 +1,27 @@
 #%% module imports
 import matplotlib.pyplot as plt
-from matplotlib import dates
-import numpy as np
-import sys
 
-from obspy import read, Stream, UTCDateTime
+from obspy import Stream, UTCDateTime
 from obspy.clients.fdsn import Client
 
 import flts_helper_array as fltsh
 from ltsva import ltsva
 from plotting import lts_array_plot
 
-
 # Read in and filter data
-
 # Array Parameters
 NET = 'AV'
 STA = 'ADKI'
 CHAN = '*DF'
 LOC = '*'
 
-# Note IRIS doesn't currently have data for June 2017 but will soon
-# STARTTIME = UTCDateTime('2017-06-10T13:10')
+# Pick an event
 STARTTIME = UTCDateTime('2019-8-13T19:50')
 ENDTIME = STARTTIME + 10*60
 
 # Filter limits
 FMIN = 0.5
-FMAX = 5
+FMAX = 5.0
 
 # Processing parameters
 WINLEN = 30
@@ -88,7 +82,7 @@ if plotarray:
 
 
 #%% Run LTS array processing
-stdict, t, mdccm, LTSvel, LTSbaz = ltsva(stf,rij, WINLEN, WINOVER, ALPHA)
+stdict, t, mdccm, LTSvel, LTSbaz, sigma_tau = ltsva(stf, rij, WINLEN, WINOVER, ALPHA)
 
 #%% plotting
 fig1, axs1 = lts_array_plot(stf, stdict, t, mdccm, LTSvel, LTSbaz)
