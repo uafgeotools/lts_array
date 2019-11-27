@@ -1,4 +1,3 @@
-
 import numpy as np
 from scipy.special import erfinv, gammainc
 from scipy.stats import gamma
