@@ -1,8 +1,9 @@
 import numpy as np
 import sys
 
-from fast_lts_array import fast_lts_array
-from flts_helper_array import get_cc_time, fail_spike_test, arrayfromweights
+from lts_array.fast_lts_array import fast_lts_array
+from lts_array.flts_helper_array import (get_cc_time,
+                                         fail_spike_test, arrayfromweights)
 
 
 def ltsva(st, rij, WINLEN, WINOVER, ALPHA):

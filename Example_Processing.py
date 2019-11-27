@@ -4,9 +4,8 @@ import matplotlib.pyplot as plt
 from obspy import Stream, UTCDateTime
 from obspy.clients.fdsn import Client
 
-import flts_helper_array as fltsh
-from ltsva import ltsva
-from plotting import lts_array_plot
+# Import the package.
+import lts_array
 
 # Read in and filter data
 # Array Parameters
@@ -65,7 +64,7 @@ for network in inv:
             staname.append(channel.code)
 
 # Get element rijs
-rij = fltsh.getrij(latlist, lonlist)
+rij = lts_array.getrij(latlist, lonlist)
 
 # Plot array coords as a check
 plotarray = 1
@@ -82,7 +81,7 @@ if plotarray:
 
 
 #%% Run LTS array processing
-stdict, t, mdccm, LTSvel, LTSbaz, sigma_tau = ltsva(stf, rij, WINLEN, WINOVER, ALPHA)
+stdict, t, mdccm, LTSvel, LTSbaz, sigma_tau = lts_array.ltsva(stf, rij, WINLEN, WINOVER, ALPHA)
 
 #%% plotting
-fig1, axs1 = lts_array_plot(stf, stdict, t, mdccm, LTSvel, LTSbaz)
+fig1, axs1 = lts_array.lts_array_plot(stf, stdict, t, mdccm, LTSvel, LTSbaz)

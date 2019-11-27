@@ -3,7 +3,7 @@ from scipy.linalg import lstsq
 
 from copy import deepcopy
 
-import flts_helper_array as fltsh
+import lts_array.flts_helper_array as fltsh
 
 
 def fast_lts_array(X, y, ALPHA):  # noqa
@@ -52,9 +52,7 @@ def fast_lts_array(X, y, ALPHA):  # noqa
 
     '''
 
-    fast_lts_array.__version__ = '1.1'
-
-    # Default values
+    # Set the number of C-steps.
     csteps1 = 4
     csteps2 = 100
 
