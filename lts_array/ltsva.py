@@ -59,7 +59,7 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA):
     # State if least trimmed squares or ordinary least squares will be used.
     if ALPHA == 1.0:
         print('ALPHA is 1.00. Performing an ordinary',
-              ' least squares fit, NOT least trimmed squares.')
+              'least squares fit, NOT least trimmed squares.')
         print('Calculating sigma_tau.')
 
     # Station dictionary for dropped LTS elements.
@@ -111,8 +111,11 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA):
         if jj == (nits-1):
             stdict['size'] = nchans
 
-        tmp = int(jj/nits*100)
-        sys.stdout.write("\r%d%%" % tmp)
+        tmp = int((jj+1)/nits*100)
+        if (jj != (nits - 1)):
+            sys.stdout.write("\r%d%%" % tmp)
+        else:
+            sys.stdout.write("\r%d%%\n" % tmp)
         sys.stdout.flush()
     print('Done\n')
 
