@@ -1,20 +1,19 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-r''' Contains the auxilliary functions called by fastlts.py
-
-Many of these codes are Python3 translations of those found in
-the MATLAB Continuous Sound and Vibration Toolbox.
-
-@ author: Jordan W. Bishop
-
-'''
 
 import numpy as np
 from scipy.special import erfinv, gammainc
 from scipy.stats import gamma
+from scipy.linalg import lstsq
 
 from copy import deepcopy
 from obspy.geodetics.base import calc_vincenty_inverse
+
+
+r''' Contains the auxilliary functions called by fast_lts_array.py
+
+Many of these codes are Python3 translations of those found in
+the MATLAB Continuous Sound and Vibration Toolbox.
+
+'''
 
 
 def hcalc(alpha, n, p):
@@ -230,33 +229,33 @@ def rawcorfactorlts(p, intercept, n, alpha):
 
         if p > 1:
             if intercept == 1:
-                # alpha = 0.875
+                # ALPHA = 0.875.
                 coeffalpha875 = np.array([[
                     -0.251778730491252,
                     -0.146660023184295],
                     [0.883966931611758, 0.86292940340761], [3, 5]])
-                # alpha = 0.500
+                # ALPHA = 0.500.
                 coeffalpha500 = np.array([[
                     -0.487338281979106, -0.340762058011],
                         [0.405511279418594, 0.37972360544988],
                         [3, 5]])
             else:
-                # alpha = 0.875
+                # ALPHA = 0.875.
                 coeffalpha875 = np.array([[
                     -0.251778730491252, -0.146660023184295],
                         [0.883966931611758, 0.86292940340761], [3, 5]])
-                # alpha = 0.500
+                # ALPHA = 0.500.
                 coeffalpha500 = np.array([[
                     -0.487338281979106, -0.340762058011],
                         [0.405511279418594, 0.37972360544988], [3, 5]])
 
-            # Appying eqns (6) and (7)
+            # Apply eqns (6) and (7) from Pison et al. (2002)
             y1_500 = 1 + coeffalpha500[0, 0]/np.power(p, coeffalpha500[1, 0])
             y2_500 = 1 + coeffalpha500[0, 1]/np.power(p, coeffalpha500[1, 1])
             y1_875 = 1 + coeffalpha875[0, 0]/np.power(p, coeffalpha875[1, 0])
             y2_875 = 1 + coeffalpha875[0, 1]/np.power(p, coeffalpha875[1, 1])
 
-            # Solving for new alpha=0.5 coefficients for the input p
+            # Solve for new ALPHA = 0.5 coefficients for the input p.
             y1_500 = np.log(1-y1_500)
             y2_500 = np.log(1-y2_500)
             y_500 = np.array([[y1_500], [y2_500]])
@@ -265,7 +264,7 @@ def rawcorfactorlts(p, intercept, n, alpha):
                 [1, np.log(1/(coeffalpha500[2, 1]*p**2))]])
             c500 = np.linalg.lstsq(X_500, y_500, rcond=-1)[0]
 
-            # Solving for new alpha=0.875 coefficients for the input p
+            # Solve for new ALPHA = 0.875 coefficients for the input p.
             y1_875 = np.log(1-y1_875)
             y2_875 = np.log(1-y2_875)
             y_875 = np.array([[y1_875], [y2_875]])
@@ -274,11 +273,11 @@ def rawcorfactorlts(p, intercept, n, alpha):
                 [1, np.log(1/(coeffalpha875[2, 1]*p**2))]])
             c875 = np.linalg.lstsq(X_875, y_875, rcond=-1)[0]
 
-            # Now getting new correction functions for the specified n
+            # Get new correction factors for the specified n.
             fp500 = 1 - np.exp(c500[0])/np.power(n, c500[1])
             fp875 = 1 - np.exp(c875[0])/np.power(n, c875[1])
 
-            # Finally, now to linearly interpolate for the specified alpha
+            # Linearly interpolate for the specified ALPHA.
             if (alpha >= 0.500) and (alpha <= 0.875):
                 fpfinal = fp500 + ((fp875 - fp500)/0.375)*(alpha - 0.500)
 
@@ -294,8 +293,6 @@ def rawconsfactorlts(h, n):
      LTS scale estimators consistent for
      a normal distrbution.
 
-    @ author: Jordan W. Bishop
-
     Args:
         1. h - [int] The number of points to fit.
         2. n - [int] The total number of data points.
@@ -305,12 +302,12 @@ def rawconsfactorlts(h, n):
 
     '''
 
-    # Calculate the initial factor c_h,n
+    # Calculate the initial factor c_h,n.
     x = (h+n)/(2*n)
     phinv = np.sqrt(2)*erfinv(2*x-1)
     chn = 1/phinv
 
-    # Calculate d_h,n
+    # Calculate d_h,n.
     phi = (1/np.sqrt(2*np.pi))*np.exp((-1/2)*phinv**2)
     d = np.sqrt(1 - (2*n/(h*chn))*phi)
     dhn = 1/d
@@ -347,22 +344,23 @@ def rewcorfactorlts(p, intercept, n, alpha):
 
     '''
 
-    # alpha = 0.500
+    # ALPHA = 0.500.
     coeffalpha500 = np.array([
         [-0.417574780492848, -0.175753709374146],
         [1.83958876341367, 1.8313809497999], [3, 5]])
-    # alpha = 0.875
+
+    # ALPHA = 0.875.
     coeffalpha875 = np.array([
         [-0.267522855927958, -0.161200683014406],
         [1.17559984533974, 1.21675019853961], [3, 5]])
 
-    # Appying eqns (6) and (7)
+    # Apply eqns (6) and (7) from Pison et al. (2002).
     y1_500 = 1 + coeffalpha500[0, 0]/np.power(p, coeffalpha500[1, 0])
     y2_500 = 1 + coeffalpha500[0, 1]/np.power(p, coeffalpha500[1, 1])
     y1_875 = 1 + coeffalpha875[0, 0]/np.power(p, coeffalpha875[1, 0])
     y2_875 = 1 + coeffalpha875[0, 1]/np.power(p, coeffalpha875[1, 1])
 
-    # Solving for new alpha=0.5 coefficients for the input p
+    # Solve for new ALPHA = 0.5 coefficients for the input p.
     y1_500 = np.log(1-y1_500)
     y2_500 = np.log(1-y2_500)
     y_500 = np.array([[y1_500], [y2_500]])
@@ -371,7 +369,7 @@ def rewcorfactorlts(p, intercept, n, alpha):
         [1, np.log(1/(coeffalpha500[2, 1]*p**2))]])
     c500 = np.linalg.lstsq(X_500, y_500, rcond=-1)[0]
 
-    # Solving for new alpha=0.875 coefficients for the input p
+    # Solve for new ALPHA = 0.875 coefficients for the input p.
     y1_875 = np.log(1-y1_875)
     y2_875 = np.log(1-y2_875)
     y_875 = np.array([[y1_875], [y2_875]])
@@ -380,11 +378,11 @@ def rewcorfactorlts(p, intercept, n, alpha):
         [1, np.log(1/(coeffalpha875[2, 1]*p**2))]])
     c875 = np.linalg.lstsq(X_875, y_875, rcond=-1)[0]
 
-    # Now getting new correction functions for the specified n
+    # Get new correction functions for the specified n.
     fp500 = 1 - np.exp(c500[0])/np.power(n, c500[1])
     fp875 = 1 - np.exp(c875[0])/np.power(n, c875[1])
 
-    # Finally, now to linearly interpolate for the specified alpha
+    # Linearly interpolate for the specified ALPHA.
     if (alpha >= 0.500) and (alpha <= 0.875):
         fpfinal = fp500 + ((fp875 - fp500)/0.375)*(alpha - 0.500)
 
@@ -429,15 +427,13 @@ def rewconsfactorlts(weights, n, p):
 
 
 def arrayfromweights(weightarray, idx):
-    """ Return array element pairs from LTS weights
-
-    @author: Jordan W. Bishop
+    """ Return array element pairs from LTS weights.
 
     Args:
         1. weightarray - [array] An m x 0 array of the
             final LTS weights for each element pair.
-        2. idx - [array] An m x 2 array of the element pairs.
-            Generated in the 'getcctimevec' function.
+        2. idx - [array] An m x 2 array of the element pairs;
+            generated from the `get_cc_time` function.
 
     Returns:
         1. fstations - [array] A 1 x m array of element pairs.
@@ -448,9 +444,11 @@ def arrayfromweights(weightarray, idx):
     stn1, stn2 = zip(*idx)
     stn1 = np.array(stn1)
     stn2 = np.array(stn2)
+
     # Add one for plotting purposes; offset python 0-based indexing.
     stn1 += 1
     stn2 += 1
+
     # Flagged stations
     fstations = np.concatenate((stn1[a], stn2[a]))
     return fstations
@@ -459,9 +457,7 @@ def arrayfromweights(weightarray, idx):
 def get_cc_time(data, rij, hz):
     """ Generate a time delay vector from cross correlations.
 
-    Cross correlates data
-
-    @author: Jordan W. Bishop and Curt A. L. Szuberla
+    Cross correlates data and forms the (infra/seis) co-array.
 
     Args:
         1. data - [array] An mxn data matrix with columns corresponding
@@ -480,28 +476,35 @@ def get_cc_time(data, rij, hz):
     """
 
     m, n = np.shape(data)
-    # Pre-allocated cross-correlation matrix
+    # Pre-allocate the cross-correlation matrix
     cij = np.empty((m*2-1, n))
     idx = [(i, j) for i in range(n-1) for j in range(i+1, n)]
+
     # Generate the co-array
     xij = rij[:, [i[0] for i in idx]] - rij[:, [j[1] for j in idx]]
-    # Getting time delays; Number of unique inter-sensor pairs
+
+    # Get time delays and number of unique inter-sensor pairs.
     N = xij.shape[1]    # noqa
-    #  pre-allocated cross-correlation matrix
+
+    #  Pre-allocate the cross-correlation matrix
     cij = np.empty((m*2-1, N))
     for k in range(N):
-        # MATLAB's xcorr w/ 'coeff' normalization: unit auto-correlations
+        # MATLAB's xcorr w/ 'coeff' normalization: unit auto-correlations.
         cij[:, k] = (np.correlate(data[:, idx[k][0]],
                                   data[:, idx[k][1]], mode='full') / np.sqrt(
                                 sum(data[:, idx[k][0]]*data[:, idx[k][0]])
                                 * sum(data[:, idx[k][1]]*data[:, idx[k][1]])))
-    # Extract cross correlation maxima and associated delays
+
+    # Extract cross correlation maxima and associated delays.
     cmax = cij.max(axis=0)
-    delay = np.argmax(cij, axis=0)+1  # MATLAB-esque +1 offset here for tau
-    # Form the time delay vector
+
+    # Add MATLAB-esque +1 offset here for tau.
+    delay = np.argmax(cij, axis=0)+1
+
+    # Form the time delay vector.
     tau = (m - delay)/hz
 
-    # Reshape output matrices for next processing steps
+    # Reshape output matrices for next processing steps.
     xij = xij.T
     tau = np.reshape(tau, (len(tau), 1))
 
@@ -509,20 +512,18 @@ def get_cc_time(data, rij, hz):
 
 
 def getrij(latlist, lonlist):
-    r''' Calculate rij from lat-lon.
+    r''' Calculate element r_{ij} from lat-lon.
 
-    Returns the projected geographic positions in X-Y.
+    Return the projected geographic positions in X-Y.
     Points are calculated with the Vicenty inverse
     and will have a zero-mean.
 
-    @ authors: Jordan W. Bishop and David Fee
-
     Args:
-        1. latlist - [list] A list of latitude points.
-        2. lonlist - [list] A list of longitude points.
+        1. latlist - A list of latitude points.
+        2. lonlist - A list of longitude points.
 
     Returns:
-        1. rij - [array] A numpy array with the first row corresponding to
+        1. rij - A numpy array with the first row corresponding to
             cartesian "X" - coordinates and the second row
             corresponding to cartesian "Y" - coordinates.
 
@@ -530,34 +531,31 @@ def getrij(latlist, lonlist):
 
     getrij.__version__ = '1.00'
 
-    # Basic error checking
+    # Check that the lat-lon arrays are the same size.
     latsize = len(latlist)
     lonsize = len(lonlist)
-
     if (latsize != lonsize):
         raise ValueError('latsize != lonsize')
 
-    # Now to calculate
+    # Pre-allocate "x" and "y" arrays.
     xnew = np.zeros((latsize, ))
     ynew = np.zeros((lonsize, ))
 
-    # azes = [0]
     for jj in range(1, lonsize):
         # Obspy defaults are set as: a = 6378137.0, f = 0.0033528106647474805
-        # This is apparently the WGS84 ellipsoid.
+        # This is the WGS84 ellipsoid.
         delta, az, baz = calc_vincenty_inverse(
             latlist[0], lonlist[0], latlist[jj], lonlist[jj])
-        # Converting azimuth to radians
+        # Convert azimuth to radians.
         az = (450 - az) % 360
-        # azes.append(az)
         xnew[jj] = delta/1000*np.cos(az*np.pi/180)
         ynew[jj] = delta/1000*np.sin(az*np.pi/180)
 
-    # Removing the mean
+    # Remove the mean.
     xnew = xnew - np.mean(xnew)
     ynew = ynew - np.mean(ynew)
 
-    # rij
+    # Package as rij.
     rij = np.array([xnew.tolist(), ynew.tolist()])
 
     return rij
@@ -598,48 +596,44 @@ def fail_spike_test(tdelay, xij):
                     'rsquared': np.nan,
                     'X': xij, 'y': tdelay}
 
-    fltsbaz = lts_estimate['bazimuth']
-    fltsvel = lts_estimate['velocity']
+    LTSbaz = lts_estimate['bazimuth']
+    LTSvel = lts_estimate['velocity']
     flagged = lts_estimate['flagged']
 
-    return fltsbaz, fltsvel, flagged, lts_estimate
+    return LTSbaz, LTSvel, flagged, lts_estimate
 
 
 def least_squares_fit(Xvar, yvar, datamad, xorig, yorig):
     ''' Perform an (ordinary) least squares fit of the data.
 
-    The simple case alpha == 1.0.
+    The simple case ALPHA == 1.0.
 
     Inputs:
-        1) Xvar: The standardized design matrix.
-        2) yvar: The standardized data array.
-        3) datamad: The data median absolute deviation
-            (MAD) from standardization.
-        4) xorig: The original design matrix.
+        1. Xvar: The standardized design matrix.
+        2. yvar: The standardized data array.
+        3. datamad: The data median absolute deviation
+            (MAD) array from standardization.
+        4. xorig: The original design matrix.
             Used for post-process packaging.
-        5) yorig: The original data array.
+        5. yorig: The original data array.
             Used for post-process packaging.
 
     Returns:
-        1) lst_sq_estimate: The least squares fit to the data
-            formatted like the LTS estimate.
+        1. lst_sq_estimate: The least squares fit packaged
+        in a dictionary like the LTS estimate.
 
     '''
 
-    import numpy as np
-    from scipy.linalg import lstsq
-
-    # Performing the least squares fit
+    # Perform the least squares fit.
     n, p = np.shape(Xvar)
     q, r = np.linalg.qr(Xvar)
     qt = q.conj().T @ yvar
     coeffs = lstsq(r, qt)[0]
-    # coeffs = np.reshape(coeffs, (len(coeffs), 1))
 
     fitted = xorig @ coeffs
     residuals = yorig - fitted
 
-    # Post-processing
+    # Post-process.
     if p <= 1:
         coeffs[0] = coeffs[0] * datamad[p]/datamad[0]
     else:
@@ -649,18 +643,19 @@ def least_squares_fit(Xvar, yvar, datamad, xorig, yorig):
 
     # Calculate back-azimuth and velocity
     vel = 1/np.linalg.norm(coeffs, 2)
-    # This converts baz from mathematical CCW from E to geographical CW from N
-    # arctan(sx/sy)
+    # Convert baz from mathematical CCW from E
+    # to geographical CW from N. baz = arctan(sx/sy)
     baz = (np.arctan2(coeffs[0], coeffs[1])*180/np.pi-360) % 360
 
-    # Calculating sigma_tau value (Szuberla et al. 2006)
+    # Calculate the sigma_tau value (Szuberla et al. 2006).
     tdelay = np.reshape(yorig, (len(yorig), ))
-    sigma_tau = np.sqrt(np.abs(tdelay @ (np.eye(n) -
-                                       xorig @ np.linalg.inv(xorig.T @ xorig)
-                                       @ xorig.T) @ tdelay / (n - p)))
+    sigma_tau = np.sqrt(
+        np.abs(tdelay
+               @ (np.eye(n) - xorig @ np.linalg.inv(xorig.T @ xorig)
+                  @ xorig.T) @ tdelay / (n - p)))
 
-    # Packaging - Creating the lst_sq_estimate packaged output
-    # Creating the "flagged" vector
+    # Packaging - Create the lst_sq_estimate packaged output.
+    # Create the "flagged" vector.
     nan_vec = np.empty_like(yorig)
     nan_vec.fill(np.nan)
     lst_sq_estimate = {'bazimuth': np.asscalar(baz), 'velocity': vel,

@@ -8,7 +8,8 @@ from copy import deepcopy
 
 import flts_helper_array as fltsh
 
-def fast_lts_array(X, y, ALPHA): # noqa
+
+def fast_lts_array(X, y, ALPHA):  # noqa
     r''' A FAST-LTS code modified for array processing.
 
     @author: Jordan W. Bishop
@@ -64,10 +65,10 @@ def fast_lts_array(X, y, ALPHA): # noqa
     intercept = 0
     ntrial = 500
 
-    Xvar = deepcopy(X) # noqa
+    Xvar = deepcopy(X)  # noqa
     yvar = deepcopy(y)
 
-    # Initial error checking for inputs
+    # Initial error checking for inputs.
     n, p = np.shape(Xvar)
     dimy1, dimy2 = np.shape(yvar)
 
@@ -80,12 +81,12 @@ def fast_lts_array(X, y, ALPHA): # noqa
 
     bestobj = np.inf
 
-    # Checking the rank of X
+    # Check the rank of X.
     rk = np.linalg.matrix_rank(Xvar)
     if rk < p:
         print('X is singular!!')
 
-    # Assigning the subset size
+    # Assign the subset size.
     h = fltsh.hcalc(ALPHA, n, p)
 
     if p < 5:
@@ -95,7 +96,7 @@ def fast_lts_array(X, y, ALPHA): # noqa
     else:
         eps = 1e-16
 
-    # Standardizing the data as recommended in Rousseeuw and Leroy (1987)
+    # Standardize the data as recommended in Rousseeuw and Leroy (1987).
     xorig = deepcopy(Xvar)
     yorig = deepcopy(yvar)
     data = np.concatenate((Xvar, yvar), axis=1)
@@ -111,8 +112,8 @@ def fast_lts_array(X, y, ALPHA): # noqa
         Xvar[:, ii] = Xvar[:, ii]/datamad[ii]
     yvar[:, 0] = yvar[:, 0]/datamad[p]
 
-    # Starting the algorithm; Pre-allocating best objective
-    # functions and best coefficients
+    # Start the algorithm; pre-allocate for the best objective
+    # functions and best coefficients.
     part, adjh, nsamp = 0, h, ntrial
     csteps = csteps1
     tottimes, final = 0, 0
@@ -124,14 +125,14 @@ def fast_lts_array(X, y, ALPHA): # noqa
     bcoeff.fill(np.nan)
     coeffs = np.tile(np.nan, (p, 1))
 
-    # Checking to see if ALPHA == 1.00.
+    # Check to see if ALPHA == 1.00.
     # If so, perform an ordinary least squares fit and exit.
     if ALPHA == 1.00:
         lst_sq_estimate = fltsh.least_squares_fit(Xvar,
                                                   yvar, datamad, xorig, yorig)
         return lst_sq_estimate
 
-    # Starting the search through subsets
+    # Start the search through the subsets.
     while final != 2:
         if final:
             nsamp = 10
@@ -165,7 +166,7 @@ def fast_lts_array(X, y, ALPHA): # noqa
 
             if np.isfinite(z[0]):
                 residu = yvar - Xvar@z
-                # Perform C-steps
+                # Perform C-steps.
                 for jj in range(0, csteps):
                     tottimes += 1
                     sortind = np.argsort(
@@ -178,7 +179,7 @@ def fast_lts_array(X, y, ALPHA): # noqa
                     z = lstsq(r, qt)[0]
                     residu = yvar - Xvar@z
                     sor = np.sort(np.abs(residu), kind='mergesort', axis=0)
-                    # New objective function
+                    # New objective function.
                     obj = np.sum(sor[0:adjh:1]**2)
                     if (jj >= 1) and (obj == prevobj):
                         break
@@ -186,7 +187,7 @@ def fast_lts_array(X, y, ALPHA): # noqa
 
                 if (not final):
                     if obj < np.max(bobj):
-                        # Save the best objective function values
+                        # Save the best objective function values.
                         bcoeff, bobj = fltsh.insertion(
                             bcoeff, bobj, z, obj)
                 if final and (obj < bestobj):
@@ -198,7 +199,7 @@ def fast_lts_array(X, y, ALPHA): # noqa
         else:
             final = 2
 
-    # Post-processing
+    # Post-process.
     if p <= 1:
         coeffs[0] = coeffs[0] * datamad[p]/datamad[0]
     else:
@@ -209,13 +210,13 @@ def fast_lts_array(X, y, ALPHA): # noqa
     xvar = deepcopy(xorig)
     yvar = deepcopy(yorig)
 
-    # Saving the raw data - the intermediate results
-    Raw = {} # noqa
+    # Save the raw data - the intermediate results.
+    Raw = {}  # noqa
     Raw['coefficients'] = coeffs
     Raw['objective'] = bestobj
 
-    # Preparing for the final results
-    Res = {} # noqa
+    # Prepare for the final results.
+    Res = {}  # noqa
 
     coeffs2 = np.reshape(coeffs, (len(coeffs), 1))
     fitted = xvar @ coeffs2
@@ -243,8 +244,9 @@ def fast_lts_array(X, y, ALPHA): # noqa
         weights = np.reshape(weights, (len(weights), ))
         weights2 = weights*1
         Raw['weights'] = weights2
-        # Now perform the least squares fit with
+        # Perform the weighted least squares fit with
         # only data points with weight = 1.
+        # Increases statistical efficiency.
         q, r = np.linalg.qr(xvar[weights, :])
         qt = q.conj().T @ yvar[weights]
         zfinal = lstsq(r, qt)[0]
@@ -281,8 +283,8 @@ def fast_lts_array(X, y, ALPHA): # noqa
 
     s_p = Res['coefficients']
     vel = 1/np.linalg.norm(s_p, 2)
-    # this converts az from mathematical CCW from E to geographical CW from N
-    # arctan(sx/sy)
+    # Convert back-azimuth from mathematical CCW
+    # from E to geographical CW from N, angle = arctan(sx/sy).
     az = (np.arctan2(s_p[0], s_p[1])*180/np.pi-360) % 360
     Res['velocity'] = vel
     Res['bazimuth'] = np.asscalar(az)
