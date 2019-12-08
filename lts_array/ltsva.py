@@ -112,11 +112,8 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA):
             stdict['size'] = nchans
 
         tmp = int((jj+1)/nits*100)
-        if (jj != (nits - 1)):
-            sys.stdout.write("\r%d%%" % tmp)
-        else:
-            sys.stdout.write("\r%d%%\n" % tmp)
+        sys.stdout.write("\r%d%%\n" % tmp)
         sys.stdout.flush()
-    print('Done\n')
+    print('\nDone\n')
 
     return stdict, t, mdccm, lts_vel, lts_baz, sigma_tau
