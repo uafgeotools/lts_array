@@ -9,7 +9,7 @@ setup(
    url="https://github.com/uafgeotools/lts_array",
    packages=find_packages(),
    python_requires='>=3.0',
-   install_requires=['numpy', 'scipy', 'obspy'],
+   install_requires=['obspy'],
    scripts=[
             'Example_Processing.py',
            ]
