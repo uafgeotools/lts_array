@@ -1,20 +1,19 @@
 #%% module imports
 import matplotlib.pyplot as plt
-
-from obspy import Stream, UTCDateTime
+from obspy import UTCDateTime
 from obspy.clients.fdsn import Client
 
 # Import the package.
 import lts_array
 
-# Read in and filter data
+#%% Read in and filter data
 # Array Parameters
 NET = 'AV'
 STA = 'ADKI'
 CHAN = '*DF'
 LOC = '*'
 
-# Pick an event
+# Start and end of time window containing (suspected) events
 STARTTIME = UTCDateTime('2019-8-13T19:50')
 ENDTIME = STARTTIME + 10*60
 
@@ -27,9 +26,6 @@ WINLEN = 30
 WINOVER = 0.50
 # LTS alpha parameter - subset size
 ALPHA = 0.5
-
-#%%
-st = Stream()
 
 print('Reading in data from IRIS')
 client = Client("IRIS")
@@ -45,7 +41,7 @@ st.remove_sensitivity()
 
 stf = st.copy()
 stf.filter("bandpass", freqmin=FMIN, freqmax=FMAX, corners=2, zerophase=True)
-stf.taper
+stf.taper(max_percentage==0.05)
 
 
 #%% Get inventory and lat/lon info
@@ -66,22 +62,19 @@ for network in inv:
 # Get element rijs
 rij = lts_array.getrij(latlist, lonlist)
 
-# Plot array coords as a check
-plotarray = 1
-if plotarray:
-    fig0 = plt.figure(10)
-    plt.clf()
-    plt.plot(rij[0, :], rij[1, :], 'ro')
-    plt.axis('equal')
-    plt.ylabel('km')
-    plt.xlabel('km')
-    plt.title(stf[0].stats.station)
-    for ii in range(len(stf)):
-        plt.text(rij[0, ii], rij[1, ii], stf[ii].stats.location)
-
+# Plot array coordinates as a check
+fig1 = plt.figure(1)
+plt.clf()
+plt.plot(rij[0, :], rij[1, :], 'ro')
+plt.axis('equal')
+plt.ylabel('km')
+plt.xlabel('km')
+plt.title(stf[0].stats.station)
+for i, tr in enumerate(stf):
+    plt.text(rij[0, i], rij[1, i], tr.stats.location)
 
 #%% Run LTS array processing
 stdict, t, mdccm, LTSvel, LTSbaz, sigma_tau = lts_array.ltsva(stf, rij, WINLEN, WINOVER, ALPHA)
 
-#%% plotting
-fig1, axs1 = lts_array.lts_array_plot(stf, stdict, t, mdccm, LTSvel, LTSbaz)
+#%% Plotting
+fig2, axs2 = lts_array.lts_array_plot(stf, stdict, t, mdccm, LTSvel, LTSbaz)
