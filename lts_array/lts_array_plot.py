@@ -30,9 +30,9 @@ def lts_array_plot(st, stdict, t, mdccm, lts_vel, lts_baz):
     '''
 
     # Specify the colormap.
-    cm = 'RdYlBu_r'
+    CM = 'RdYlBu_r'
     # Colorbar/y-axis limits for MdCCM.
-    cax = (0.2, 1)
+    CAX = (0.2, 1)
     # Specify the time vector for plotting the trace.
     tvec = st[0].times('matplotlib')
 
@@ -51,21 +51,21 @@ def lts_array_plot(st, stdict, t, mdccm, lts_vel, lts_baz):
 
     # Plot the trace velocity plot.
     sc = axs1[1].scatter(t, lts_vel, c=mdccm,
-                         edgecolors='gray', lw=0.1, cmap=cm)
+                         edgecolors='gray', lw=0.1, cmap=CM)
     axs1[1].set_ylim(0.15, 0.60)
     axs1[1].set_xlim(t[0], t[-1])
     axs1[1].plot([t[0], t[-1]], [0.25, 0.25], '-', color='grey')
     axs1[1].plot([t[0], t[-1]], [0.45, 0.45], '-', color='grey')
-    sc.set_clim(cax)
+    sc.set_clim(CAX)
     axs1[1].set_ylabel('Trace Velocity\n [km/s]')
     axs1[1].grid(b=1, which='major', color='gray', linestyle=':', alpha=0.5)
 
     #  Plot the back-azimuth estimates.
     sc = axs1[2].scatter(t, lts_baz, c=mdccm,
-                         edgecolors='gray', lw=0.1, cmap=cm)
+                         edgecolors='gray', lw=0.1, cmap=CM)
     axs1[2].set_ylim(0, 360)
     axs1[2].set_xlim(t[0], t[-1])
-    sc.set_clim(cax)
+    sc.set_clim(CAX)
     axs1[2].set_ylabel('Back-azimuth\n [deg]')
     axs1[2].grid(b=1, which='major', color='gray', linestyle=':', alpha=0.5)
     hc = plt.colorbar(sc, cax=cbaxes, ax=[axs1[1], axs1[2]])

@@ -17,6 +17,7 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA):
         3. WINLEN - Window length [float] in seconds.
         4. WINOVER - Window overlap [float] in the range [0.0 - 1.0].
         5. ALPHA - Fraction of data [float] for LTS subsetting [0.5 - 1.0].
+            Choose 1.0 for ordinary least squares.
 
     Exceptions:
         1. Exception - A check is performed to see if all time delays
@@ -37,6 +38,10 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA):
     nchans = len(st)
     npts = st[0].stats.npts
     fs = st[0].stats.sampling_rate
+
+    # check that all traces have the same length
+    if len(set([len(tr) for tr in st])) != 1:
+        raise ValueError('Traces in stream must have same length!')
 
     # Store data traces in an array for processing.
     data = np.empty((npts, nchans))
@@ -64,6 +69,8 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA):
 
     # Station dictionary for dropped LTS elements.
     stdict = {}
+
+    counter = 0
 
     # Loop through the time series.
     print('Running ltsva for %d windows' % nits)
@@ -111,9 +118,10 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA):
         if jj == (nits-1):
             stdict['size'] = nchans
 
-        tmp = int((jj+1)/nits*100)
-        sys.stdout.write("\r%d%%\n" % tmp)
-        sys.stdout.flush()
+        # Print progress
+        counter += 1
+        print('{:.1f}%'.format((counter / nits) * 100), end='\r')
+
     print('\nDone\n')
 
     return stdict, t, mdccm, lts_vel, lts_baz, sigma_tau

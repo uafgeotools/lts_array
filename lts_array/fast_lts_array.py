@@ -9,8 +9,6 @@ import lts_array.flts_helper_array as fltsh
 def fast_lts_array(X, y, ALPHA):  # noqa
     r''' A FAST-LTS code modified for array processing.
 
-    @author: Jordan W. Bishop
-
     This code is based off the FAST-LTS algorithm:
     Rousseeuw, Peter J. and Katrien Van Driessen (2006). "Data Mining and
         Knowledge Discovery". In: Springer Science + Business Media, Inc.
@@ -22,8 +20,8 @@ def fast_lts_array(X, y, ALPHA):  # noqa
     generalized version. As such, we are assuming a plane wave model,
     so (from the physics) the intercept is assumed to be zero. As a result,
     "intercept adjustment" protocols of the full FAST-LTS algorithm are
-    left out of processing. We will always assume that we are dealing with
-    a relatively small group of data n <= 100.
+    left out of processing. We will always assume that a relatively small
+    group of data n <= 100.
 
     Args:
         1. X - [array] The design matrix (co-array coordinates).
@@ -132,9 +130,9 @@ def fast_lts_array(X, y, ALPHA):  # noqa
         if final:
             nsamp = 10
             adjh = h
-            if (n*p <= 1e5):
+            if n*p <= 1e5:
                 csteps = csteps2
-            elif (n*p <= 1e6):
+            elif n*p <= 1e6:
                 csteps = 10 - (np.ceil(n*p/1e5) - 2)
             else:
                 csteps = 1
@@ -180,7 +178,7 @@ def fast_lts_array(X, y, ALPHA):  # noqa
                         break
                     prevobj = deepcopy(obj)
 
-                if (not final):
+                if not final:
                     if obj < np.max(bobj):
                         # Save the best objective function values.
                         bcoeff, bobj = fltsh.insertion(

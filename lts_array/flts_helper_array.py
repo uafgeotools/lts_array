@@ -153,7 +153,7 @@ def insertion(bestmean, bobj, z, obj):
             insert = 0
 
     if insert:
-        ins = np.min([x for x in range(0, 10) if (obj < bobj[x])])
+        ins = np.min([x for x in range(0, 10) if obj < bobj[x]])
         if ins == 9:
             bestmean[:, ins] = z
             bobj[ins] = obj
@@ -203,10 +203,10 @@ def rawcorfactorlts(p, intercept, n, alpha):
     if p == 0:
         fp_500_n = 1 - np.exp(0.262024211897096)*1/(n**0.604756680630497)
         fp_875_n = 1 - np.exp(-0.351584646688712)*1/(n**1.01646567502486)
-        if (0.500 <= alpha) and (alpha <= 0.875):
+        if (alpha >= 0.500) and (alpha <= 0.875):
             fp_alpha_n = fp_500_n + (fp_875_n - fp_500_n)/0.375*(alpha - 0.500)
             fp_alpha_n = np.sqrt(fp_alpha_n)
-        if (0.875 < alpha) and (alpha < 1):
+        if (alpha > 0.875) and (alpha < 1):
             fp_alpha_n = fp_875_n + (1 - fp_875_n)/0.125*(alpha - 0.875)
             fp_alpha_n = np.sqrt(fp_alpha_n)
     else:
@@ -225,24 +225,23 @@ def rawcorfactorlts(p, intercept, n, alpha):
         if p > 1:
             if intercept == 1:
                 # ALPHA = 0.875.
-                coeffalpha875 = np.array([[
-                    -0.251778730491252,
-                    -0.146660023184295],
-                    [0.883966931611758, 0.86292940340761], [3, 5]])
+                coeffalpha875 = np.array([
+                    [-0.251778730491252, -0.146660023184295],
+                    [0.883966931611758, 0.86292940340761],
+                    [3, 5]])
                 # ALPHA = 0.500.
-                coeffalpha500 = np.array([[
-                    -0.487338281979106, -0.340762058011],
-                        [0.405511279418594, 0.37972360544988],
-                        [3, 5]])
+                coeffalpha500 = np.array([
+                    [-0.487338281979106, -0.340762058011],
+                    [0.405511279418594, 0.37972360544988], [3, 5]])
             else:
                 # ALPHA = 0.875.
-                coeffalpha875 = np.array([[
-                    -0.251778730491252, -0.146660023184295],
-                        [0.883966931611758, 0.86292940340761], [3, 5]])
+                coeffalpha875 = np.array([
+                    [-0.251778730491252, -0.146660023184295],
+                    [0.883966931611758, 0.86292940340761], [3, 5]])
                 # ALPHA = 0.500.
-                coeffalpha500 = np.array([[
-                    -0.487338281979106, -0.340762058011],
-                        [0.405511279418594, 0.37972360544988], [3, 5]])
+                coeffalpha500 = np.array([
+                    [-0.487338281979106, -0.340762058011],
+                    [0.405511279418594, 0.37972360544988], [3, 5]])
 
             # Apply eqns (6) and (7) from Pison et al. (2002)
             y1_500 = 1 + coeffalpha500[0, 0]/np.power(p, coeffalpha500[1, 0])
@@ -452,9 +451,9 @@ def get_cc_time(data, rij, hz):
     Cross correlates data and forms the (infra/seis) co-array.
 
     Args:
-        1. data - [array] An mxn data matrix with columns corresponding
+        1. data - [array] An m x n data matrix with columns corresponding
             to different time series.
-        2. rij - [array] The infrasound array coordinates.
+        2. rij - [array] The array coordinates.
         3. hz - [array] The sampling frequency of the data used to
             change samples to time (sec).
 
@@ -484,8 +483,8 @@ def get_cc_time(data, rij, hz):
         # MATLAB's xcorr w/ 'coeff' normalization: unit auto-correlations.
         cij[:, k] = (np.correlate(data[:, idx[k][0]],
                                   data[:, idx[k][1]], mode='full') / np.sqrt(
-                                sum(data[:, idx[k][0]]*data[:, idx[k][0]])
-                                * sum(data[:, idx[k][1]]*data[:, idx[k][1]])))
+                                      sum(data[:, idx[k][0]]*data[:, idx[k][0]])
+                                      * sum(data[:, idx[k][1]]*data[:, idx[k][1]])))
 
     # Extract cross correlation maxima and associated delays.
     cmax = cij.max(axis=0)
@@ -506,9 +505,8 @@ def get_cc_time(data, rij, hz):
 def getrij(latlist, lonlist):
     r''' Calculate element r_{ij} from lat-lon.
 
-    Return the projected geographic positions in X-Y.
-    Points are calculated with the Vicenty inverse
-    and will have a zero-mean.
+    Return the projected geographic positions in X-Y (cartesian) coordinates.
+    Points are calculated with the Vincenty inverse and will have a zero-mean.
 
     Args:
         1. latlist - A list of latitude points.
@@ -526,7 +524,7 @@ def getrij(latlist, lonlist):
     # Check that the lat-lon arrays are the same size.
     latsize = len(latlist)
     lonsize = len(lonlist)
-    if (latsize != lonsize):
+    if latsize != lonsize:
         raise ValueError('latsize != lonsize')
 
     # Pre-allocate "x" and "y" arrays.
@@ -534,8 +532,7 @@ def getrij(latlist, lonlist):
     ynew = np.zeros((lonsize, ))
 
     for jj in range(1, lonsize):
-        # Obspy defaults are set as: a = 6378137.0, f = 0.0033528106647474805
-        # This is the WGS84 ellipsoid.
+        # Obspy defaults to the WGS84 ellipsoid.
         delta, az, baz = calc_vincenty_inverse(
             latlist[0], lonlist[0], latlist[jj], lonlist[jj])
         # Convert azimuth to radians.
@@ -561,8 +558,6 @@ def fail_spike_test(tdelay, xij):
     existing processing pipelines, this function assists in returning
     the sample data structures as a successful LTS run, but with
     nan values replacing LTS derived parameters.
-
-    @ author: Jordan W. Bishop
 
     Args:
         1. tdelay - [array] The inter-element travel times.
