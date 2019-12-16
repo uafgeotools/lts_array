@@ -122,6 +122,6 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA):
         counter += 1
         print('{:.1f}%'.format((counter / nits) * 100), end='\r')
 
-    print('Done\n')
+    print('\nDone\n')
 
     return stdict, t, mdccm, lts_vel, lts_baz, sigma_tau
