@@ -41,7 +41,7 @@ st.remove_sensitivity()
 
 stf = st.copy()
 stf.filter("bandpass", freqmin=FMIN, freqmax=FMAX, corners=2, zerophase=True)
-stf.taper(max_percentage==0.05)
+stf.taper(max_percentage=0.05)
 
 
 #%% Get inventory and lat/lon info
