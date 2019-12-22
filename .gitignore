@@ -15,3 +15,8 @@ dist/
 **/*~
 **/*.swp
 **/._*
+
+
+# Any image file
+*.png
+*.jpg
