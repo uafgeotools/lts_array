@@ -7,12 +7,12 @@ import lts_array.flts_helper_array as fltsh
 
 
 def fast_lts_array(X, y, ALPHA):  # noqa
-    r''' A FAST-LTS code modified for array processing.
+    r''' Applies the FAST-LTS code with simplications for array processing.
 
     This code is based off the FAST-LTS algorithm:
     Rousseeuw, Peter J. and Katrien Van Driessen (2006). "Data Mining and
-        Knowledge Discovery". In: Springer Science + Business Media, Inc.
-        Chap. 12: Computing LTS Regression for Large Data Sets, pp. 29-45
+    Knowledge Discovery". In: Springer Science + Business Media, Inc.
+    Chap. 12: Computing LTS Regression for Large Data Sets, pp. 29-45
 
     ASSUMPTIONS:
     This algorithm is designed for 2D velocity - back-azimuth array processing,
@@ -24,29 +24,31 @@ def fast_lts_array(X, y, ALPHA):  # noqa
     group of data n <= 100.
 
     Args:
-        1. X - [array] The design matrix (co-array coordinates).
-        2. y - [array] The vector of response variables
+        X (array): The design matrix (co-array coordinates).
+        y (array): The vector of response variables
             (inter-element travel times).
-        3. alpha - [float] The subset percentage to take - must be in
+        ALPHA (float): The subset percentage to take - must be in
             the range of [0.5, 1.0]. A good default alpha is 0.75.
 
     Returns:
-        1. Res - [dictionary] A dictionary of output parameters:
-            a. bazimuth - [float] Back-azimuth in degrees from North.
-            b. velocity - [float] Velocity.
-            c. coefficients - [array] The x and y components of
-                the slowness vector [sx, sy].
-            d. flagged - [array] An array of the binary weights
-                used the final weighted least squares fit.
-            e. fitted - [array] The value of the best-fit plane at
-                the co-array coordinates.
-            f. residuals - [array] The residuals between the "fitted"
-                values and the "y" values.
-            g. scale - [float] The standard deviation of the best fitting
-                subset multiplied by small sample correction factors.
-            h. rsquared - [float] The R**2 value of the regression fit.
-            j. X - [array] The input co-array coordinate array.
-            k. y - [array] The input inter-element travel times.
+        Res (dictionary): A dictionary of output parameters:
+
+            `bazimuth` (float): Back-azimuth in degrees from North.
+            `velocity` (float): Velocity.
+            `coefficients` (array): The x and y components of
+            the slowness vector [sx, sy].
+            `flagged` (array): An array of the binary weights
+            used the final weighted least squares fit.
+            `fitted` (array): The value of the best-fit plane at
+            the co-array coordinates.
+            `residuals` (array): The residuals between the "fitted"
+            values and the "y" values.
+            `scale` (float): The standard deviation of the best fitting
+            subset multiplied by small sample correction factors.
+            `rsquared` (float): The R**2 value of the regression fit.
+            `X` (array): The input co-array coordinate array.
+            `y` (array): The input inter-element travel times.
+
 
     '''
 
