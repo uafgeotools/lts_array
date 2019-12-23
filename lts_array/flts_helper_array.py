@@ -40,11 +40,12 @@ def uniran(seed):
     r''' Generate a random number and a new seed.
 
     Args:
-        1. seed - [int] A seed value.
+        seed (int): A seed value.
 
     Returns:
-        1. random [float] A pseudorandom number.
-        2. seed - [float] A (new) seed value.
+        (tuple):
+            random (float): A pseudorandom number.
+            seed (float): A (new) seed value.
 
     '''
 
@@ -63,13 +64,14 @@ def randomset(tot, npar, seed):
         nel cases out of tot.
 
     Args:
-        1. tot - [int] The total number of data points.
-        2. npar - [int] The number of parameters to estimate.
-        3. seed - [float] A random seed.
+        tot (int): The total number of data points.
+        npar (int): The number of parameters to estimate.
+        seed (float): A random seed.
 
     Returns:
-        1. randset - [array] A random set of indices for choosing subsets.
-        2. seed - [float] A new random seed.
+        (tuple)
+            randset (array): A random set of indices for choosing subsets.
+            seed (float): A new random seed.
 
     '''
 
@@ -125,21 +127,22 @@ def qchisq(p, a):
 
 
 def insertion(bestmean, bobj, z, obj):
-    r''' Keep track of the value of the objective function
-        and the associated parameter vector z.
+    r''' Keep track of the value of the objective function and the
+    associated parameter vector z.
 
     This code could likely be re-written for more simplicty.
 
     Args:
-        1. bestmean - [array] Array of best least squares fit values.
-        2. bobj - [array] Array of lowest 10 objective function values.
-        3. z - [array] Trial coefficient vector.
-        4. obj - [float] Trial objective function value;
+        bestmean (array): Array of best least squares fit values.
+        bobj (array): Array of lowest 10 objective function values.
+        z (array): Trial coefficient vector.
+        obj (float): Trial objective function value;
             the sum of squared residuals.
 
     Returns:
-        1. bestmean - [array] New array of best least squares fit values.
-        2. bobj - [array] New array of lowest objective function values.
+        (tuple):
+            bestmean (array): New array of best least squares fit values.
+            bobj (array): New array of lowest objective function values.
 
     '''
 
@@ -177,22 +180,22 @@ def insertion(bestmean, bobj, z, obj):
     return bestmean, bobj
 
 
-def rawcorfactorlts(p, intercept, n, alpha):
+def rawcorfactorlts(p, intercept, n, ALPHA):
     r''' Calculate small sample correction factor.
 
     Calculates the correction factor (from Pison et al. 2002)
         to make the LTS solution unbiased for small n.
 
     Args:
-        1. p - [int] The rank of X, the number of parameters to fit.
-        2. intercept - [int] Logical. Are you fitting an intercept?
+        p (int): The rank of X, the number of parameters to fit.
+        intercept (int): Logical. Are you fitting an intercept?
             Set to false for array processing.
-        3. n - [int] The number of data points used in processing.
-        4. alpha - [float] The percentage of data points to keep in
-            the LTS, i.e. h = floor(alpha*n).
+        n (int): The number of data points used in processing.
+        ALPHA (float): The percentage of data points to keep in
+            the LTS, e.g. h = floor(ALPHA*n).
 
     Returns:
-        1. finitefactor - [float] A correction factor to make
+        finitefactor (float): A correction factor to make
             the LTS solution approximately unbiased
             for small (i.e. finite n).
 
@@ -203,11 +206,11 @@ def rawcorfactorlts(p, intercept, n, alpha):
     if p == 0:
         fp_500_n = 1 - np.exp(0.262024211897096)*1/(n**0.604756680630497)
         fp_875_n = 1 - np.exp(-0.351584646688712)*1/(n**1.01646567502486)
-        if (alpha >= 0.500) and (alpha <= 0.875):
-            fp_alpha_n = fp_500_n + (fp_875_n - fp_500_n)/0.375*(alpha - 0.500)
+        if (ALPHA >= 0.500) and (ALPHA <= 0.875):
+            fp_alpha_n = fp_500_n + (fp_875_n - fp_500_n)/0.375*(ALPHA - 0.500)
             fp_alpha_n = np.sqrt(fp_alpha_n)
-        if (alpha > 0.875) and (alpha < 1):
-            fp_alpha_n = fp_875_n + (1 - fp_875_n)/0.125*(alpha - 0.875)
+        if (ALPHA > 0.875) and (ALPHA < 1):
+            fp_alpha_n = fp_875_n + (1 - fp_875_n)/0.125*(ALPHA - 0.875)
             fp_alpha_n = np.sqrt(fp_alpha_n)
     else:
         if p == 1:
@@ -272,11 +275,11 @@ def rawcorfactorlts(p, intercept, n, alpha):
             fp875 = 1 - np.exp(c875[0])/np.power(n, c875[1])
 
             # Linearly interpolate for the specified ALPHA.
-            if (alpha >= 0.500) and (alpha <= 0.875):
-                fpfinal = fp500 + ((fp875 - fp500)/0.375)*(alpha - 0.500)
+            if (ALPHA >= 0.500) and (ALPHA <= 0.875):
+                fpfinal = fp500 + ((fp875 - fp500)/0.375)*(ALPHA - 0.500)
 
-            if (alpha > 0.875) and (alpha < 1):
-                fpfinal = fp875 + ((1 - fp875)/0.125)*(alpha-0.875)
+            if (ALPHA > 0.875) and (ALPHA < 1):
+                fpfinal = fp875 + ((1 - fp875)/0.125)*(ALPHA - 0.875)
 
             finitefactor = np.asscalar(1/fpfinal)
             return finitefactor
@@ -288,11 +291,11 @@ def rawconsfactorlts(h, n):
      a normal distrbution.
 
     Args:
-        1. h - [int] The number of points to fit.
-        2. n - [int] The total number of data points.
+        h (int): The number of points to fit.
+        n (int): The total number of data points.
 
     Returns:
-        1. dhn - [float] The correction factor d_h,n.
+        dhn (float): The correction factor d_h,n.
 
     '''
 
@@ -321,19 +324,19 @@ def dnorm(x, s=1, m=0):
     return c
 
 
-def rewcorfactorlts(p, intercept, n, alpha):
+def rewcorfactorlts(p, intercept, n, ALPHA):
     r''' Correction factor for final LTS least-squares fit.
 
     Args:
-        1. p - [int] The rank of X, the number of parameters to fit.
-        2. intercept - [int] Logical. Are you fitting an intercept?
+        p (int): The rank of X, the number of parameters to fit.
+        intercept (int): Logical. Are you fitting an intercept?
             Set to false for array processing.
-        3. n - [int] The number of data points used in processing.
-        4. alpha - [float] The percentage of data points to keep in
-            the LTS, i.e. h = floor(alpha*n).
+        n (int): The number of data points used in processing.
+        ALPHA (float): The percentage of data points to keep in
+            the LTS, e.g. h = floor(ALPHA*n).
 
     Returns:
-        1. finitefactor - [float] A finite sample correction factor.
+        finitefactor (float): A finite sample correction factor.
 
     '''
 
@@ -376,11 +379,11 @@ def rewcorfactorlts(p, intercept, n, alpha):
     fp875 = 1 - np.exp(c875[0])/np.power(n, c875[1])
 
     # Linearly interpolate for the specified ALPHA.
-    if (alpha >= 0.500) and (alpha <= 0.875):
-        fpfinal = fp500 + ((fp875 - fp500)/0.375)*(alpha - 0.500)
+    if (ALPHA >= 0.500) and (ALPHA <= 0.875):
+        fpfinal = fp500 + ((fp875 - fp500)/0.375)*(ALPHA - 0.500)
 
-    if (alpha > 0.875) and (alpha < 1):
-        fpfinal = fp875 + ((1 - fp875)/0.125)*(alpha-0.875)
+    if (ALPHA > 0.875) and (ALPHA < 1):
+        fpfinal = fp875 + ((1 - fp875)/0.125)*(ALPHA - 0.875)
 
     finitefactor = np.asscalar(1/fpfinal)
     return finitefactor
@@ -390,13 +393,12 @@ def rewconsfactorlts(weights, n, p):
     r''' Another correction factor for the final LTS fit.
 
     Args:
-        1. weights - [array] The standardized residuals.
-        2. n - [int] The total number of data points.
-        3. p - [int] The number of parameters to estimate.
+        weights (array): The standardized residuals.
+        n (int): The total number of data points.
+        p (int): The number of parameters to estimate.
 
     Returns:
-        1. cdelta_rew - [float] A small sample correction
-            factor.
+        cdelta_rew (float): A small sample correction factor.
 
     '''
 
@@ -421,13 +423,13 @@ def arrayfromweights(weightarray, idx):
     """ Return array element pairs from LTS weights.
 
     Args:
-        1. weightarray - [array] An m x 0 array of the
+        weightarray (array): An m x 0 array of the
             final LTS weights for each element pair.
-        2. idx - [array] An m x 2 array of the element pairs;
+        idx (array): An m x 2 array of the element pairs;
             generated from the `get_cc_time` function.
 
     Returns:
-        1. fstations - [array] A 1 x m array of element pairs.
+        fstations (array): A 1 x m array of element pairs.
 
     """
 
@@ -451,25 +453,26 @@ def get_cc_time(data, rij, hz):
     Cross correlates data and forms the (infra/seis) co-array.
 
     Args:
-        1. data - [array] An m x n data matrix with columns corresponding
+        data (array): An m x n data matrix with columns corresponding
             to different time series.
-        2. rij - [array] The array coordinates.
-        3. hz - [array] The sampling frequency of the data used to
+        rij (array): The array coordinates.
+        hz (float): The sampling frequency of the data used to
             change samples to time (sec).
 
     Returns:
-        1. tau - [array] A time delay vector for the co-array of
-            the data matrix.
-        2. xij - [array] The co-array of the input array.
-        3. cmax - [float] The maximum of the cross-correlations.
-        4. idx - [array] The co-array pairs.
+        (tuple):
+            tau (array): A time delay vector for the co-array of
+                the data matrix.
+            xij (array): The co-array of the input array.
+            cmax (float): The maximum of the cross-correlations.
+            idx (array): The co-array pairs.
 
     """
 
     m, n = np.shape(data)
     # Pre-allocate the cross-correlation matrix
-    cij = np.empty((m*2-1, n))
-    idx = [(i, j) for i in range(n-1) for j in range(i+1, n)]
+    cij = np.empty((m*2 - 1, n))
+    idx = [(i, j) for i in range(n - 1) for j in range(i + 1, n)]
 
     # Generate the co-array
     xij = rij[:, [i[0] for i in idx]] - rij[:, [j[1] for j in idx]]
@@ -478,22 +481,24 @@ def get_cc_time(data, rij, hz):
     N = xij.shape[1]    # noqa
 
     #  Pre-allocate the cross-correlation matrix
-    cij = np.empty((m*2-1, N))
+    cij = np.empty((m * 2 - 1, N))
     for k in range(N):
         # MATLAB's xcorr w/ 'coeff' normalization: unit auto-correlations.
         cij[:, k] = (np.correlate(data[:, idx[k][0]],
                                   data[:, idx[k][1]], mode='full') / np.sqrt(
-                                      sum(data[:, idx[k][0]]*data[:, idx[k][0]])
-                                      * sum(data[:, idx[k][1]]*data[:, idx[k][1]])))
+                                      sum(data[:, idx[k][0]]
+                                          * data[:, idx[k][0]])
+                                      * sum(data[:, idx[k][1]]
+                                            * data[:, idx[k][1]])))
 
     # Extract cross correlation maxima and associated delays.
     cmax = cij.max(axis=0)
 
     # Add MATLAB-esque +1 offset here for tau.
-    delay = np.argmax(cij, axis=0)+1
+    delay = np.argmax(cij, axis=0) + 1
 
     # Form the time delay vector.
-    tau = (m - delay)/hz
+    tau = (m - delay) / hz
 
     # Reshape output matrices for next processing steps.
     xij = xij.T
@@ -509,17 +514,15 @@ def getrij(latlist, lonlist):
     Points are calculated with the Vincenty inverse and will have a zero-mean.
 
     Args:
-        1. latlist - A list of latitude points.
-        2. lonlist - A list of longitude points.
+        latlist (list): A list of latitude points.
+        lonlist (list): A list of longitude points.
 
     Returns:
-        1. rij - A numpy array with the first row corresponding to
+        rij (array): A numpy array with the first row corresponding to
             cartesian "X" - coordinates and the second row
             corresponding to cartesian "Y" - coordinates.
 
     '''
-
-    getrij.__version__ = '1.00'
 
     # Check that the lat-lon arrays are the same size.
     latsize = len(latlist)
@@ -560,13 +563,14 @@ def fail_spike_test(tdelay, xij):
     nan values replacing LTS derived parameters.
 
     Args:
-        1. tdelay - [array] The inter-element travel times.
-        2. xij - [array] The co-array coordinates.
+        tdelay (array): The inter-element travel times.
+        xij (array): The co-array coordinates.
 
     Returns:
-        1. flagged [array] A vector of nan values.
-        2. lts_estimate [dict] A collection of run paramters with
-            LTS derived parameters replaced with nans.
+        (tuple):
+            flagged (array): A vector of nan values.
+            lts_estimate (dict): A collection of run paramters with
+                LTS derived parameters replaced with nans.
 
     '''
 
@@ -596,17 +600,17 @@ def least_squares_fit(Xvar, yvar, datamad, xorig, yorig):
     The simple case ALPHA == 1.0.
 
     Inputs:
-        1. Xvar: The standardized design matrix.
-        2. yvar: The standardized data array.
-        3. datamad: The data median absolute deviation
+        Xvar (array): The standardized design matrix.
+        yvar (array): The standardized data array.
+        datamad (array): The data median absolute deviation
             (MAD) array from standardization.
-        4. xorig: The original design matrix.
+        xorig (array): The original design matrix.
             Used for post-process packaging.
-        5. yorig: The original data array.
+        yorig (array): The original data array.
             Used for post-process packaging.
 
     Returns:
-        1. lst_sq_estimate: The least squares fit packaged
+        lst_sq_estimate (dict): The least squares fit packaged
         in a dictionary like the LTS estimate.
 
     '''
