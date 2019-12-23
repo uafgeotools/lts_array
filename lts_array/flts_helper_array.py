@@ -8,16 +8,16 @@ from obspy.geodetics.base import calc_vincenty_inverse
 
 import lts_array.flts_helper_array as fltsh
 
-r''' Contains the auxilliary functions called by fast_lts_array.py
+""" Contains the auxilliary functions called by fast_lts_array.py
 
 Many of these codes are Python3 translations of those found in
 the MATLAB Continuous Sound and Vibration Toolbox.
 
-'''
+"""
 
 
 def hcalc(ALPHA, n, p):
-    r''' Generate the h-value, the number of points to fit.
+    r""" Generate the h-value, the number of points to fit.
 
     Args:
         ALPHA (float): The decimal percentage of points
@@ -26,9 +26,10 @@ def hcalc(ALPHA, n, p):
         p (int): The number of parameters.
 
     Returns:
-        h (int): The number of points to fit.
+        (int):
+        ``h``: The number of points to fit.
 
-    '''
+    """
 
     h = np.floor(2*np.floor((n + p + 1)/2)
                  - n + 2*(n - np.floor((n + p + 1)/2)) * ALPHA)
@@ -37,17 +38,17 @@ def hcalc(ALPHA, n, p):
 
 
 def uniran(seed):
-    r''' Generate a random number and a new seed.
+    r""" Generate a random number and a new seed.
 
     Args:
         seed (int): A seed value.
 
     Returns:
         (tuple):
-            random (float): A pseudorandom number.
-            seed (float): A (new) seed value.
+            ``random`` (float): A pseudorandom number.
+            ``seed`` (float): A (new) seed value.
 
-    '''
+    """
 
     seed = np.floor(seed * 5761) + 999
     quot = np.floor(seed / 65536)
@@ -57,7 +58,7 @@ def uniran(seed):
 
 
 def randomset(tot, npar, seed):
-    r''' Generate an array of indices and a new seed.
+    r""" Generate an array of indices and a new seed.
 
     This function is called if not all (p+1) subsets out of
         n will be considered. It randomly draws a subsample of
@@ -69,11 +70,11 @@ def randomset(tot, npar, seed):
         seed (float): A random seed.
 
     Returns:
-        (tuple)
-            randset (array): A random set of indices for choosing subsets.
-            seed (float): A new random seed.
+        (tuple):
+            ``randset`` (array): A random set of indices for choosing subsets.
+            ``seed`` (float): A new random seed.
 
-    '''
+    """
 
     randlist = []
     for jj in range(0, npar):
@@ -91,7 +92,7 @@ def randomset(tot, npar, seed):
 
 
 def qgamma(p, a):
-    r''' The gamma inverse distribution function. '''
+    r""" The gamma inverse distribution function. """
 
     x = np.max((a - 1, 0.1))
     dx = 1
@@ -109,25 +110,25 @@ def qgamma(p, a):
 
 
 def pgamma(x, a):
-    ''' Regularized lower incomplete gamma function. '''
+    """ Regularized lower incomplete gamma function. """
     g1 = gammainc(a, x)
     return g1
 
 
 def dgamma(x, a):
-    ''' Probability of a gamma continuous random variable. '''
+    """ Probability of a gamma continuous random variable. """
     g2 = gamma.pdf(x, a)
     return g2
 
 
 def qchisq(p, a):
-    ''' The Chi-squared inverse distribution function. '''
+    """ The Chi-squared inverse distribution function. """
     x = 2*fltsh.qgamma(p, 0.5*a)
     return x
 
 
 def insertion(bestmean, bobj, z, obj):
-    r''' Keep track of the value of the objective function and the
+    r""" Keep track of the value of the objective function and the
     associated parameter vector z.
 
     This code could likely be re-written for more simplicty.
@@ -141,10 +142,10 @@ def insertion(bestmean, bobj, z, obj):
 
     Returns:
         (tuple):
-            bestmean (array): New array of best least squares fit values.
-            bobj (array): New array of lowest objective function values.
+            ``bestmean`` (array): New array of best least squares fit values.
+            ``bobj`` (array): New array of lowest objective function values.
 
-    '''
+    """
 
     insert = 1
     equ = [x for x in range(len(bobj)) if bobj[x] == obj]
@@ -181,7 +182,7 @@ def insertion(bestmean, bobj, z, obj):
 
 
 def rawcorfactorlts(p, intercept, n, ALPHA):
-    r''' Calculate small sample correction factor.
+    r""" Calculate small sample correction factor.
 
     Calculates the correction factor (from Pison et al. 2002)
         to make the LTS solution unbiased for small n.
@@ -195,11 +196,11 @@ def rawcorfactorlts(p, intercept, n, ALPHA):
             the LTS, e.g. h = floor(ALPHA*n).
 
     Returns:
-        finitefactor (float): A correction factor to make
-            the LTS solution approximately unbiased
-            for small (i.e. finite n).
+        (float):
+        ``finitefactor``: A correction factor to make the LTS
+        solution approximately unbiased for small (i.e. finite n).
 
-    '''
+    """
 
     if intercept == 1:
         p = p - 1
@@ -286,7 +287,7 @@ def rawcorfactorlts(p, intercept, n, ALPHA):
 
 
 def rawconsfactorlts(h, n):
-    r''' Calculate the constant used to make the
+    r""" Calculate the constant used to make the
      LTS scale estimators consistent for
      a normal distrbution.
 
@@ -295,9 +296,10 @@ def rawconsfactorlts(h, n):
         n (int): The total number of data points.
 
     Returns:
-        dhn (float): The correction factor d_h,n.
+        (float):
+        ``dhn``: The correction factor d_h,n.
 
-    '''
+    """
 
     # Calculate the initial factor c_h,n.
     x = (h+n)/(2*n)
@@ -313,19 +315,19 @@ def rawconsfactorlts(h, n):
 
 
 def qnorm(p, s=1, m=0):
-    r''' The normal inverse distribution function. '''
+    r""" The normal inverse distribution function. """
     x = erfinv(2*p - 1)*np.sqrt(2)*s + m
     return x
 
 
 def dnorm(x, s=1, m=0):
-    r''' The normal density function. '''
+    r""" The normal density function. """
     c = (1/(np.sqrt(2*np.pi)*s))*np.exp(-0.5*((x-m)/s)**2)
     return c
 
 
 def rewcorfactorlts(p, intercept, n, ALPHA):
-    r''' Correction factor for final LTS least-squares fit.
+    r""" Correction factor for final LTS least-squares fit.
 
     Args:
         p (int): The rank of X, the number of parameters to fit.
@@ -336,9 +338,10 @@ def rewcorfactorlts(p, intercept, n, ALPHA):
             the LTS, e.g. h = floor(ALPHA*n).
 
     Returns:
-        finitefactor (float): A finite sample correction factor.
+        (float):
+        ``finitefactor``: A finite sample correction factor.
 
-    '''
+    """
 
     # ALPHA = 0.500.
     coeffalpha500 = np.array([
@@ -390,7 +393,7 @@ def rewcorfactorlts(p, intercept, n, ALPHA):
 
 
 def rewconsfactorlts(weights, n, p):
-    r''' Another correction factor for the final LTS fit.
+    r""" Another correction factor for the final LTS fit.
 
     Args:
         weights (array): The standardized residuals.
@@ -398,9 +401,10 @@ def rewconsfactorlts(weights, n, p):
         p (int): The number of parameters to estimate.
 
     Returns:
-        cdelta_rew (float): A small sample correction factor.
+        (float):
+        ``cdelta_rew``: A small sample correction factor.
 
-    '''
+    """
 
     if np.sum(weights) == n:
         cdelta_rew = 1
@@ -429,7 +433,8 @@ def arrayfromweights(weightarray, idx):
             generated from the `get_cc_time` function.
 
     Returns:
-        fstations (array): A 1 x m array of element pairs.
+        (array):
+        ``fstations``: A 1 x m array of element pairs.
 
     """
 
@@ -461,11 +466,11 @@ def get_cc_time(data, rij, hz):
 
     Returns:
         (tuple):
-            tau (array): A time delay vector for the co-array of
-                the data matrix.
-            xij (array): The co-array of the input array.
-            cmax (float): The maximum of the cross-correlations.
-            idx (array): The co-array pairs.
+            ``tau`` (array): A time delay vector for the co-array of
+            the data matrix.
+            ``xij`` (array): The co-array of the input array.
+            ``cmax`` (float): The maximum of the cross-correlations.
+            ``idx`` (array): The co-array pairs.
 
     """
 
@@ -508,7 +513,7 @@ def get_cc_time(data, rij, hz):
 
 
 def getrij(latlist, lonlist):
-    r''' Calculate element r_{ij} from lat-lon.
+    r""" Calculate element r_{ij} from lat-lon.
 
     Return the projected geographic positions in X-Y (cartesian) coordinates.
     Points are calculated with the Vincenty inverse and will have a zero-mean.
@@ -518,11 +523,12 @@ def getrij(latlist, lonlist):
         lonlist (list): A list of longitude points.
 
     Returns:
-        rij (array): A numpy array with the first row corresponding to
-            cartesian "X" - coordinates and the second row
-            corresponding to cartesian "Y" - coordinates.
+        (array):
+        ``rij``: A numpy array with the first row corresponding to
+        cartesian "X" - coordinates and the second row
+        corresponding to cartesian "Y" - coordinates.
 
-    '''
+    """
 
     # Check that the lat-lon arrays are the same size.
     latsize = len(latlist)
@@ -554,7 +560,7 @@ def getrij(latlist, lonlist):
 
 
 def fail_spike_test(tdelay, xij):
-    r''' Returns data structures filled with nans when all tdelays are equal.
+    r""" Returns data structures filled with nans when all tdelays are equal.
 
     Receiving a time delay vector where every element is equal will cause
     the current LTS algorithm to crash. In order to minimize the impact on
@@ -568,11 +574,11 @@ def fail_spike_test(tdelay, xij):
 
     Returns:
         (tuple):
-            flagged (array): A vector of nan values.
-            lts_estimate (dict): A collection of run paramters with
-                LTS derived parameters replaced with nans.
+            ``flagged`` (array): A vector of nan values.
+            ``lts_estimate`` (dict): A collection of run parameters with
+            LTS derived parameters replaced with nans.
 
-    '''
+    """
 
     # Creating the "flagged" vector
     nan_vec = np.empty_like(tdelay)
@@ -595,25 +601,26 @@ def fail_spike_test(tdelay, xij):
 
 
 def least_squares_fit(Xvar, yvar, datamad, xorig, yorig):
-    ''' Perform an (ordinary) least squares fit of the data.
+    """ Perform an (ordinary) least squares fit of the data.
 
-    The simple case ALPHA == 1.0.
+    The simple case ALPHA = 1.0.
 
-    Inputs:
+    Args:
         Xvar (array): The standardized design matrix.
         yvar (array): The standardized data array.
         datamad (array): The data median absolute deviation
-            (MAD) array from standardization.
+        (MAD) array from standardization.
         xorig (array): The original design matrix.
-            Used for post-process packaging.
+        Used for post-process packaging.
         yorig (array): The original data array.
-            Used for post-process packaging.
+        Used for post-process packaging.
 
     Returns:
-        lst_sq_estimate (dict): The least squares fit packaged
+        (dict):
+        ``lst_sq_estimate``: The least squares fit packaged
         in a dictionary like the LTS estimate.
 
-    '''
+    """
 
     # Perform the least squares fit.
     n, p = np.shape(Xvar)

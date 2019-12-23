@@ -24,11 +24,11 @@ def lts_array_plot(st, stdict, t, mdccm, lts_vel, lts_baz):
             back-azimuths estimates.
 
     Returns:
-        (tuple)
-            fig1: Output figure handle.
-            axs1: Output figure axes.
+        (tuple):
+            ``fig1``: Output figure handle.
+            ``axs1``: Output figure axes.
 
-    Examples:
+    Example:
         fig1, axs1 = lts_array_plot(st, stdict, t, mdccm, lts_vel, lts_baz)
     '''
 

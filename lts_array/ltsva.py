@@ -25,12 +25,12 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA):
     Returns:
         (tuple):
             ``stdict`` (dict): Dictionary of flagged element pairs.
-            ``t`` (nparray): Array of times at which parameter estimates
+            ``t`` (array): Array of times at which parameter estimates
             are calculated.
-            ``mdccm`` (nparray): Array of median cross-correlation maximas.
-            ``lts_vel`` (nparray): Array of least trimmed squares
+            ``mdccm`` (array): Array of median cross-correlation maximas.
+            ``lts_vel`` (array): Array of least trimmed squares
             trace velocity estimates.
-            ``lts_baz`` (nparray): Array of least trimmed squares
+            ``lts_baz`` (array): Array of least trimmed squares
             back-azimuth estimates.
 
     """

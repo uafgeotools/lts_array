@@ -12,14 +12,14 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../../doctut'))
+sys.path.insert(0, os.path.abspath('../..'))
 
 
 # -- Project information -----------------------------------------------------
 
 project = 'lts_array'
-copyright = '2019, Jordan W. Bishop'
-author = 'Jordan W. Bishop'
+copyright = '2019, Jordan W. Bishop, David Fee, and Curt Szuberla'
+author = 'Jordan W. Bishop, David Fee, and Curt Szuberla'
 
 # The full version, including alpha/beta/rc tags
 release = '1.0.0'
@@ -48,6 +48,18 @@ language = 'python'
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
 
+# List of source suffixes - the files that Sphinx will read and their
+# markdown type.
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.txt': 'restructuredtext',
+    '.md': 'markdown',
+}
+
+# Parsers - rst is implicit. Add markdown parser.
+source_parsers = {
+   '.md': 'recommonmark.parser.CommonMarkParser',
+}
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -59,6 +71,7 @@ html_theme = 'sphinx_rtd_theme'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-# Docstring Parsing
+# -- Options for docstrings -------------------------------------------------
+# Docstring Parsing with napoleon
 napoleon_google_docstring = True
 napoleon_numpy_docstring = False
