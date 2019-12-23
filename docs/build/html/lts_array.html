@@ -1,0 +1,712 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="python" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="python" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Code Descriptions &mdash; lts_array 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="lts_array" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> lts_array
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Code Descriptions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-lts_array.fast_lts_array">lts_array.fast_lts_array module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-lts_array.flts_helper_array">lts_array.flts_helper_array module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-lts_array.lts_array_plot">lts_array.lts_array_plot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-lts_array.ltsva">lts_array.ltsva module</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">lts_array</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Code Descriptions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/lts_array.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="code-descriptions">
+<h1>Code Descriptions<a class="headerlink" href="#code-descriptions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>fast_lts_array: The function implementing the FAST-LTS algorithm.</p></li>
+<li><p>flts_helper_array: Auxiliary statistical and pre-processing functions.</p></li>
+<li><p>lts_array_plot: Plotting routines.</p></li>
+<li><p>ltsva: Wrapper for pre-processing and processing.</p></li>
+</ul>
+</div>
+<div class="section" id="module-lts_array.fast_lts_array">
+<span id="lts-array-fast-lts-array-module"></span><h2>lts_array.fast_lts_array module<a class="headerlink" href="#module-lts_array.fast_lts_array" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="lts_array.fast_lts_array.fast_lts_array">
+<code class="sig-prename descclassname">lts_array.fast_lts_array.</code><code class="sig-name descname">fast_lts_array</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">y</em>, <em class="sig-param">ALPHA</em><span class="sig-paren">)</span><a class="headerlink" href="#lts_array.fast_lts_array.fast_lts_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies the FAST-LTS code with simplications for array processing.</p>
+<p>This code is based off the FAST-LTS algorithm:
+Rousseeuw, Peter J. and Katrien Van Driessen (2006). &quot;Data Mining and
+Knowledge Discovery&quot;. In: Springer Science + Business Media, Inc.
+Chap. 12: Computing LTS Regression for Large Data Sets, pp. 29-45</p>
+<p>ASSUMPTIONS:
+This algorithm is designed for 2D velocity - back-azimuth array processing,
+so some sophistication is left out from what would be a more
+generalized version. As such, we are assuming a plane wave model,
+so (from the physics) the intercept is assumed to be zero. As a result,
+&quot;intercept adjustment&quot; protocols of the full FAST-LTS algorithm are
+left out of processing. We will always assume that a relatively small
+group of data n &lt;= 100.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>array</em>) -- The design matrix (co-array coordinates).</p></li>
+<li><p><strong>y</strong> (<em>array</em>) -- The vector of response variables
+(inter-element travel times).</p></li>
+<li><p><strong>ALPHA</strong> (<em>float</em>) -- The subset percentage to take - must be in
+the range of [0.5, 1.0]. A good default alpha is 0.75.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>A dictionary of output parameters:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">bazimuth</span></code> (float): Back-azimuth in degrees from North.
+<code class="docutils literal notranslate"><span class="pre">velocity</span></code> (float): Velocity.
+<code class="docutils literal notranslate"><span class="pre">coefficients</span></code> (array): The x and y components of
+the slowness vector [sx, sy].
+<code class="docutils literal notranslate"><span class="pre">flagged</span></code> (array): An array of the binary weights
+used the final weighted least squares fit.
+<code class="docutils literal notranslate"><span class="pre">fitted</span></code> (array): The value of the best-fit plane at
+the co-array coordinates.
+<code class="docutils literal notranslate"><span class="pre">residuals</span></code> (array): The residuals between the &quot;fitted&quot;
+values and the &quot;y&quot; values.
+<code class="docutils literal notranslate"><span class="pre">scale</span></code> (float): The standard deviation of the best fitting
+subset multiplied by small sample correction factors.
+<code class="docutils literal notranslate"><span class="pre">rsquared</span></code> (float): The R**2 value of the regression fit.
+<code class="docutils literal notranslate"><span class="pre">X</span></code> (array): The input co-array coordinate array.
+<code class="docutils literal notranslate"><span class="pre">y</span></code> (array): The input inter-element travel times.</p>
+</div></blockquote>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Res (dictionary)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lts_array.flts_helper_array">
+<span id="lts-array-flts-helper-array-module"></span><h2>lts_array.flts_helper_array module<a class="headerlink" href="#module-lts_array.flts_helper_array" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="lts_array.flts_helper_array.arrayfromweights">
+<code class="sig-prename descclassname">lts_array.flts_helper_array.</code><code class="sig-name descname">arrayfromweights</code><span class="sig-paren">(</span><em class="sig-param">weightarray</em>, <em class="sig-param">idx</em><span class="sig-paren">)</span><a class="headerlink" href="#lts_array.flts_helper_array.arrayfromweights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return array element pairs from LTS weights.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>weightarray</strong> (<em>array</em>) -- An m x 0 array of the
+final LTS weights for each element pair.</p></li>
+<li><p><strong>idx</strong> (<em>array</em>) -- An m x 2 array of the element pairs;
+generated from the <cite>get_cc_time</cite> function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">fstations</span></code>: A 1 x m array of element pairs.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(array)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="lts_array.flts_helper_array.dgamma">
+<code class="sig-prename descclassname">lts_array.flts_helper_array.</code><code class="sig-name descname">dgamma</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">a</em><span class="sig-paren">)</span><a class="headerlink" href="#lts_array.flts_helper_array.dgamma" title="Permalink to this definition">¶</a></dt>
+<dd><p>Probability of a gamma continuous random variable.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lts_array.flts_helper_array.dnorm">
+<code class="sig-prename descclassname">lts_array.flts_helper_array.</code><code class="sig-name descname">dnorm</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">s=1</em>, <em class="sig-param">m=0</em><span class="sig-paren">)</span><a class="headerlink" href="#lts_array.flts_helper_array.dnorm" title="Permalink to this definition">¶</a></dt>
+<dd><p>The normal density function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lts_array.flts_helper_array.fail_spike_test">
+<code class="sig-prename descclassname">lts_array.flts_helper_array.</code><code class="sig-name descname">fail_spike_test</code><span class="sig-paren">(</span><em class="sig-param">tdelay</em>, <em class="sig-param">xij</em><span class="sig-paren">)</span><a class="headerlink" href="#lts_array.flts_helper_array.fail_spike_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns data structures filled with nans when all tdelays are equal.</p>
+<p>Receiving a time delay vector where every element is equal will cause
+the current LTS algorithm to crash. In order to minimize the impact on
+existing processing pipelines, this function assists in returning
+the sample data structures as a successful LTS run, but with
+nan values replacing LTS derived parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tdelay</strong> (<em>array</em>) -- The inter-element travel times.</p></li>
+<li><p><strong>xij</strong> (<em>array</em>) -- The co-array coordinates.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">flagged</span></code> (array): A vector of nan values.
+<code class="docutils literal notranslate"><span class="pre">lts_estimate</span></code> (dict): A collection of run parameters with
+LTS derived parameters replaced with nans.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(tuple)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="lts_array.flts_helper_array.get_cc_time">
+<code class="sig-prename descclassname">lts_array.flts_helper_array.</code><code class="sig-name descname">get_cc_time</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">rij</em>, <em class="sig-param">hz</em><span class="sig-paren">)</span><a class="headerlink" href="#lts_array.flts_helper_array.get_cc_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a time delay vector from cross correlations.</p>
+<p>Cross correlates data and forms the (infra/seis) co-array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>array</em>) -- An m x n data matrix with columns corresponding
+to different time series.</p></li>
+<li><p><strong>rij</strong> (<em>array</em>) -- The array coordinates.</p></li>
+<li><p><strong>hz</strong> (<em>float</em>) -- The sampling frequency of the data used to
+change samples to time (sec).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">tau</span></code> (array): A time delay vector for the co-array of
+the data matrix.
+<code class="docutils literal notranslate"><span class="pre">xij</span></code> (array): The co-array of the input array.
+<code class="docutils literal notranslate"><span class="pre">cmax</span></code> (float): The maximum of the cross-correlations.
+<code class="docutils literal notranslate"><span class="pre">idx</span></code> (array): The co-array pairs.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(tuple)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="lts_array.flts_helper_array.getrij">
+<code class="sig-prename descclassname">lts_array.flts_helper_array.</code><code class="sig-name descname">getrij</code><span class="sig-paren">(</span><em class="sig-param">latlist</em>, <em class="sig-param">lonlist</em><span class="sig-paren">)</span><a class="headerlink" href="#lts_array.flts_helper_array.getrij" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate element r_{ij} from lat-lon.</p>
+<p>Return the projected geographic positions in X-Y (cartesian) coordinates.
+Points are calculated with the Vincenty inverse and will have a zero-mean.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>latlist</strong> (<em>list</em>) -- A list of latitude points.</p></li>
+<li><p><strong>lonlist</strong> (<em>list</em>) -- A list of longitude points.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">rij</span></code>: A numpy array with the first row corresponding to
+cartesian &quot;X&quot; - coordinates and the second row
+corresponding to cartesian &quot;Y&quot; - coordinates.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(array)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="lts_array.flts_helper_array.hcalc">
+<code class="sig-prename descclassname">lts_array.flts_helper_array.</code><code class="sig-name descname">hcalc</code><span class="sig-paren">(</span><em class="sig-param">ALPHA</em>, <em class="sig-param">n</em>, <em class="sig-param">p</em><span class="sig-paren">)</span><a class="headerlink" href="#lts_array.flts_helper_array.hcalc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the h-value, the number of points to fit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ALPHA</strong> (<em>float</em>) -- The decimal percentage of points
+to keep. Default is 0.75.</p></li>
+<li><p><strong>n</strong> (<em>int</em>) -- The total number of points.</p></li>
+<li><p><strong>p</strong> (<em>int</em>) -- The number of parameters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">h</span></code>: The number of points to fit.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="lts_array.flts_helper_array.insertion">
+<code class="sig-prename descclassname">lts_array.flts_helper_array.</code><code class="sig-name descname">insertion</code><span class="sig-paren">(</span><em class="sig-param">bestmean</em>, <em class="sig-param">bobj</em>, <em class="sig-param">z</em>, <em class="sig-param">obj</em><span class="sig-paren">)</span><a class="headerlink" href="#lts_array.flts_helper_array.insertion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Keep track of the value of the objective function and the
+associated parameter vector z.</p>
+<p>This code could likely be re-written for more simplicty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bestmean</strong> (<em>array</em>) -- Array of best least squares fit values.</p></li>
+<li><p><strong>bobj</strong> (<em>array</em>) -- Array of lowest 10 objective function values.</p></li>
+<li><p><strong>z</strong> (<em>array</em>) -- Trial coefficient vector.</p></li>
+<li><p><strong>obj</strong> (<em>float</em>) -- Trial objective function value;
+the sum of squared residuals.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">bestmean</span></code> (array): New array of best least squares fit values.
+<code class="docutils literal notranslate"><span class="pre">bobj</span></code> (array): New array of lowest objective function values.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(tuple)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="lts_array.flts_helper_array.least_squares_fit">
+<code class="sig-prename descclassname">lts_array.flts_helper_array.</code><code class="sig-name descname">least_squares_fit</code><span class="sig-paren">(</span><em class="sig-param">Xvar</em>, <em class="sig-param">yvar</em>, <em class="sig-param">datamad</em>, <em class="sig-param">xorig</em>, <em class="sig-param">yorig</em><span class="sig-paren">)</span><a class="headerlink" href="#lts_array.flts_helper_array.least_squares_fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform an (ordinary) least squares fit of the data.</p>
+<p>The simple case ALPHA = 1.0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Xvar</strong> (<em>array</em>) -- The standardized design matrix.</p></li>
+<li><p><strong>yvar</strong> (<em>array</em>) -- The standardized data array.</p></li>
+<li><p><strong>datamad</strong> (<em>array</em>) -- The data median absolute deviation</p></li>
+<li><p><strong>array from standardization.</strong> (<em>(</em><em>MAD</em><em>)</em>) -- </p></li>
+<li><p><strong>xorig</strong> (<em>array</em>) -- The original design matrix.</p></li>
+<li><p><strong>for post-process packaging.</strong> (<em>Used</em>) -- </p></li>
+<li><p><strong>yorig</strong> (<em>array</em>) -- The original data array.</p></li>
+<li><p><strong>for post-process packaging.</strong> -- </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">lst_sq_estimate</span></code>: The least squares fit packaged
+in a dictionary like the LTS estimate.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(dict)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="lts_array.flts_helper_array.pgamma">
+<code class="sig-prename descclassname">lts_array.flts_helper_array.</code><code class="sig-name descname">pgamma</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">a</em><span class="sig-paren">)</span><a class="headerlink" href="#lts_array.flts_helper_array.pgamma" title="Permalink to this definition">¶</a></dt>
+<dd><p>Regularized lower incomplete gamma function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lts_array.flts_helper_array.qchisq">
+<code class="sig-prename descclassname">lts_array.flts_helper_array.</code><code class="sig-name descname">qchisq</code><span class="sig-paren">(</span><em class="sig-param">p</em>, <em class="sig-param">a</em><span class="sig-paren">)</span><a class="headerlink" href="#lts_array.flts_helper_array.qchisq" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Chi-squared inverse distribution function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lts_array.flts_helper_array.qgamma">
+<code class="sig-prename descclassname">lts_array.flts_helper_array.</code><code class="sig-name descname">qgamma</code><span class="sig-paren">(</span><em class="sig-param">p</em>, <em class="sig-param">a</em><span class="sig-paren">)</span><a class="headerlink" href="#lts_array.flts_helper_array.qgamma" title="Permalink to this definition">¶</a></dt>
+<dd><p>The gamma inverse distribution function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lts_array.flts_helper_array.qnorm">
+<code class="sig-prename descclassname">lts_array.flts_helper_array.</code><code class="sig-name descname">qnorm</code><span class="sig-paren">(</span><em class="sig-param">p</em>, <em class="sig-param">s=1</em>, <em class="sig-param">m=0</em><span class="sig-paren">)</span><a class="headerlink" href="#lts_array.flts_helper_array.qnorm" title="Permalink to this definition">¶</a></dt>
+<dd><p>The normal inverse distribution function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lts_array.flts_helper_array.randomset">
+<code class="sig-prename descclassname">lts_array.flts_helper_array.</code><code class="sig-name descname">randomset</code><span class="sig-paren">(</span><em class="sig-param">tot</em>, <em class="sig-param">npar</em>, <em class="sig-param">seed</em><span class="sig-paren">)</span><a class="headerlink" href="#lts_array.flts_helper_array.randomset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate an array of indices and a new seed.</p>
+<dl class="simple">
+<dt>This function is called if not all (p+1) subsets out of</dt><dd><p>n will be considered. It randomly draws a subsample of
+nel cases out of tot.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tot</strong> (<em>int</em>) -- The total number of data points.</p></li>
+<li><p><strong>npar</strong> (<em>int</em>) -- The number of parameters to estimate.</p></li>
+<li><p><strong>seed</strong> (<em>float</em>) -- A random seed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">randset</span></code> (array): A random set of indices for choosing subsets.
+<code class="docutils literal notranslate"><span class="pre">seed</span></code> (float): A new random seed.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(tuple)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="lts_array.flts_helper_array.rawconsfactorlts">
+<code class="sig-prename descclassname">lts_array.flts_helper_array.</code><code class="sig-name descname">rawconsfactorlts</code><span class="sig-paren">(</span><em class="sig-param">h</em>, <em class="sig-param">n</em><span class="sig-paren">)</span><a class="headerlink" href="#lts_array.flts_helper_array.rawconsfactorlts" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Calculate the constant used to make the</dt><dd><p>LTS scale estimators consistent for
+a normal distrbution.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>h</strong> (<em>int</em>) -- The number of points to fit.</p></li>
+<li><p><strong>n</strong> (<em>int</em>) -- The total number of data points.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">dhn</span></code>: The correction factor d_h,n.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="lts_array.flts_helper_array.rawcorfactorlts">
+<code class="sig-prename descclassname">lts_array.flts_helper_array.</code><code class="sig-name descname">rawcorfactorlts</code><span class="sig-paren">(</span><em class="sig-param">p</em>, <em class="sig-param">intercept</em>, <em class="sig-param">n</em>, <em class="sig-param">ALPHA</em><span class="sig-paren">)</span><a class="headerlink" href="#lts_array.flts_helper_array.rawcorfactorlts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate small sample correction factor.</p>
+<dl class="simple">
+<dt>Calculates the correction factor (from Pison et al. 2002)</dt><dd><p>to make the LTS solution unbiased for small n.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>int</em>) -- The rank of X, the number of parameters to fit.</p></li>
+<li><p><strong>intercept</strong> (<em>int</em>) -- Logical. Are you fitting an intercept?
+Set to false for array processing.</p></li>
+<li><p><strong>n</strong> (<em>int</em>) -- The number of data points used in processing.</p></li>
+<li><p><strong>ALPHA</strong> (<em>float</em>) -- The percentage of data points to keep in
+the LTS, e.g. h = floor(ALPHA*n).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">finitefactor</span></code>: A correction factor to make the LTS
+solution approximately unbiased for small (i.e. finite n).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="lts_array.flts_helper_array.rewconsfactorlts">
+<code class="sig-prename descclassname">lts_array.flts_helper_array.</code><code class="sig-name descname">rewconsfactorlts</code><span class="sig-paren">(</span><em class="sig-param">weights</em>, <em class="sig-param">n</em>, <em class="sig-param">p</em><span class="sig-paren">)</span><a class="headerlink" href="#lts_array.flts_helper_array.rewconsfactorlts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Another correction factor for the final LTS fit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>weights</strong> (<em>array</em>) -- The standardized residuals.</p></li>
+<li><p><strong>n</strong> (<em>int</em>) -- The total number of data points.</p></li>
+<li><p><strong>p</strong> (<em>int</em>) -- The number of parameters to estimate.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">cdelta_rew</span></code>: A small sample correction factor.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="lts_array.flts_helper_array.rewcorfactorlts">
+<code class="sig-prename descclassname">lts_array.flts_helper_array.</code><code class="sig-name descname">rewcorfactorlts</code><span class="sig-paren">(</span><em class="sig-param">p</em>, <em class="sig-param">intercept</em>, <em class="sig-param">n</em>, <em class="sig-param">ALPHA</em><span class="sig-paren">)</span><a class="headerlink" href="#lts_array.flts_helper_array.rewcorfactorlts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Correction factor for final LTS least-squares fit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>int</em>) -- The rank of X, the number of parameters to fit.</p></li>
+<li><p><strong>intercept</strong> (<em>int</em>) -- Logical. Are you fitting an intercept?
+Set to false for array processing.</p></li>
+<li><p><strong>n</strong> (<em>int</em>) -- The number of data points used in processing.</p></li>
+<li><p><strong>ALPHA</strong> (<em>float</em>) -- The percentage of data points to keep in
+the LTS, e.g. h = floor(ALPHA*n).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">finitefactor</span></code>: A finite sample correction factor.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="lts_array.flts_helper_array.uniran">
+<code class="sig-prename descclassname">lts_array.flts_helper_array.</code><code class="sig-name descname">uniran</code><span class="sig-paren">(</span><em class="sig-param">seed</em><span class="sig-paren">)</span><a class="headerlink" href="#lts_array.flts_helper_array.uniran" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a random number and a new seed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>seed</strong> (<em>int</em>) -- A seed value.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">random</span></code> (float): A pseudorandom number.
+<code class="docutils literal notranslate"><span class="pre">seed</span></code> (float): A (new) seed value.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(tuple)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lts_array.lts_array_plot">
+<span id="lts-array-lts-array-plot-module"></span><h2>lts_array.lts_array_plot module<a class="headerlink" href="#module-lts_array.lts_array_plot" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="lts_array.lts_array_plot.lts_array_plot">
+<code class="sig-prename descclassname">lts_array.lts_array_plot.</code><code class="sig-name descname">lts_array_plot</code><span class="sig-paren">(</span><em class="sig-param">st</em>, <em class="sig-param">stdict</em>, <em class="sig-param">t</em>, <em class="sig-param">mdccm</em>, <em class="sig-param">lts_vel</em>, <em class="sig-param">lts_baz</em><span class="sig-paren">)</span><a class="headerlink" href="#lts_array.lts_array_plot.lts_array_plot" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Return a Least-trimmed squares array processing plot, including</dt><dd><p>flagged element pairs.</p>
+</dd>
+<dt>Plots first channel waveform, trace-velocity, back-azimuth,</dt><dd><p>and LTS-flagged element pairs.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>st</strong> (<em>stream</em>) -- Obspy stream. Assumes response has been removed.</p></li>
+<li><p><strong>stdict</strong> (<em>dict</em>) -- Dictionary of flagged element pairs
+from the <cite>fast_lts_array</cite> function.</p></li>
+<li><p><strong>t</strong> (<em>array</em>) -- Array of time values for each parameter estimate.</p></li>
+<li><p><strong>mdccm</strong> (<em>array</em>) -- Array of median cross-correlation maximas.</p></li>
+<li><p><strong>lts_vel</strong> (<em>array</em>) -- Array of least-trimmed squares
+trace velocity estimates.</p></li>
+<li><p><strong>lts_baz</strong> (<em>array</em>) -- Array of least-trimmed squares
+back-azimuths estimates.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">fig1</span></code>: Output figure handle.
+<code class="docutils literal notranslate"><span class="pre">axs1</span></code>: Output figure axes.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(tuple)</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>fig1, axs1 = lts_array_plot(st, stdict, t, mdccm, lts_vel, lts_baz)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lts_array.ltsva">
+<span id="lts-array-ltsva-module"></span><h2>lts_array.ltsva module<a class="headerlink" href="#module-lts_array.ltsva" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="lts_array.ltsva.ltsva">
+<code class="sig-prename descclassname">lts_array.ltsva.</code><code class="sig-name descname">ltsva</code><span class="sig-paren">(</span><em class="sig-param">st</em>, <em class="sig-param">rij</em>, <em class="sig-param">WINLEN</em>, <em class="sig-param">WINOVER</em>, <em class="sig-param">ALPHA</em><span class="sig-paren">)</span><a class="headerlink" href="#lts_array.ltsva.ltsva" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process infrasound or seismic array data with least trimmed squares (LTS).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>st</strong> -- Obspy stream object. Assumes response has been removed.</p></li>
+<li><p><strong>rij</strong> (<em>2</em><em>, </em><em>n</em>) -- Array of 'n' (infra/seis) array element coordinates
+in km for 2-dimensions [easting, northing].</p></li>
+<li><p><strong>WINLEN</strong> (<em>float</em>) -- Window length in seconds.</p></li>
+<li><p><strong>WINOVER</strong> (<em>float</em>) -- Window overlap in the range [0.0 - 1.0].</p></li>
+<li><p><strong>ALPHA</strong> (<em>float</em>) -- Fraction of data for LTS subsetting [0.5 - 1.0].
+Choose 1.0 for ordinary least squares.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Exceptions:</dt><dd><p>A check is performed to see if all time delays are equal (= 0).
+If so, an exception is raised and the algorithm
+returns the same data structures on exit, but with NaN values.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">stdict</span></code> (dict): Dictionary of flagged element pairs.
+<code class="docutils literal notranslate"><span class="pre">t</span></code> (array): Array of times at which parameter estimates
+are calculated.
+<code class="docutils literal notranslate"><span class="pre">mdccm</span></code> (array): Array of median cross-correlation maximas.
+<code class="docutils literal notranslate"><span class="pre">lts_vel</span></code> (array): Array of least trimmed squares
+trace velocity estimates.
+<code class="docutils literal notranslate"><span class="pre">lts_baz</span></code> (array): Array of least trimmed squares
+back-azimuth estimates.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(tuple)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="lts_array" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Jordan W. Bishop, David Fee, and Curt Szuberla
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

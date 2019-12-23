@@ -7,15 +7,15 @@
 
 # Python setup and runtime things
 **/__pycache__
-build/
 dist/
 *egg-info
+build/*
+!docs/build/*
 
 # Temporary/swap files from text editors
 **/*~
 **/*.swp
 **/._*
-
 
 # Any image file
 *.png
