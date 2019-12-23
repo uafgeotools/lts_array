@@ -5,9 +5,12 @@ from copy import deepcopy
 
 import lts_array.flts_helper_array as fltsh
 
+"""
+This module solely contains the FAST-LTS algorithm written in Python3.
+"""
 
 def fast_lts_array(X, y, ALPHA):  # noqa
-    r''' Applies the FAST-LTS code with simplications for array processing.
+    r""" Applies the FAST-LTS code with simplications for array processing.
 
     This code is based off the FAST-LTS algorithm:
     Rousseeuw, Peter J. and Katrien Van Driessen (2006). "Data Mining and
@@ -33,24 +36,24 @@ def fast_lts_array(X, y, ALPHA):  # noqa
     Returns:
         Res (dictionary): A dictionary of output parameters:
 
-            `bazimuth` (float): Back-azimuth in degrees from North.
-            `velocity` (float): Velocity.
-            `coefficients` (array): The x and y components of
+            ``bazimuth`` (float): Back-azimuth in degrees from North.
+            ``velocity`` (float): Velocity.
+            ``coefficients`` (array): The x and y components of
             the slowness vector [sx, sy].
-            `flagged` (array): An array of the binary weights
+            ``flagged`` (array): An array of the binary weights
             used the final weighted least squares fit.
-            `fitted` (array): The value of the best-fit plane at
+            ``fitted`` (array): The value of the best-fit plane at
             the co-array coordinates.
-            `residuals` (array): The residuals between the "fitted"
+            ``residuals`` (array): The residuals between the "fitted"
             values and the "y" values.
-            `scale` (float): The standard deviation of the best fitting
+            ``scale`` (float): The standard deviation of the best fitting
             subset multiplied by small sample correction factors.
-            `rsquared` (float): The R**2 value of the regression fit.
-            `X` (array): The input co-array coordinate array.
-            `y` (array): The input inter-element travel times.
+            ``rsquared`` (float): The R**2 value of the regression fit.
+            ``X`` (array): The input co-array coordinate array.
+            ``y`` (array): The input inter-element travel times.
 
 
-    '''
+    """
 
     # Set the number of C-steps.
     csteps1 = 4
