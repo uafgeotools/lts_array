@@ -13,19 +13,22 @@ def lts_array_plot(st, stdict, t, mdccm, lts_vel, lts_baz):
         and LTS-flagged element pairs.
 
     Args:
-        1. st: Obspy stream. Assumes response has been removed.
-        2. stdict: Dictionary of flagged element pairs
-        from the `fast_lts_array` function.
-        3. t: Array of time values for each parameter estimate.
-        4. mdccm: Array of median cross-correlation maximas.
-        5. lts_vel: Array of least-trimmed squares trace velocity estimates.
-        6. lts_baz: Array of least-trimmed squares back-azimuths estimates.
+        st (stream): Obspy stream. Assumes response has been removed.
+        stdict (dict): Dictionary of flagged element pairs
+            from the `fast_lts_array` function.
+        t (array): Array of time values for each parameter estimate.
+        mdccm (array): Array of median cross-correlation maximas.
+        lts_vel (array): Array of least-trimmed squares
+            trace velocity estimates.
+        lts_baz (array): Array of least-trimmed squares
+            back-azimuths estimates.
 
     Returns:
-        1. fig1: Output figure.
-        2. axs1: Output figure axes.
+        (tuple)
+            fig1: Output figure handle.
+            axs1: Output figure axes.
 
-    Usage:
+    Examples:
         fig1, axs1 = lts_array_plot(st, stdict, t, mdccm, lts_vel, lts_baz)
     '''
 
