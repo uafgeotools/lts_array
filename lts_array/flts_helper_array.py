@@ -16,22 +16,22 @@ the MATLAB Continuous Sound and Vibration Toolbox.
 '''
 
 
-def hcalc(alpha, n, p):
+def hcalc(ALPHA, n, p):
     r''' Generate the h-value, the number of points to fit.
 
     Args:
-        1. alpha - [float] The decimal percentage of points
+        ALPHA (float): The decimal percentage of points
             to keep. Default is 0.75.
-        2. n - [int] The total number of points.
-        3. p - [int] The number of parameters.
+        n (int): The total number of points.
+        p (int): The number of parameters.
 
     Returns:
-        1. h - [int] The number of points to fit.
+        h (int): The number of points to fit.
 
     '''
 
     h = np.floor(2*np.floor((n + p + 1)/2)
-                 - n + 2*(n - np.floor((n + p + 1)/2)) * alpha)
+                 - n + 2*(n - np.floor((n + p + 1)/2)) * ALPHA)
 
     return int(h)
 
@@ -128,7 +128,7 @@ def insertion(bestmean, bobj, z, obj):
     r''' Keep track of the value of the objective function
         and the associated parameter vector z.
 
-    *This code could likely be re-written for more simplicty.
+    This code could likely be re-written for more simplicty.
 
     Args:
         1. bestmean - [array] Array of best least squares fit values.
