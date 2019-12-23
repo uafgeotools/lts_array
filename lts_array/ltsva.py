@@ -1,5 +1,4 @@
 import numpy as np
-import sys
 
 from lts_array.fast_lts_array import fast_lts_array
 from lts_array.flts_helper_array import (get_cc_time,
@@ -7,29 +6,32 @@ from lts_array.flts_helper_array import (get_cc_time,
 
 
 def ltsva(st, rij, WINLEN, WINOVER, ALPHA):
-    r""" Process infrasound or seismic array data
-                                            with least trimmed squares (LTS).
+    r""" Process infrasound or seismic array data with least trimmed squares (LTS).
 
     Args:
-        1. st - Obspy stream object. Assumes response has been removed.
-        2. rij - (2, n) Array of 'n' (infra/seis) array element coordinates
+        st: Obspy stream object. Assumes response has been removed.
+        rij (2, n): Array of 'n' (infra/seis) array element coordinates
          in km for 2-dimensions [easting, northing].
-        3. WINLEN - Window length [float] in seconds.
-        4. WINOVER - Window overlap [float] in the range [0.0 - 1.0].
-        5. ALPHA - Fraction of data [float] for LTS subsetting [0.5 - 1.0].
+        WINLEN (float): Window length in seconds.
+        WINOVER (float): Window overlap in the range [0.0 - 1.0].
+        ALPHA (float): Fraction of data for LTS subsetting [0.5 - 1.0].
             Choose 1.0 for ordinary least squares.
 
     Exceptions:
-        1. Exception - A check is performed to see if all time delays
-            are equal (= 0). If so, an exception is raised and the algorithm
-            returns the same data structures on exit, but with NaN values.
+        A check is performed to see if all time delays are equal (= 0).
+        If so, an exception is raised and the algorithm
+        returns the same data structures on exit, but with NaN values.
 
     Returns:
-        1. stdict: Dictionary of flagged element pairs.
-        2. t: Array of times at which parameter estimates are calculated.
-        3. mdccm: Array of median cross-correlation maximas.
-        4. lts_vel: Array of least trimmed squares trace velocity estimates.
-        5. lts_baz: Array of least trimmed squares back-azimuth estimates.
+        (tuple):
+            ``stdict`` (dict): Dictionary of flagged element pairs.
+            ``t`` (nparray): Array of times at which parameter estimates
+            are calculated.
+            ``mdccm`` (nparray): Array of median cross-correlation maximas.
+            ``lts_vel`` (nparray): Array of least trimmed squares
+            trace velocity estimates.
+            ``lts_baz`` (nparray): Array of least trimmed squares
+            back-azimuth estimates.
 
     """
 
@@ -86,12 +88,12 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA):
         # Cross correlate the wave forms. Get the differential times.
         tdelay, xij, ccmax, idx = get_cc_time(data[ptr[0]:ptr[1], :], rij, fs)
 
-        """ Check to see if time delays are all equal (= 0).
-        The fast_lts_array function will crash if all time
-        delays (tdelay) are equal. In our experience,
-        this can occur if electronic spikes are present
-        in the data.
-        Return data structure filled with NaNs if true. """
+        # Check to see if time delays are all equal (= 0).
+        # The fast_lts_array function will crash if all time
+        # delays (tdelay) are equal. In our experience,
+        # this can occur if electronic spikes are present
+        # in the data.
+        # Return data structure filled with NaNs if true.
         dataspike = np.all(tdelay == 0)
         if dataspike:
             raise Exception("Tdelays are equal. LTS algorithm not run. \
