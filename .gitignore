@@ -20,9 +20,3 @@ build/*
 # Any image file
 *.png
 *.jpg
-
-# Documentation
-**/build/*
-**/Makefile
-**/make.bat
-
