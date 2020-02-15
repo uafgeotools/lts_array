@@ -16,19 +16,25 @@ release = '1.0.0'
 
 language = 'python'
 
-extensions = ['sphinxcontrib.apidoc',
+extensions = ['recommonmark',
+              'sphinxcontrib.apidoc',
               'sphinx.ext.autodoc',
-              'spinx.ext.intersphinx',
+              'sphinx.ext.intersphinx',
               'sphinx.ext.mathjax',
               'sphinx.ext.napoleon',
               'sphinx_rtd_theme',
-              'spinx.ext.viewcode']
+              'sphinx.ext.viewcode']
 
 autodoc_mock_imports = ['matplotlib',
                         'numpy',
                         'obspy',
                         'scipy',
                         ]
+
+apidoc_module_dir = '../../lts_array'
+apidoc_output_dir = 'api'
+apidoc_excluded_paths = ['tests']
+apidoc_separate_modules = False
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -40,11 +46,6 @@ source_suffix = {
     '.rst': 'restructuredtext',
     '.txt': 'restructuredtext',
     '.md': 'markdown',
-}
-
-# Parsers - rst is implicit. Add markdown parser.
-source_parsers = {
-   '.md': 'recommonmark.parser.CommonMarkParser',
 }
 
 html_theme = 'sphinx_rtd_theme'
