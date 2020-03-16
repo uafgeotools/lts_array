@@ -5,7 +5,7 @@ from lts_array.flts_helper_array import (get_cc_time,
                                          fail_spike_test, arrayfromweights)
 
 
-def ltsva(st, rij, WINLEN, WINOVER, ALPHA):
+def ltsva(st, rij, WINLEN, WINOVER, ALPHA=1.0):
     r""" Process infrasound or seismic array data with least trimmed squares (LTS).
 
     Args:
@@ -15,7 +15,7 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA):
         WINLEN (float): Window length in seconds.
         WINOVER (float): Window overlap in the range [0.0 - 1.0].
         ALPHA (float): Fraction of data for LTS subsetting [0.5 - 1.0].
-            Choose 1.0 for ordinary least squares.
+            Choose 1.0 for ordinary least squares (default).
 
     Exceptions:
         A check is performed to see if all time delays are equal (= 0).
