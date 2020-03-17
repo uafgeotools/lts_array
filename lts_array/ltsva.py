@@ -5,16 +5,16 @@ from lts_array.flts_helper_array import (get_cc_time,
                                          fail_spike_test, arrayfromweights)
 
 
-def ltsva(st, rij, WINLEN, WINOVER, ALPHA=1.0):
+def ltsva(st, rij, winlen, winover, alpha=1.0):
     r""" Process infrasound or seismic array data with least trimmed squares (LTS).
 
     Args:
         st: Obspy stream object. Assumes response has been removed.
         rij (2, n): Array of 'n' (infra/seis) array element coordinates
          in km for 2-dimensions [easting, northing].
-        WINLEN (float): Window length in seconds.
-        WINOVER (float): Window overlap in the range [0.0 - 1.0].
-        ALPHA (float): Fraction of data for LTS subsetting [0.5 - 1.0].
+        winlen (float): Window length in seconds.
+        winover (float): Window overlap in the range [0.0 - 1.0].
+        alpha (float): Fraction of data for LTS subsetting [0.5 - 1.0].
             Choose 1.0 for ordinary least squares (default).
 
     Exceptions:
@@ -51,8 +51,8 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA=1.0):
         data[:, ii] = tr.data
 
     # Convert window length to samples.
-    winlensamp = int(WINLEN*fs)
-    sampinc = int((1-WINOVER)*winlensamp)
+    winlensamp = int(winlen*fs)
+    sampinc = int((1-winover)*winlensamp)
     its = np.arange(0, npts, sampinc)
     nits = len(its) - 1
 
@@ -64,7 +64,7 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA=1.0):
     sigma_tau = np.full(nits, np.nan)
 
     # State if least trimmed squares or ordinary least squares will be used.
-    if ALPHA == 1.0:
+    if alpha == 1.0:
         print('ALPHA is 1.00. Performing an ordinary',
               'least squares fit, NOT least trimmed squares.')
         print('Calculating sigma_tau.')
@@ -96,14 +96,14 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA=1.0):
         # Return data structure filled with NaNs if true.
         dataspike = np.all(tdelay == 0)
         if dataspike:
-            raise Exception("Tdelays are equal. LTS algorithm not run. \
+            raise Exception("time delays are equal. LTS algorithm not run. \
                                     Returning NaNs for LTS output terms.")
             lts_baz, lts_vel, flagged, lts_estimate = fail_spike_test(
                 tdelay, xij)
             return lts_baz, lts_vel, flagged, ccmax, idx, lts_estimate
 
         # Apply the FAST-LTS algorithm.
-        lts_estimate = fast_lts_array(xij, tdelay, ALPHA)
+        lts_estimate = fast_lts_array(xij, tdelay, alpha)
 
         lts_baz[jj] = lts_estimate['bazimuth']
         lts_vel[jj] = lts_estimate['velocity']
