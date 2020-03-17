@@ -7,7 +7,7 @@ from collections import Counter
 
 def lts_array_plot(st, lts_vel, lts_baz, t, mdccm, stdict):
     '''
-    Return a Least-trimmed squares array processing plot, including
+    Return a least-trimmed squares array processing plot, including
         flagged element pairs.
     Plots first channel waveform, trace-velocity, back-azimuth,
         and LTS-flagged element pairs.
