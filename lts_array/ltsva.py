@@ -126,4 +126,4 @@ def ltsva(st, rij, WINLEN, WINOVER, ALPHA=1.0):
 
     print('\nDone\n')
 
-    return stdict, t, mdccm, lts_vel, lts_baz, sigma_tau
+    return lts_vel, lts_baz, t, mdccm, stdict, sigma_tau
