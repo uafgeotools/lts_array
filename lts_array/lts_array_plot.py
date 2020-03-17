@@ -5,7 +5,7 @@ from copy import deepcopy
 from collections import Counter
 
 
-def lts_array_plot(st, stdict, t, mdccm, lts_vel, lts_baz):
+def lts_array_plot(st, lts_vel, lts_baz, t, mdccm, stdict):
     '''
     Return a Least-trimmed squares array processing plot, including
         flagged element pairs.
@@ -14,14 +14,14 @@ def lts_array_plot(st, stdict, t, mdccm, lts_vel, lts_baz):
 
     Args:
         st (stream): Obspy stream. Assumes response has been removed.
-        stdict (dict): Dictionary of flagged element pairs
-            from the `fast_lts_array` function.
-        t (array): Array of time values for each parameter estimate.
-        mdccm (array): Array of median cross-correlation maximas.
         lts_vel (array): Array of least-trimmed squares
             trace velocity estimates.
         lts_baz (array): Array of least-trimmed squares
             back-azimuths estimates.
+        t (array): Array of time values for each parameter estimate.
+        mdccm (array): Array of median cross-correlation maximas.
+        stdict (dict): Dictionary of flagged element pairs
+            from the `fast_lts_array` function.
 
     Returns:
         (tuple):
