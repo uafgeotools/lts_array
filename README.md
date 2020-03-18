@@ -1,6 +1,7 @@
 # lts_array #
 This package contains a least trimmed squares algorithm modified for geophysical array processing and written in Python3. An extensive module of helper functions is also included. These codes are referenced in
-> Bishop, J.W., Fee, D., & Szuberla, C. A. L., (in review). Improved infrasound array processing with robust estimators, Geophysical Journal International
+> Bishop, J.W., Fee, D., & Szuberla, C. A. L., (2020). Improved infrasound array processing with robust estimators, Geophysical Journal International
+doi: https://doi.org/10.1093/gji/ggaa110
 
 A broader set of geophysical array processing codes are available [here](https://github.com/uafgeotools/array_processing), which utilizes this package as the default (and preferred) array processing algorithm.
 
@@ -44,12 +45,19 @@ See the included `Example_Processing.py`.
 ## References and Credits ##
 If you use this code for array processing, we ask that you cite the following papers:
 
-1. Bishop, J.W., Fee, D., & Szuberla, C. A. L., (in review). Improved infrasound array processing with robust estimators, Geophysical Journal International
+1. Bishop, J.W., Fee, D., & Szuberla, C. A. L., (2020). Improved infrasound array processing with robust estimators, Geophysical Journal International
+doi: https://doi.org/10.1093/gji/ggaa110
 
 2. Rousseeuw, P. J. & Van Driessen, K., 2006. Computing LTS regression for large data sets, Data Mining and Knowledge Discovery, 12(1), 29-45
 
-## License and Authors ##
-MIT (c) Jordan W Bishop, David Fee, Curt Szuberla
+## License ##
+MIT (c)
+
+## Contributing Authors ##
+Jordan W Bishop </br>
+David Fee </br>
+Curt Szuberla </br>
+Liam Toney
 
 ## Acknowledgements and Distribution Statement ##
 This work was made possible through support provided by the Defense Threat Reduction Agency Nuclear Arms Control Technology program under contract HDTRA1-17-C-0031. Distribution Statement A: Approved for public release; distribution is unlimited.
