@@ -39,6 +39,10 @@ def lts_array_plot(st, lts_vel, lts_baz, t, mdccm, stdict=None):
     # Specify the time vector for plotting the trace.
     tvec = st[0].times('matplotlib')
 
+    # Check station dictionary input. It must be a non-empy dictionary.
+    if not isinstance(stdict, dict) or not stdict:
+        stdict = None
+
     # Determine the number and order of subplots.
     num_subplots = 3
     vplot = 1
