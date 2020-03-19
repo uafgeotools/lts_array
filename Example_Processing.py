@@ -74,7 +74,7 @@ for i, tr in enumerate(stf):
     plt.text(rij[0, i], rij[1, i], tr.stats.location)
 
 #%% Run LTS array processing
-LTSvel, LTSbaz, t, mdccm, stdict, sigma_tau = lts_array.ltsva(stf, rij, WINLEN, WINOVER, ALPHA)
+lts_vel, lts_baz, t, mdccm, stdict, sigma_tau = lts_array.ltsva(stf, rij, WINLEN, WINOVER, ALPHA)
 
 #%% Plotting
-fig2, axs2 = lts_array.lts_array_plot(stf, LTSvel, LTSbaz, t, mdccm, stdict)
+fig2, axs2 = lts_array.lts_array_plot(stf, lts_vel, lts_baz, t, mdccm, stdict)
