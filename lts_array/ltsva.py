@@ -117,7 +117,7 @@ def ltsva(st, rij, winlen, winover, alpha=1.0):
         if len(stns) > 0:
             tval = str(t[jj])
             stdict[tval] = stns
-        if jj == (nits-1):
+        if jj == (nits-1) and alpha != 1.0:
             stdict['size'] = nchans
 
         # Print progress
