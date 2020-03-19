@@ -5,7 +5,7 @@ from copy import deepcopy
 from collections import Counter
 
 
-def lts_array_plot(st, lts_vel, lts_baz, t, mdccm, stdict):
+def lts_array_plot(st, lts_vel, lts_baz, t, mdccm, stdict=None):
     '''
     Return a least-trimmed squares array processing plot, including
         flagged element pairs.
@@ -29,86 +29,101 @@ def lts_array_plot(st, lts_vel, lts_baz, t, mdccm, stdict):
             ``axs1``: Output figure axes.
 
     Example:
-        fig1, axs1 = lts_array_plot(st, stdict, t, mdccm, lts_vel, lts_baz)
+        fig, axs = lts_array_plot(st, lts_vel, lts_baz, t, mdccm, stdict)
     '''
 
     # Specify the colormap.
-    CM = 'RdYlBu_r'
+    cm = 'RdYlBu_r'
     # Colorbar/y-axis limits for MdCCM.
-    CAX = (0.2, 1)
+    cax = (0.2, 1)
     # Specify the time vector for plotting the trace.
     tvec = st[0].times('matplotlib')
 
+    # Determine the number and order of subplots.
+    num_subplots = 3
+    vplot = 1
+    bplot = 2
+    splot = bplot
+    if stdict is not None:
+        num_subplots += 1
+        splot = bplot + 1
+
     # Start plotting.
-    fig1, axarr1 = plt.subplots(4, 1, sharex='col')
-    fig1.set_size_inches(9, 12)
-    axs1 = axarr1.ravel()
-    axs1[0].plot(tvec, st[0].data, 'k')
-    axs1[0].axis('tight')
-    axs1[0].set_ylabel('Pressure [Pa]')
-    axs1[0].text(0.15, 0.93, st[0].stats.station, horizontalalignment='center',
-                 verticalalignment='center', transform=axs1[0].transAxes)
-    cbaxes = fig1.add_axes(
-        [0.9, axs1[2].get_position().y0, 0.02,
-         axs1[1].get_position().y1 - axs1[2].get_position().y0])
+    fig, axarr = plt.subplots(num_subplots, 1, sharex='col')
+    fig.set_size_inches(9, 12)
+    axs = axarr.ravel()
+    axs[0].plot(tvec, st[0].data, 'k')
+    axs[0].axis('tight')
+    axs[0].set_ylabel('Pressure [Pa]')
+    axs[0].text(0.15, 0.93, st[0].stats.station, horizontalalignment='center',
+                verticalalignment='center', transform=axs[0].transAxes)
+    cbaxes = fig.add_axes(
+        [0.95, axs[splot].get_position().y0, 0.02,
+         axs[vplot].get_position().y1 - axs[splot].get_position().y0])
 
     # Plot the trace velocity plot.
-    sc = axs1[1].scatter(t, lts_vel, c=mdccm,
-                         edgecolors='gray', lw=0.1, cmap=CM)
-    axs1[1].set_ylim(0.15, 0.60)
-    axs1[1].set_xlim(t[0], t[-1])
-    axs1[1].plot([t[0], t[-1]], [0.25, 0.25], '-', color='grey')
-    axs1[1].plot([t[0], t[-1]], [0.45, 0.45], '-', color='grey')
-    sc.set_clim(CAX)
-    axs1[1].set_ylabel('Trace Velocity\n [km/s]')
-    axs1[1].grid(b=1, which='major', color='gray', linestyle=':', alpha=0.5)
+    sc = axs[vplot].scatter(t, lts_vel, c=mdccm,
+                            edgecolors='gray', lw=0.1, cmap=cm)
+    axs[vplot].set_ylim(0.15, 0.60)
+    axs[vplot].set_xlim(t[0], t[-1])
+    axs[vplot].plot([t[0], t[-1]], [0.25, 0.25], '-', color='grey')
+    axs[vplot].plot([t[0], t[-1]], [0.45, 0.45], '-', color='grey')
+    sc.set_clim(cax)
+    axs[vplot].set_ylabel('Trace Velocity\n [km/s]')
+    axs[vplot].grid(b=1, which='major', color='gray', linestyle=':', alpha=0.5)
 
     #  Plot the back-azimuth estimates.
-    sc = axs1[2].scatter(t, lts_baz, c=mdccm,
-                         edgecolors='gray', lw=0.1, cmap=CM)
-    axs1[2].set_ylim(0, 360)
-    axs1[2].set_xlim(t[0], t[-1])
-    sc.set_clim(CAX)
-    axs1[2].set_ylabel('Back-azimuth\n [deg]')
-    axs1[2].grid(b=1, which='major', color='gray', linestyle=':', alpha=0.5)
-    hc = plt.colorbar(sc, cax=cbaxes, ax=[axs1[1], axs1[2]])
+    sc = axs[bplot].scatter(t, lts_baz, c=mdccm,
+                            edgecolors='gray', lw=0.1, cmap=cm)
+    axs[bplot].set_ylim(0, 360)
+    axs[bplot].set_xlim(t[0], t[-1])
+    sc.set_clim(cax)
+    axs[bplot].set_ylabel('Back-azimuth\n [deg]')
+    axs[bplot].grid(b=1, which='major', color='gray', linestyle=':', alpha=0.5)
+    hc = plt.colorbar(sc, cax=cbaxes, ax=[axs[1], axs[2]])
     hc.set_label('MdCCM')
 
-    # The sausage plot of flagged station pairs
-    ndict = deepcopy(stdict)
-    n = ndict['size']
-    ndict.pop('size', None)
-    tstamps = list(ndict.keys())
-    tstampsfloat = [float(ii) for ii in tstamps]
+    # Plot dropped station pairs from LTS if given.
+    if stdict is not None:
+        ndict = deepcopy(stdict)
+        n = ndict['size']
+        ndict.pop('size', None)
+        tstamps = list(ndict.keys())
+        tstampsfloat = [float(ii) for ii in tstamps]
 
-    # Set the second colormap for station pairs.
-    cm2 = plt.get_cmap('binary', (n-1))
-    initplot = np.empty(len(t))
-    initplot.fill(1)
+        # Set the second colormap for station pairs.
+        cm2 = plt.get_cmap('binary', (n-1))
+        initplot = np.empty(len(t))
+        initplot.fill(1)
 
-    axs1[3].scatter(np.array([t[0], t[-1]]), np.array([0.01, 0.01]), c='w')
-    axs1[3].axis('tight')
-    axs1[3].set_ylabel('Element [#]')
-    axs1[3].set_xlabel('UTC Time')
-    axs1[3].set_xlim(t[0], t[-1])
-    axs1[3].set_ylim(0.5, n+0.5)
-    axs1[3].xaxis_date()
-    axs1[3].tick_params(axis='x', labelbottom='on')
+        axs[splot].scatter(np.array([t[0], t[-1]]),
+                           np.array([0.01, 0.01]), c='w')
+        axs[splot].axis('tight')
+        axs[splot].set_ylabel('Element [#]')
+        axs[splot].set_xlabel('UTC Time')
+        axs[splot].set_xlim(t[0], t[-1])
+        axs[splot].set_ylim(0.5, n+0.5)
+        axs[splot].xaxis_date()
+        axs[splot].tick_params(axis='x', labelbottom='on')
 
-    # Loop through the stdict for each flag and plot
-    for jj in range(len(tstamps)):
-        z = Counter(list(ndict[tstamps[jj]]))
-        keys, vals = z.keys(), z.values()
-        keys, vals = np.array(list(keys)), np.array(list(vals))
-        pts = np.tile(tstampsfloat[jj], len(keys))
-        sc = axs1[3].scatter(pts, keys, c=vals, edgecolors='k',
-                             lw=0.1, cmap=cm2, vmin=1-0.5, vmax=n-1+0.5)
+        # Loop through the stdict for each flag and plot
+        for jj in range(len(tstamps)):
+            z = Counter(list(ndict[tstamps[jj]]))
+            keys, vals = z.keys(), z.values()
+            keys, vals = np.array(list(keys)), np.array(list(vals))
+            pts = np.tile(tstampsfloat[jj], len(keys))
+            sc2 = axs[splot].scatter(pts, keys, c=vals, edgecolors='k',
+                                     lw=0.1, cmap=cm2, vmin=0.5, vmax=n-0.5)
 
-    # Add the horizontal colorbar for station pairs.
-    p3 = axs1[3].get_position().get_points().flatten()
-    cbaxes2 = fig1.add_axes([p3[0], 0.05, p3[2]-p3[0], 0.02])
-    hc = plt.colorbar(sc, orientation="horizontal", cax=cbaxes2, ax=axs1[3])
-    hc.set_label('Number of Flagged Element Pairs')
-    plt.subplots_adjust(right=0.87, hspace=0.12)
+        # Add the horizontal colorbar for station pairs.
+        p3 = axs[splot].get_position().get_points().flatten()
+        p3 = axs[splot].get_position()
+        cbaxes2 = fig.add_axes([p3.x0, p3.y0-0.08, p3.width, 0.02])
+        hc2 = plt.colorbar(sc2, orientation="horizontal",
+                           cax=cbaxes2, ax=axs[splot])
+        hc2.set_label('Number of Flagged Element Pairs')
 
-    return fig1, axs1
+    axs[splot].xaxis_date()
+    axs[splot].set_xlabel('UTC Time')
+
+    return fig, axs
