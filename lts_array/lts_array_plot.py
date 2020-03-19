@@ -67,23 +67,20 @@ def lts_array_plot(st, lts_vel, lts_baz, t, mdccm, stdict=None):
 
     # Plot the trace velocity plot.
     sc = axs[vplot].scatter(t, lts_vel, c=mdccm,
-                            edgecolors='gray', lw=0.1, cmap=cm)
+                            edgecolors='k', lw=0.1, cmap=cm)
     axs[vplot].set_ylim(0.25, 0.45)
     axs[vplot].set_xlim(t[0], t[-1])
-    axs[vplot].plot([t[0], t[-1]], [0.25, 0.25], '-', color='grey')
-    axs[vplot].plot([t[0], t[-1]], [0.45, 0.45], '-', color='grey')
     sc.set_clim(cax)
     axs[vplot].set_ylabel('Trace Velocity\n [km/s]')
-    axs[vplot].grid(b=1, which='major', color='gray', linestyle=':', alpha=0.5)
 
     #  Plot the back-azimuth estimates.
     sc = axs[bplot].scatter(t, lts_baz, c=mdccm,
-                            edgecolors='gray', lw=0.1, cmap=cm)
+                            edgecolors='k', lw=0.1, cmap=cm)
     axs[bplot].set_ylim(0, 360)
     axs[bplot].set_xlim(t[0], t[-1])
     sc.set_clim(cax)
     axs[bplot].set_ylabel('Back-azimuth\n [deg]')
-    axs[bplot].grid(b=1, which='major', color='gray', linestyle=':', alpha=0.5)
+
     hc = plt.colorbar(sc, cax=cbaxes, ax=[axs[1], axs[2]])
     hc.set_label('MdCCM')
 
