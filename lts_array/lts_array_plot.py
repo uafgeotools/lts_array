@@ -68,7 +68,7 @@ def lts_array_plot(st, lts_vel, lts_baz, t, mdccm, stdict=None):
     # Plot the trace velocity plot.
     sc = axs[vplot].scatter(t, lts_vel, c=mdccm,
                             edgecolors='gray', lw=0.1, cmap=cm)
-    axs[vplot].set_ylim(0.15, 0.60)
+    axs[vplot].set_ylim(0.25, 0.45)
     axs[vplot].set_xlim(t[0], t[-1])
     axs[vplot].plot([t[0], t[-1]], [0.25, 0.25], '-', color='grey')
     axs[vplot].plot([t[0], t[-1]], [0.45, 0.45], '-', color='grey')
