@@ -25,7 +25,7 @@ FMAX = 5.0
 WINLEN = 30
 WINOVER = 0.50
 # LTS alpha parameter - subset size
-ALPHA = 0.5
+ALPHA = 0.75
 
 print('Reading in data from IRIS')
 client = Client("IRIS")
@@ -74,7 +74,7 @@ for i, tr in enumerate(stf):
     plt.text(rij[0, i], rij[1, i], tr.stats.location)
 
 #%% Run LTS array processing
-stdict, t, mdccm, LTSvel, LTSbaz, sigma_tau = lts_array.ltsva(stf, rij, WINLEN, WINOVER, ALPHA)
+lts_vel, lts_baz, t, mdccm, stdict, sigma_tau = lts_array.ltsva(stf, rij, WINLEN, WINOVER, ALPHA)
 
 #%% Plotting
-fig2, axs2 = lts_array.lts_array_plot(stf, stdict, t, mdccm, LTSvel, LTSbaz)
+fig, axs = lts_array.lts_array_plot(stf, lts_vel, lts_baz, t, mdccm, stdict)
