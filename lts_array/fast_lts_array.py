@@ -9,7 +9,7 @@ import lts_array.flts_helper_array as fltsh
 This module solely contains the FAST-LTS algorithm written in Python3.
 """
 
-def fast_lts_array(X, y, alpha):  # noqa
+def fast_lts_array(X, y, ALPHA):  # noqa
     r""" Applies the FAST-LTS code with simplications for array processing.
 
     This code is based off the FAST-LTS algorithm:
@@ -30,7 +30,7 @@ def fast_lts_array(X, y, alpha):  # noqa
         X (array): The design matrix (co-array coordinates).
         y (array): The vector of response variables
             (inter-element travel times).
-        alpha (float): The subset percentage to take - must be in
+        ALPHA (float): The subset percentage to take - must be in
             the range of [0.5, 1.0]. A good default alpha is 0.75.
 
     Returns:
@@ -85,7 +85,7 @@ def fast_lts_array(X, y, alpha):  # noqa
         print('X is singular!!')
 
     # Assign the subset size.
-    h = fltsh.hcalc(alpha, n, p)
+    h = fltsh.hcalc(ALPHA, n, p)
 
     if p < 5:
         eps = 1e-12
@@ -125,7 +125,7 @@ def fast_lts_array(X, y, alpha):  # noqa
 
     # Check to see if ALPHA == 1.00.
     # If so, perform an ordinary least squares fit and exit.
-    if alpha == 1.00:
+    if ALPHA == 1.00:
         lst_sq_estimate = fltsh.least_squares_fit(Xvar,
                                                   yvar, datamad, xorig, yorig)
         return lst_sq_estimate
@@ -222,7 +222,7 @@ def fast_lts_array(X, y, alpha):  # noqa
     residuals = yvar - fitted
     Raw['residuals'] = residuals
     sor = np.sort(residuals**2, kind='mergesort', axis=0)
-    factor = fltsh.rawcorfactorlts(p, intercept, n, alpha)
+    factor = fltsh.rawcorfactorlts(p, intercept, n, ALPHA)
     factor = factor * fltsh.rawconsfactorlts(h, n)
     sh0 = np.sqrt((1/h)*np.sum(sor[0:h]))
     s0 = sh0 * factor
@@ -254,7 +254,7 @@ def fast_lts_array(X, y, alpha):  # noqa
         residuals = np.reshape(residuals, (len(residuals), ))
         Res['scale'] = np.sqrt(np.sum(
             np.multiply(weights2, residuals)**2)/(np.sum(weights2) - 1))
-        factor = fltsh.rewcorfactorlts(p, intercept, n, alpha)
+        factor = fltsh.rewcorfactorlts(p, intercept, n, ALPHA)
         factor *= fltsh.rewconsfactorlts(weights, n, p)
         Res['scale'] *= factor
         weights = np.abs(residuals/Res['scale']) <= 2.5
