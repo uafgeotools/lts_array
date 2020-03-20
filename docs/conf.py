@@ -23,7 +23,7 @@ extensions = ['sphinxcontrib.apidoc',
               'sphinx_rtd_theme',
               'sphinx.ext.viewcode']
 
-autodoc_mock_imports = []
+autodoc_mock_imports = ['numpy', 'scipy', 'obspy', 'matplotlib']
 apidoc_module_dir = '../lts_array'
 apidoc_output_dir = 'api'
 apidoc_separate_modules = True
