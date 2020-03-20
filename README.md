@@ -49,11 +49,12 @@ If you use this code for array processing, we ask that you cite the following pa
 1. Bishop, J.W., Fee, D., & Szuberla, C. A. L., (2020). Improved infrasound array processing with robust estimators, Geophys. J. Int., Vol(num) p. ###-### doi: [https://doi.org/10.1093/gji/ggaa110](https://doi.org/10.1093/gji/ggaa110)
 
 2. Rousseeuw, P. J. & Van Driessen, K., 2006. Computing LTS regression for large data sets, Data Mining and Knowledge Discovery, 12(1), 29-45
+doi: [10.1007/s10618-005-0024-4](10.1007/s10618-005-0024-4)
 
 ## License ##
 MIT (c)
 
-## Authors ##
+## Authors and Contributors ##
 Jordan W Bishop <br>
 David Fee <br>
 Curt Szuberla <br>
