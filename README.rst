@@ -80,7 +80,7 @@ If you use this code for array processing, we ask that you cite the following pa
 
 #. 
    Rousseeuw, P. J. & Van Driessen, K., 2006. Computing LTS regression for large data sets, Data Mining and Knowledge Discovery, 12(1), 29-45
-   doi: `10.1007/s10618-005-0024-4 <10.1007/s10618-005-0024-4>`_
+   doi: `https://doi.org/10.1007/s10618-005-0024-4 <https://doi.org/10.1007/s10618-005-0024-4>`_
 
 License
 -------
