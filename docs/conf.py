@@ -3,21 +3,19 @@
 # -- Path setup --------------------------------------------------------------
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../lts_array'))
+
+sys.path.insert(0, os.path.abspath('../../lts_array/'))
 
 # -- Project information -----------------------------------------------------
 project = 'lts_array'
-copyright = '2019, Jordan W. Bishop, David Fee, and Curt Szuberla'
-author = 'Jordan W. Bishop, David Fee, and Curt Szuberla'
-
-release = '1.0.0'
+copyright = 'Jordan W. Bishop, David Fee, and Curt Szuberla'
 
 # -- General configuration ---------------------------------------------------
 
 language = 'python'
+master_doc = 'index'
 
-extensions = ['recommonmark',
-              'sphinxcontrib.apidoc',
+extensions = ['sphinxcontrib.apidoc',
               'sphinx.ext.autodoc',
               'sphinx.ext.intersphinx',
               'sphinx.ext.mathjax',
@@ -25,28 +23,14 @@ extensions = ['recommonmark',
               'sphinx_rtd_theme',
               'sphinx.ext.viewcode']
 
-autodoc_mock_imports = ['matplotlib',
-                        'numpy',
-                        'obspy',
+autodoc_mock_imports = ['numpy',
                         'scipy',
-                        ]
-
-apidoc_module_dir = '../../lts_array'
+                        'obspy',
+                        'matplotlib']
+apidoc_module_dir = '../lts_array'
 apidoc_output_dir = 'api'
-apidoc_excluded_paths = ['tests']
-apidoc_separate_modules = False
-
-# List of patterns, relative to source directory, that match files and
-# directories to ignore when looking for source files.
-exclude_patterns = ['build', '.DS_Store']
-
-# List of source suffixes - the files that Sphinx will read and their
-# markdown type.
-source_suffix = {
-    '.rst': 'restructuredtext',
-    '.txt': 'restructuredtext',
-    '.md': 'markdown',
-}
+apidoc_separate_modules = True
+apidoc_toc_file = False
 
 html_theme = 'sphinx_rtd_theme'
 
