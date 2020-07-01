@@ -5,8 +5,8 @@ This package contains a least trimmed squares algorithm modified for
 geophysical array processing and written in Python3. An extensive module
 of helper functions is also included. These codes are referenced in >
 Bishop, J.W., Fee, D., & Szuberla, C. A. L., (2020). Improved infrasound
-array processing with robust estimators, Geophys. J. Int., Vol(num)
-p. ###-### doi: https://doi.org/10.1093/gji/ggaa110.
+array processing with robust estimators, Geophys. J. Int., 221
+p. 2058-2074 doi: https://doi.org/10.1093/gji/ggaa110.
 
 A broader set of geophysical array processing codes are available
 `here <https://github.com/uafgeotools/array_processing>`__, which
