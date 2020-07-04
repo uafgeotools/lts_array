@@ -6,8 +6,6 @@ from scipy.linalg import lstsq
 from copy import deepcopy
 from obspy.geodetics.base import calc_vincenty_inverse
 
-import lts_array.flts_helper_array as fltsh
-
 """ Contains the auxilliary functions called by fast_lts_array.py
 
 Many of these codes are Python3 translations of those found in
@@ -78,11 +76,11 @@ def randomset(tot, npar, seed):
 
     randlist = []
     for jj in range(0, npar):
-        random, seed = fltsh.uniran(seed)
+        random, seed = uniran(seed)
         num = np.floor(random * tot) + 1
         if jj > 0:
             while num in randlist:
-                random, seed = fltsh.uniran(seed)
+                random, seed = uniran(seed)
                 num = np.floor(random * tot) + 1
         randlist.append(num)
 
@@ -98,7 +96,7 @@ def qgamma(p, a):
     dx = 1
     eps = 7/3 - 4/3 - 1
     while np.abs(dx) > 256 * eps * np.max(np.append(x, 1)):
-        dx = (fltsh.pgamma(x, a) - p) / fltsh.dgamma(x, a)
+        dx = (pgamma(x, a) - p) / dgamma(x, a)
         x = x - dx
         x = x + (dx - x) / 2 * float(x < 0)
 
@@ -123,7 +121,7 @@ def dgamma(x, a):
 
 def qchisq(p, a):
     """ The Chi-squared inverse distribution function. """
-    x = 2*fltsh.qgamma(p, 0.5*a)
+    x = 2*qgamma(p, 0.5*a)
     return x
 
 
@@ -410,13 +408,13 @@ def rewconsfactorlts(weights, n, p):
         cdelta_rew = 1
     else:
         if p == 0:
-            qdelta_rew = fltsh.qchisq(np.sum(weights)/n, 1)
-            cdeltainvers_rew = fltsh.pgamma(
+            qdelta_rew = qchisq(np.sum(weights)/n, 1)
+            cdeltainvers_rew = pgamma(
                 qdelta_rew/2, 1.5) / (np.sum(weights) / n)
             cdelta_rew = np.sqrt(1/cdeltainvers_rew)
         else:
-            a = fltsh.dnorm(1/(1/(fltsh.qnorm((sum(weights)+n)/(2*n)))))
-            b = (1/fltsh.qnorm((np.sum(weights)+n)/(2*n)))
+            a = dnorm(1/(1/(qnorm((sum(weights)+n)/(2*n)))))
+            b = (1/qnorm((np.sum(weights)+n)/(2*n)))
             q = 1-((2*n)/(np.sum(weights)*b))*a
             cdelta_rew = 1/np.sqrt(q)
 
