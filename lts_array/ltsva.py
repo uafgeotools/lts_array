@@ -96,14 +96,20 @@ def ltsva(st, rij, winlen, winover, alpha=1.0):
         # Return data structure filled with NaNs if true.
         dataspike = np.all(tdelay == 0)
         if dataspike:
-            raise Exception("Tdelays are equal. LTS algorithm not run. \
+            print("Tdelays are equal. LTS algorithm not run. \
                                     Returning NaNs for LTS output terms.")
-            lts_baz, lts_vel, flagged, lts_estimate = fail_spike_test(
+            lts_baz[jj], lts_vel[jj], flagged, lts_estimate = fail_spike_test(
                 tdelay, xij)
-            return lts_baz, lts_vel, flagged, ccmax, idx, lts_estimate
+            sigma_tau[jj] = lts_estimate['sigma_tau']
+            mdccm[jj] = np.nan
 
-        # Apply the FAST-LTS algorithm.
-        lts_estimate = fast_lts_array(xij, tdelay, alpha)
+            # keep track of progress
+            counter += 1
+            continue
+
+        else:
+            # Apply the FAST-LTS algorithm.
+            lts_estimate = fast_lts_array(xij, tdelay, alpha)
 
         lts_baz[jj] = lts_estimate['bazimuth']
         lts_vel[jj] = lts_estimate['velocity']
