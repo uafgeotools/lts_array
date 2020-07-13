@@ -96,7 +96,7 @@ def ltsva(st, rij, winlen, winover, alpha=1.0):
         # Return data structure filled with NaNs if true.
         dataspike = np.all(tdelay == 0)
         if dataspike:
-            print("Tdelays are equal. LTS algorithm not run. \
+            print("Time delays are equal. LTS algorithm not run. \
                                     Returning NaNs for LTS output terms.")
             lts_baz[jj], lts_vel[jj], flagged, lts_estimate = fail_spike_test(
                 tdelay, xij)
