@@ -38,7 +38,7 @@ We recommend using conda and creating a new conda environment such as:
 
 ::
 
-   conda create -n py_array python=3 obspy
+   conda create -n py_array -c conda-forge python=3 obspy
 
 Information on conda environments (and more) is available
 `here <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html>`__.
