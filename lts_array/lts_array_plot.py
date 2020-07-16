@@ -57,7 +57,7 @@ def lts_array_plot(st, lts_vel, lts_baz, array, t, mdccm, out_dir, stdict=None):
 
     # Start plotting.
     fig, axarr = plt.subplots(num_subplots, 1, sharex='col')
-    fig.set_size_inches(10, 12)
+    fig.set_size_inches(18, 12)
     axs = axarr.ravel()
     axs[0].plot(tvec, st[0].data, 'k')
     axs[0].axis('tight')
