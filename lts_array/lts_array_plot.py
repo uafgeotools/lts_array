@@ -57,7 +57,7 @@ def lts_array_plot(st, lts_vel, lts_baz, array, t, mdccm, out_dir, stdict=None):
 
     # Start plotting.
     fig, axarr = plt.subplots(num_subplots, 1, sharex='col')
-    fig.set_size_inches(18, 12)
+    fig.set_size_inches(16,10)
     axs = axarr.ravel()
     axs[0].plot(tvec, st[0].data, 'k')
     axs[0].axis('tight')
@@ -132,9 +132,10 @@ def lts_array_plot(st, lts_vel, lts_baz, array, t, mdccm, out_dir, stdict=None):
     
     # save
     fname_time = st[0].times(type="utcdatetime")
-    filename = array+'_'+UTCDateTime.strftime(fname_time[0],'%Y%m%d-%H%M.png')
+    #filename = array+'_'+UTCDateTime.strftime(fname_time[0],'%Y%m%d-%H%M.png')
+    filename = array+'_'+UTCDateTime.strftime(fname_time[-1],'%Y%m%d-%H%M.png')
     full_path = os.path.join(out_dir,filename)
-    plt.savefig(full_path,dpi=72,format='png')
+    plt.savefig(full_path,dpi=72,format='png',bbox_inches='tight')
 
     return fig, axs
 
@@ -285,7 +286,7 @@ def lts_array_plot_thumb(st, lts_vel, lts_baz, array, t, mdccm, out_dir, stdict=
     
     # save
     fname_time = st[0].times(type="utcdatetime")
-    filename = array+'_'+UTCDateTime.strftime(fname_time[0],'%Y%m%d-%H%M_thumb.png')
+    filename = array+'_'+UTCDateTime.strftime(fname_time[-1],'%Y%m%d-%H%M_thumb.png')
     full_path = os.path.join(out_dir,filename)
     plt.savefig(full_path,dpi=72,format='png')
 
