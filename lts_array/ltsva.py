@@ -114,7 +114,7 @@ def ltsva(st, rij, winlen, winover, alpha=1.0):
         lts_baz[jj] = lts_estimate['bazimuth']
         lts_vel[jj] = lts_estimate['velocity']
         sigma_tau[jj] = lts_estimate['sigma_tau']
-        mdccm[jj] = np.median(ccmax)
+        mdccm[jj] = np.nanmedian(ccmax)
 
         # Map dropped data points back to elements.
         stns = arrayfromweights(lts_estimate['flagged'], idx)
