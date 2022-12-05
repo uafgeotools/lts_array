@@ -70,10 +70,10 @@ for network in inv:
 st[3].data *= -1
 
 # Run processing
-lts_vel, lts_baz, t, mdccm, stdict, sigma_tau, conf_int_vel, conf_int_baz = lts_v2.ltsva(st, lat_list, lon_list, WINDOW_LENGTH, WINDOW_OVERLAP, ALPHA, PLOT_ARRAY_COORDINATES)
+lts_vel, lts_baz, t, mdccm, stdict, sigma_tau, conf_int_vel, conf_int_baz = lts_array.ltsva(st, lat_list, lon_list, WINDOW_LENGTH, WINDOW_OVERLAP, ALPHA, PLOT_ARRAY_COORDINATES)
 
 # Plot the results
-fig, axs = lts_v2.tools.lts_array_plot(st, lts_vel, lts_baz, t, mdccm, stdict)
+fig, axs = lts_array.tools.lts_array_plot(st, lts_vel, lts_baz, t, mdccm, stdict)
 # Plot uncertainty estimates
 axs[1].plot(t, lts_vel + conf_int_vel, c='gray', linestyle=':')
 axs[1].plot(t, lts_vel - conf_int_vel, c='gray', linestyle=':')
