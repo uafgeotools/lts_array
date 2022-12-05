@@ -6,11 +6,9 @@ from collections import Counter
 
 
 def lts_array_plot(st, lts_vel, lts_baz, t, mdccm, stdict=None):
-    '''
-    Return a Least-trimmed squares array processing plot, including
-        flagged element pairs.
-    Plots first channel waveform, trace-velocity, back-azimuth,
-        and LTS-flagged element pairs.
+    ''' Return a Least-trimmed squares array processing plot, including flagged element pairs.
+
+    Plots first channel waveform, trace-velocity, back-azimuth, and LTS-flagged element pairs.
 
     Args:
         st (stream): Obspy stream. Assumes response has been removed.
@@ -25,8 +23,8 @@ def lts_array_plot(st, lts_vel, lts_baz, t, mdccm, stdict=None):
 
     Returns:
         (tuple):
-            ``fig1``: Output figure handle.
-            ``axs1``: Output figure axes.
+            ``fig``: Output figure handle.
+            ``axs``: Output figure axes.
 
     Example:
         fig, axs = lts_array_plot(st, lts_vel, lts_baz, t, mdccm, stdict)

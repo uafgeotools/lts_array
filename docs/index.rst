@@ -1,13 +1,18 @@
 Welcome to lts_array's documentation!
 =====================================
+This module describes tools for least squares estimation of plane wave parameters.
 
 .. toctree::
-   :caption: README:
+    :maxdepth: 2
+    :caption: Contents:
 
-   README.rst
-
+    Introduction.rst
+    User_Notes.rst
 
 .. toctree::
-   :caption: API Docs:
+    :maxdepth: 2
+    :caption: API Docs:
 
-   api/lts_array.rst
+    ltsva.rst
+    lts_classes.rst
+    lts_data_classes.rst
