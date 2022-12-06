@@ -15,15 +15,17 @@ copyright = 'Jordan W. Bishop, David Fee, and Curt Szuberla'
 language = 'python'
 master_doc = 'index'
 
-extensions = ['sphinxcontrib.apidoc',
-              'sphinx.ext.autodoc',
+# Removed 'sphinxcontrib.apidoc'
+extensions = ['sphinx.ext.autodoc',
+              'sphinx.ext.autosummary',
               'sphinx.ext.intersphinx',
               'sphinx.ext.mathjax',
               'sphinx.ext.napoleon',
               'sphinx_rtd_theme',
               'sphinx.ext.viewcode']
 
-autodoc_mock_imports = ['numpy',
+autodoc_mock_imports = ['numba',
+                        'numpy',
                         'scipy',
                         'obspy',
                         'matplotlib']
@@ -42,7 +44,9 @@ napoleon_numpy_docstring = False
 # -- URL handling -----------
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3/', None),
-    'numpy': ('https://docs.scipy.org/doc/numpy', None),
+    'numpy': ('https://numpy.org/doc/stable/', None),
+    'numba': ('https://numba.readthedocs.io/en/stable/', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/', None),
     'obspy': ('https://docs.obspy.org/', None),
-    'matplotlib': ('https://matplotlib.org/', None)
+    'matplotlib': ('https://matplotlib.org/stable/', None)
 }
