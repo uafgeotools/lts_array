@@ -50,13 +50,12 @@ the package by running the terminal commands:
 ::
 
    conda activate uafinfra
+   conda install --name numba uafinfra
    git clone https://github.com/uafgeotools/lts_array
    cd lts_array
    pip install -e .
 
-The final command installs the package in “editable” mode, which means
-that you can update it with a simple ``git pull`` in your local
-repository. This install command only needs to be run once.
+This set of commands activates the `uafinfra` conda environment and then installs the `numba` [package](http://numba.pydata.org) in it. The final command installs the package in “editable” mode, which means that you can update it with a simple ``git pull`` in your local repository. This install command only needs to be run once.
 
 Dependencies
 ------------
