@@ -6,12 +6,12 @@ on_rtd = os.environ.get('READTHEDOCS') == 'True'
 if on_rtd:
     INSTALL_REQUIRES = []
 else:
-    INSTALL_REQUIRES = ['matplotlib', 'numpy', 'obspy', 'scipy']
+    INSTALL_REQUIRES = ['matplotlib', 'numpy', 'obspy', 'scipy', 'numba']
 
 setup(
    name='lts_array',
-   version='1.1',
-   description='Apply least trimmed squares to infra/seis array processing.',
+   version='2.0',
+   description='Apply least trimmed squares to infrasound and seismic array processing.',
    license='LICENSE.txt',
    author='Jordan W. Bishop',
    url="https://github.com/uafgeotools/lts_array",
@@ -19,6 +19,6 @@ setup(
    python_requires='>=3.0',
    install_requires=INSTALL_REQUIRES,
    scripts=[
-            'Example_Processing.py',
+            'example.py',
            ]
 )

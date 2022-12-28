@@ -38,10 +38,16 @@ We recommend using conda and creating a new conda environment such as:
 
 ::
 
-   conda create -n uafinfra -c conda-forge python=3 obspy
+   conda create -n uafinfra -c conda-forge python=3 obspy numba
 
 Information on conda environments (and more) is available
 `here <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html>`__.
+
+The package `numba` is a new dependency to commit 3464797bf4230ff1e6591aa7423933214f729b2f. If you have a previous `uafinfra` environment, you may need to install the `numba` [package](http://numba.pydata.org) with
+
+::
+
+    conda install --name uafinfra numba
 
 After setting up the conda environment,
 `install <https://pip.pypa.io/en/latest/reference/pip_install/#editable-installs>`__
@@ -54,9 +60,7 @@ the package by running the terminal commands:
    cd lts_array
    pip install -e .
 
-The final command installs the package in “editable” mode, which means
-that you can update it with a simple ``git pull`` in your local
-repository. This install command only needs to be run once.
+This set of commands activates the `uafinfra` conda environment. The final command installs the package in “editable” mode, which means that you can update it with a simple ``git pull`` in your local repository. This install command only needs to be run once.
 
 Dependencies
 ------------
