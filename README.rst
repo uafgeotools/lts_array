@@ -43,7 +43,7 @@ We recommend using conda and creating a new conda environment such as:
 Information on conda environments (and more) is available
 `here <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html>`__.
 
-The package `numba` is a new dependency to commit 3464797bf4230ff1e6591aa7423933214f729b2f. If you have a previous `uafinfra` environment, you may need to install the `numba` [package](http://numba.pydata.org) with
+The package `numba` is a new dependency to pull request `23 <https://github.com/uafgeotools/lts_array/pull/23>`. If you have a previous `uafinfra` environment, you may need to install the `numba` `package <http://numba.pydata.org>` with
 
 ::
 
