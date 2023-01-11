@@ -722,8 +722,12 @@ def post_process(dimension_number, co_array_num, alpha, h, nits, tau, xij, coeff
         # Calculate the sigma_tau value (Szuberla et al. 2006).
         residuals = tau[weights, jj, :] - (xij[weights, :] @ z_final)
         m_w, _ = np.shape(xij[weights, :])
-        sigma_tau[jj] = np.sqrt(tau[weights, jj, :].T @ residuals / (
-            m_w - dimension_number))[0]
+        with np.errstate(invalid='raise'):
+            try:
+                sigma_tau[jj] = np.sqrt(tau[weights, jj, :].T @ residuals / (
+                    m_w - dimension_number))[0]
+            except FloatingPointError:
+                pass
 
         # Equation 16 (Szuberla & Olson, 2004)
         sigS = sigma_tau[jj] / np.sqrt(c_eig_vals)
