@@ -945,22 +945,27 @@ class OLSEstimator(LsBeam):
             # along coordinate system axes
             So = R @ [sx, sy]
             # Find angle & slowness extrema
-            # try:
-            eExtrm, eVec = rthEllipse(a, b, So[0], So[1])
-            # Rotate eigenvectors back to original orientation
-            eVec = eVec @ R
-            # Fix up angle calculations
-            sig_theta = np.abs(np.diff(
-                (np.arctan2(eVec[2:, 1], eVec[2:, 0]) * 180 / np.pi - 360)
-                % 360))
-            if sig_theta > 180:
-                sig_theta = np.abs(sig_theta - 360)
+            try:
+                # rthEllipse routine can be unstable; catch instabilities
+                eExtrm, eVec = rthEllipse(a, b, So[0], So[1])
+                # Rotate eigenvectors back to original orientation
+                eVec = eVec @ R
+                # Fix up angle calculations
+                sig_theta = np.abs(np.diff(
+                    (np.arctan2(eVec[2:, 1], eVec[2:, 0]) * 180 / np.pi - 360)
+                    % 360))
+                if sig_theta > 180:
+                    sig_theta = np.abs(sig_theta - 360)
 
-            # Halving here s.t. +/- value expresses uncertainty bounds.
-            # Remove the 1/2's to get full values to express
-            # coverage ellipse area.
-            self.conf_int_baz[jj] = 0.5 * sig_theta
-            self.conf_int_vel[jj] = 0.5 * np.abs(np.diff(1 / eExtrm[:2]))
+                # Halving here s.t. +/- value expresses uncertainty bounds.
+                # Remove the 1/2's to get full values to express
+                # coverage ellipse area.
+                self.conf_int_baz[jj] = 0.5 * sig_theta
+                self.conf_int_vel[jj] = 0.5 * np.abs(np.diff(1 / eExtrm[:2]))
+
+            except ValueError:
+                self.conf_int_baz[jj] = np.nan
+                self.conf_int_vel[jj] = np.nan
 
 
 class LTSEstimator(LsBeam):
