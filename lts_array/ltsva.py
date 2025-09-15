@@ -33,8 +33,8 @@ def ltsva(st, lat_list, lon_list, window_length, window_overlap, alpha=1.0, plot
             ``mdccm`` (array): An array of median cross-correlation maxima.
             ``stdict`` (dict): A dictionary of flagged element pairs.
             ``sigma_tau`` (array): An array of sigma_tau values.
-            ``conf_int_vel`` (array): An array of 95% confidence intervals for the trace velocity.
-            ``conf_int_baz`` (array): An array of 95% confidence intervals for the back-azimuth.
+            ``conf_int_vel`` (array): An array of 90% confidence intervals for the trace velocity.
+            ``conf_int_baz`` (array): An array of 90% confidence intervals for the back-azimuth.
 
     """
 

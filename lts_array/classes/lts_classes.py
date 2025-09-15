@@ -829,6 +829,8 @@ class LsBeam:
         self.stdict = {}
         # Confidence value for uncertainty calculation
         self.p = 0.90
+        # Pre-allocate max cross-corr values for all pairs and timesteps (median of this is mdccm)
+        self.cij_maxs = np.full((self.co_array_num, data.nits), np.nan)
         # Check co-array rank for least squares problem
         if (np.linalg.matrix_rank(self.xij) < self.dimension_number):
             raise RuntimeError('Co-array is ill posed for the least squares problem. Check array coordinates. xij rank < ' + str(self.dimension_number))
@@ -851,6 +853,7 @@ class LsBeam:
 
     def correlate(self, data):
         """ Cross correlate the time series data.
+            Save maximum correlations for each timestep to update mccm with dropped station pairs
         """
         for jj in range(0, data.nits):
             # Get time from middle of window, except for the end.
@@ -869,14 +872,14 @@ class LsBeam:
                 # MATLAB's xcorr w/ 'coeff' normalization:
                 # unit auto-correlations.
                 self.cij[:, k] = (np.correlate(data.data[t0_ind:tf_ind, self.idx_pair[k][0]], data.data[t0_ind:tf_ind, self.idx_pair[k][1]], mode='full') / np.sqrt(np.sum(data.data[t0_ind:tf_ind, self.idx_pair[k][0]] * data.data[t0_ind:tf_ind, self.idx_pair[k][0]]) * np.sum(data.data[t0_ind:tf_ind, self.idx_pair[k][1]] * data.data[t0_ind:tf_ind, self.idx_pair[k][1]]))) # noqa
-            # Find the median of the cross-correlation maxima
-            self.mdccm[jj] = np.nanmedian(self.cij.max(axis=0))
+            self.cij_maxs[:, jj] = self.cij.max(axis=0) #save cij_maxs for this time step
             # Form the time delay vector and save it
             delay = np.argmax(self.cij, axis=0) + 1
             self.tau[:, jj] = (data.winlensamp - delay) / data.sampling_rate
             self.time_delay_mad[jj] = 1.4826 * np.median(
                 np.abs(self.tau[:, jj]))
-
+        
+        self.mdccm = np.nanmedian(self.cij_maxs, axis=0) #calculate mdccm for all time steps
         self.tau = np.reshape(self.tau, (self.co_array_num, data.nits, 1))
 
 
@@ -1023,6 +1026,9 @@ class LTSEstimator(LsBeam):
         # Use the best slowness coefficients to determine dropped stations
         # Calculate uncertainties at 90% confidence
         self.lts_vel, self.lts_baz, self.element_weights, self.sigma_tau, self.conf_int_vel, self.conf_int_baz = post_process(self.dimension_number, self.co_array_num, data.alpha, self.h, data.nits, self.tau, self.xij, self.slowness_coeffs, self.lts_vel, self.lts_baz, self.element_weights, self.sigma_tau, self.p, self.conf_int_vel, self.conf_int_baz) # noqa
+        # Correct the mdccm value according to the dropped station pairs
+        masked_cij = np.where(self.element_weights == 1, self.cij_maxs, np.nan)
+        self.mdccm = np.nanmedian(masked_cij, axis=0)
         # Find dropped stations from weights
         # Map dropped data points back to elements.
         for jj in range(0, data.nits):
