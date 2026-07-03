@@ -61,11 +61,6 @@ def fast_LTS(nits, tau, time_delay_mad, xij_standardized, xij_mad, dimension_num
     """
     for jj in range(nits):
 
-        # Check for data spike.
-        if (time_delay_mad[jj] == 0) or (np.count_nonzero(tau[:, jj, :]) < (co_array_num - 2)):
-            # We have a data spike, so do not process.
-            continue
-
         # Standardize the y-values
         y_var = tau[:, jj, :] / time_delay_mad[jj]
         X_var = xij_standardized
@@ -659,11 +654,6 @@ def post_process(dimension_number, co_array_num, alpha, h, nits, tau, xij, coeff
 
     for jj in range(0, nits):
 
-        # Check for data spike:
-        if np.count_nonzero(tau[:, jj, :]) < (co_array_num - 2):
-            # We have a data spike, so do not process.
-            continue
-
         # Now use original arrays
         y_var = tau[:, jj, :]
 
@@ -908,11 +898,6 @@ class OLSEstimator(LsBeam):
 
         # Loop through time
         for jj in range(data.nits):
-
-            # Check for data spike.
-            if (self.time_delay_mad[jj] == 0) or (np.count_nonzero(self.tau[:, jj, :]) < (self.co_array_num - 2)):
-                # We have a data spike, so do not process.
-                continue
 
             y_var = self.tau[:, jj, :] / self.time_delay_mad[jj]
             qt = self.q_xij.conj().T @ y_var
