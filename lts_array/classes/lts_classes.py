@@ -757,8 +757,8 @@ def post_process(dimension_number, co_array_num, alpha, h, nits, tau, xij, coeff
         # Halving here s.t. +/- value expresses uncertainty bounds.
         # Remove the 1/2's to get full values to express
         # coverage ellipse area.
-        conf_int_baz[jj] = 0.5 * sig_theta
-        conf_int_vel[jj] = 0.5 * np.abs(np.diff(1 / eExtrm[:2]))
+        conf_int_baz[jj] = 0.5 * float(np.asarray(sig_theta).squeeze())
+        conf_int_vel[jj] = 0.5 * float(np.asarray(np.abs(np.diff(1 / eExtrm[:2]))).squeeze())
 
         # Cast weights to int for output
         element_weights[:, jj] = weights * 1
@@ -967,8 +967,8 @@ class OLSEstimator(LsBeam):
                 # Halving here s.t. +/- value expresses uncertainty bounds.
                 # Remove the 1/2's to get full values to express
                 # coverage ellipse area.
-                self.conf_int_baz[jj] = 0.5 * sig_theta
-                self.conf_int_vel[jj] = 0.5 * np.abs(np.diff(1 / eExtrm[:2]))
+                self.conf_int_baz[jj] = 0.5 * float(np.asarray(sig_theta).squeeze())
+                self.conf_int_vel[jj] = 0.5 * float(np.asarray(np.abs(np.diff(1 / eExtrm[:2]))).squeeze())
 
             except ValueError:
                 self.conf_int_baz[jj] = np.nan
